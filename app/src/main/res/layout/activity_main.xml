@@ -15,7 +15,7 @@
         android:id="@+id/btn_load_second_activity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Get Started"
+        android:text="@string/str_btn_get_started"
         android:textAllCaps="false"
         android:layout_centerInParent="true"
         android:layout_centerHorizontal="true"

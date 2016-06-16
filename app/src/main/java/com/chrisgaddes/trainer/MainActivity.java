@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 
 public class MainActivity extends AppCompatActivity { // implements View.OnTouchListener {
 
@@ -22,8 +21,6 @@ public class MainActivity extends AppCompatActivity { // implements View.OnTouch
         setContentView(R.layout.activity_main);
 
 //        final Intent pIntent = new Intent(MainActivity.this, SecondActivity.class);
-
-        RelativeLayout mmain_activity_Relative_Layout = (RelativeLayout) findViewById(R.id.main_activity_Relative_Layout);
 
         findViewById(R.id.btn_load_second_activity).setOnClickListener(new View.OnClickListener() {
             @Override

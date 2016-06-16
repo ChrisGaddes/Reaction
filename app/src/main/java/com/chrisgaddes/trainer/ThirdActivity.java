@@ -37,9 +37,9 @@ public class ThirdActivity extends AppCompatActivity {
     public class DrawArrowsView extends View {
 
         // initialize variables
-        private Paint paint_points;
-        private Paint paint_arrow;
-        private Paint paint_box;
+        private final Paint paint_points;
+        private final Paint paint_arrow;
+        private final Paint paint_box;
         private Path path_arrow;
 
         private int loc_arrow_point_x;
@@ -47,14 +47,14 @@ public class ThirdActivity extends AppCompatActivity {
         private int btn_loc_x;
         private int btn_loc_y;
 
-        private double len_arrow_shaft;
+        private final double len_arrow_shaft;
         private double len_arrow_shaft_start;
-        private double len_arrow_head;
+        private final double len_arrow_head;
         private double len_arrow_shaft_current;
 
-        private float dim_btn_radius;
-        private float dim_btn_radius_buffer;
-        private long time_anim_arrow_dur;
+        private final float dim_btn_radius;
+        private final float dim_btn_radius_buffer;
+        private final long time_anim_arrow_dur;
 
         private double angle;
         private double angle_dif;
@@ -73,21 +73,21 @@ public class ThirdActivity extends AppCompatActivity {
 
         private boolean clicked_in_button;
 
-        double pi = Math.PI;
+        final double pi = Math.PI;
 
         // angles the force arrows snap to
 
 
         //double angles[] = {-pi, -3 * pi / 4, -pi / 2, -pi / 4, 0, pi / 4, pi / 2, 3 * pi / 4, pi};
-        double angles[] = {-pi, -5*pi/6, -2*pi/3, -pi/2, -pi/3, -pi/6, 0, pi/6, pi/3, pi/2, 2*pi/3, 5*pi/6, pi};
+        final double[] angles = {-pi, -5*pi/6, -2*pi/3, -pi/2, -pi/3, -pi/6, 0, pi/6, pi/3, pi/2, 2*pi/3, 5*pi/6, pi};
 
 
         // initialize ArrayLists for paths and points
-        private ArrayList<Point> pointList = new ArrayList<>();
-        private ArrayList<Rect> rectList = new ArrayList<>();
+        private final ArrayList<Point> pointList = new ArrayList<>();
+        private final ArrayList<Rect> rectList = new ArrayList<>();
 
 
-        private ArrayList<Path> pathList = new ArrayList<>();
+        private final ArrayList<Path> pathList = new ArrayList<>();
 
         public DrawArrowsView(Context context) {
             super(context);
