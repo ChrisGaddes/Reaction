@@ -44,7 +44,6 @@ public class ThirdActivity extends AppCompatActivity {
     }
 
 
-
     public class DrawArrowsView extends ImageView {
 
         final double pi = Math.PI;
@@ -79,7 +78,7 @@ public class ThirdActivity extends AppCompatActivity {
 
 
         private ArrayList<Point> pointListArrowHead = new ArrayList<>();
-        private ArrayList<Integer> pointListArrowHeadButton = new ArrayList<>();
+        private ArrayList<Integer> pointListArrowHead_CorVal = new ArrayList<>();
 
         private Path path_arrow;
 
@@ -106,7 +105,6 @@ public class ThirdActivity extends AppCompatActivity {
         private boolean clicked_in_button;
         private List<Integer> xValues;
         private List<Integer> yValues;
-
 
 
         public DrawArrowsView(Context context) {
@@ -154,18 +152,14 @@ public class ThirdActivity extends AppCompatActivity {
             }
 
 
-
-
             // add 2 ros to twoDimArray ArrayList
             twoDimArray.add(new ArrayList<Integer>());
             twoDimArray.add(new ArrayList<Integer>());
 
 
-
 //            twoDimArray.add(Arrays.asList(0, 1, 0, 1, 0));
 //            twoDimArray.add(Arrays.asList(0, 1, 1, 0, 1));
 //            twoDimArray.add(Arrays.asList(0, 0, 0, 1, 0));
-
 
 
             // http://stackoverflow.com/questions/5022824/how-to-fill-a-two-dimensional-arraylist-in-java-with-integers
@@ -253,8 +247,8 @@ public class ThirdActivity extends AppCompatActivity {
                             // notes indice of counter in rectListButtons for future use
                             rectListArrowHead_indice = k;
 
-                            btn_loc_x = rectListButtons.get(rectList_indice).centerX();
-                            btn_loc_y = rectListButtons.get(rectList_indice).centerY();
+                            btn_loc_x = rectListButtons.get(pointListArrowHead_CorVal.get(k)).centerX();
+                            btn_loc_y = rectListButtons.get(pointListArrowHead_CorVal.get(k)).centerY();
                         }
                         k++;
                     }
@@ -270,12 +264,12 @@ public class ThirdActivity extends AppCompatActivity {
                         drawArrow();
                         invalidate();// call invalidate to refresh the draw
 
-                    } else if (clicked_on_arrow_head){
+                    } else if (clicked_on_arrow_head) {
                         Log.d(TAG, " clicked on arrow head");
 
                         // replace arrow
                         path_arrow = new Path();
-                        pathList.set(rectListArrowHead_indice,path_arrow); // <-- Add this line.
+                        pathList.set(rectListArrowHead_indice, path_arrow); // <-- Add this line.
                         path_arrow.reset();
                         loc_arrow_point_x = X;
                         loc_arrow_point_y = Y;
@@ -305,7 +299,7 @@ public class ThirdActivity extends AppCompatActivity {
                 case MotionEvent.ACTION_UP:
                     Log.d(TAG, " ACTION_UP: " + clicked_in_button);
                     if (clicked_in_button || clicked_on_arrow_head) {
-                        clicked_in_button = false;
+
                         path_arrow.reset();
                         loc_arrow_point_x = X;
                         loc_arrow_point_y = Y;
@@ -341,22 +335,22 @@ public class ThirdActivity extends AppCompatActivity {
                                 path_arrow.reset();
 
                                 // creates rects to draw boxes at arrow heads once animation is done
-                                if (arrow_animated_fraction == 1){
-//                                    int size77 = pointListArrowHead.size();
-//                                    Log.d(TAG, "size77 = " + size77);
+                                if (arrow_animated_fraction == 1) {
 
-//                                    twoDimArray.get(0).add(size77);
-//                                    twoDimArray.get(1).add(rectList_indice);
-
-                                if (clicked_on_arrow_head) {
-                                    pointListArrowHead.set(rectList_indice, new Point(loc_arrow_point_x, loc_arrow_point_y));
-                                }else if (clicked_in_button) {
-                                        pointListArrowHead.add(new Point(loc_arrow_point_x, loc_arrow_point_y));
-                                        //pointListArrowHeadButton.add(rectList_indice);
+                                    if (clicked_on_arrow_head) {
+                                        pointListArrowHead.set(rectList_indice, new Point(loc_arrow_point_x, loc_arrow_point_y));
+                                        rectListArrowHead.set(rectList_indice, new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
                                     }
 
-                                    rectListArrowHead.add(new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
+                                        //pointListArrowHead_CorVal.set(rectList_indice);
+
+                                        pointListArrowHead.add(new Point(loc_arrow_point_x, loc_arrow_point_y));
+                                        pointListArrowHead_CorVal.add(rectList_indice);
+
+                                        rectListArrowHead.add(new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
                                 }
+
+                                clicked_in_button = false;
 
                                 drawArrow();
                                 invalidate(); // TODO: Change to invalidate("just the arrow drawn")
@@ -377,7 +371,6 @@ public class ThirdActivity extends AppCompatActivity {
                         // add location of arrow point to arraylist to create "buttons" there
                         //twoDimArray.get(0).add(loc_arrow_point_x);
                         //twoDimArray.get(1).add(loc_arrow_point_y);
-
 
 
 //                        xValues = twoDimArray.get(0);
@@ -410,10 +403,7 @@ public class ThirdActivity extends AppCompatActivity {
             path_arrow.moveTo(loc_arrow_head_left_x, loc_arrow_head_left_y);
             path_arrow.lineTo(loc_arrow_point_x, loc_arrow_point_y);
             path_arrow.lineTo(loc_arrow_head_right_x, loc_arrow_head_right_y);
-
         }
-
-
     }
 
 //
