@@ -106,6 +106,8 @@ public class ThirdActivity extends AppCompatActivity {
         private List<Integer> xValues;
         private List<Integer> yValues;
 
+        private int test2;
+
 
         public DrawArrowsView(Context context) {
             super(context);
@@ -138,6 +140,7 @@ public class ThirdActivity extends AppCompatActivity {
             loc_arrow_head_right_y = btn_loc_y;
 
             clicked_in_button = false;
+            clicked_on_arrow_head = false;
 
             // sets constants  // TODO: change these constants to dp of f
             len_arrow_shaft = 200;
@@ -151,11 +154,9 @@ public class ThirdActivity extends AppCompatActivity {
                 rectListButtons.add(new Rect(g.x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), g.y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), g.x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), g.y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
             }
 
-
             // add 2 ros to twoDimArray ArrayList
             twoDimArray.add(new ArrayList<Integer>());
             twoDimArray.add(new ArrayList<Integer>());
-
 
 //            twoDimArray.add(Arrays.asList(0, 1, 0, 1, 0));
 //            twoDimArray.add(Arrays.asList(0, 1, 1, 0, 1));
@@ -193,7 +194,6 @@ public class ThirdActivity extends AppCompatActivity {
                 canvas.drawRect(rect1, paint_box);
             }
 
-
             // draws rectangles around points
             for (Rect rect7 : rectListButtons) {
                 canvas.drawRect(rect7, paint_box);
@@ -222,33 +222,36 @@ public class ThirdActivity extends AppCompatActivity {
 
                     // check if button is clicked on
                     k = 0;
-                    for (Rect rect7 : rectListButtons) {
-                        if (rect7.contains(X, Y)) {
-                            Log.d(TAG, "click contains xy ");
+                    for (Rect rect_tmp1 : rectListButtons) {
+                        if (rect_tmp1.contains(X, Y)) {
+
                             clicked_in_button = true;
 
                             // notes indice of counter in rectListButtons for future use
                             rectList_indice = k;
 
-                            btn_loc_x = rect7.centerX();
-                            btn_loc_y = rect7.centerY();
+                            btn_loc_x = rect_tmp1.centerX();
+                            btn_loc_y = rect_tmp1.centerY();
                         }
                         k++;
                     }
 
                     // check if arrow head is clicked on
                     k = 0;
-                    for (Rect rect5 : rectListArrowHead) {
-                        if (rect5.contains(X, Y)) {
+                    for (Rect rect_tmp2 : rectListArrowHead) {
+                        if (rect_tmp2.contains(X, Y)) {
                             Log.d(TAG, "click contains xy ");
                             //clicked_in_button = true;
                             clicked_on_arrow_head = true;
 
                             // notes indice of counter in rectListButtons for future use
                             rectListArrowHead_indice = k;
+                            int text2 = pointListArrowHead_CorVal.get(rectListArrowHead_indice);
+                            Log.d(TAG, "indice from PtlistarrowCor " + test2);
+                            btn_loc_x = rectListButtons.get(pointListArrowHead_CorVal.get(rectListArrowHead_indice)).centerX();
 
-                            btn_loc_x = rectListButtons.get(pointListArrowHead_CorVal.get(k)).centerX();
-                            btn_loc_y = rectListButtons.get(pointListArrowHead_CorVal.get(k)).centerY();
+                            btn_loc_y = rectListButtons.get(pointListArrowHead_CorVal.get(rectListArrowHead_indice)).centerY();
+
                         }
                         k++;
                     }
@@ -284,7 +287,7 @@ public class ThirdActivity extends AppCompatActivity {
                     break;
 
                 case MotionEvent.ACTION_MOVE:
-                    Log.d(TAG, " ACTION_MOVE: " + clicked_in_button);
+                    //Log.d(TAG, " ACTION_MOVE: " + clicked_in_button);
                     if (clicked_in_button || clicked_on_arrow_head) {
 
                         path_arrow.reset();
@@ -297,7 +300,7 @@ public class ThirdActivity extends AppCompatActivity {
                     break;
 
                 case MotionEvent.ACTION_UP:
-                    Log.d(TAG, " ACTION_UP: " + clicked_in_button);
+                    //Log.d(TAG, " ACTION_UP: " + clicked_in_button);
                     if (clicked_in_button || clicked_on_arrow_head) {
 
                         path_arrow.reset();
@@ -338,19 +341,29 @@ public class ThirdActivity extends AppCompatActivity {
                                 if (arrow_animated_fraction == 1) {
 
                                     if (clicked_on_arrow_head) {
-                                        pointListArrowHead.set(rectList_indice, new Point(loc_arrow_point_x, loc_arrow_point_y));
-                                        rectListArrowHead.set(rectList_indice, new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
+
+                                        // TODO, if I click two arrows in a row it has the wrong rectListButtons indices
+                                        pointListArrowHead.set(rectListArrowHead_indice, new Point(loc_arrow_point_x, loc_arrow_point_y));
+                                        rectListArrowHead.set(rectListArrowHead_indice, new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
+                                        clicked_in_button = false;
+                                        clicked_on_arrow_head = false;
                                     }
 
+                                    Log.d(TAG, " ACTION_DOWN Clicked: " + clicked_in_button);
+                                    if (clicked_in_button) {
                                         //pointListArrowHead_CorVal.set(rectList_indice);
 
                                         pointListArrowHead.add(new Point(loc_arrow_point_x, loc_arrow_point_y));
                                         pointListArrowHead_CorVal.add(rectList_indice);
 
                                         rectListArrowHead.add(new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
+                                        clicked_in_button = false;
+                                        clicked_on_arrow_head = false;
+                                    }
+
                                 }
 
-                                clicked_in_button = false;
+
 
                                 drawArrow();
                                 invalidate(); // TODO: Change to invalidate("just the arrow drawn")
