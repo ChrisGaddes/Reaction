@@ -2,6 +2,7 @@ package com.chrisgaddes.trainer;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
@@ -14,8 +15,8 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.animation.OvershootInterpolator;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
 
@@ -32,62 +33,64 @@ public class ThirdActivity extends AppCompatActivity {
         DrawArrowsView ev = new DrawArrowsView(this);
 
         setContentView(ev);
+
+        Resources resources = getResources();
+
+//
+//        ImageView imagehey = new ImageView(this);
+//
+//        imagehey.setImageDrawable(resources.getDrawable(R.drawable.fbd_1));
+
     }
 
-    public class DrawArrowsView extends View {
+
+
+    public class DrawArrowsView extends ImageView {
+
+        final double pi = Math.PI;
+
+        //double angles[] = {-pi, -3 * pi / 4, -pi / 2, -pi / 4, 0, pi / 4, pi / 2, 3 * pi / 4, pi};
+        final double[] angles = {-pi, -5 * pi / 6, -2 * pi / 3, -pi / 2, -pi / 3, -pi / 6, 0, pi / 6, pi / 3, pi / 2, 2 * pi / 3, 5 * pi / 6, pi};
 
         // initialize variables
         private final Paint paint_points;
         private final Paint paint_arrow;
         private final Paint paint_box;
-        private Path path_arrow;
-
-        private int loc_arrow_point_x;
-        private int loc_arrow_point_y;
-        private int btn_loc_x;
-        private int btn_loc_y;
-
         private final double len_arrow_shaft;
-        private double len_arrow_shaft_start;
         private final double len_arrow_head;
-        private double len_arrow_shaft_current;
-
         private final float dim_btn_radius;
         private final float dim_btn_radius_buffer;
         private final long time_anim_arrow_dur;
 
+        // initialize ArrayLists for paths and points
+        private final ArrayList<Point> pointList = new ArrayList<>();
+        private final ArrayList<Rect> rectList = new ArrayList<>();
+        private final ArrayList<Path> pathList = new ArrayList<>();
+        private Path path_arrow;
+
+        private int btn_loc_x;
+        private int loc_arrow_point_x;
+        private int loc_arrow_point_y;
+        private int btn_loc_y;
+        private double len_arrow_shaft_start;
+        private double len_arrow_shaft_current;
         private double angle;
         private double angle_dif;
-
         private double angle_degrees;
         private double tmp_angle_dist;
         private double angle_dist;
         private double arrow_animated_fraction;
-
         private double angle_arrow_head_left;
         private double angle_arrow_head_right;
         private float loc_arrow_head_left_x;
+
+        // angles the force arrows snap to
         private float loc_arrow_head_left_y;
         private float loc_arrow_head_right_x;
         private float loc_arrow_head_right_y;
-
         private boolean clicked_in_button;
 
-        final double pi = Math.PI;
 
-        // angles the force arrows snap to
-
-
-        //double angles[] = {-pi, -3 * pi / 4, -pi / 2, -pi / 4, 0, pi / 4, pi / 2, 3 * pi / 4, pi};
-        final double[] angles = {-pi, -5*pi/6, -2*pi/3, -pi/2, -pi/3, -pi/6, 0, pi/6, pi/3, pi/2, 2*pi/3, 5*pi/6, pi};
-
-
-        // initialize ArrayLists for paths and points
-        private final ArrayList<Point> pointList = new ArrayList<>();
-        private final ArrayList<Rect> rectList = new ArrayList<>();
-
-
-        private final ArrayList<Path> pathList = new ArrayList<>();
 
         public DrawArrowsView(Context context) {
             super(context);
@@ -99,10 +102,10 @@ public class ThirdActivity extends AppCompatActivity {
             // set point locations TODO: import these from database
             // TODO convert these to dp or percentages (note, aspect ratio may not always be same)
             Point pointOne = new Point(275, 500);
-            Point pointTwo = new Point(730, 700);
-            Point pointThree = new Point(1150, 700);
-            Point pointFour = new Point(275, 1200);
-            pointList.add(pointOne);
+            Point pointTwo = new Point(730, 1407);
+            Point pointThree = new Point(1303, 1407);
+            Point pointFour = new Point(199, 1407);
+            //pointList.add(pointOne);
             pointList.add(pointTwo);
             pointList.add(pointThree);
             pointList.add(pointFour);
@@ -124,8 +127,8 @@ public class ThirdActivity extends AppCompatActivity {
             // sets constants  // TODO: change these constants to dp of f
             len_arrow_shaft = 200;
             len_arrow_head = 60;
-            dim_btn_radius = 30f;
-            dim_btn_radius_buffer = 40f;
+            dim_btn_radius = 15f;
+            dim_btn_radius_buffer = 60f;
             time_anim_arrow_dur = 200;
 
             // create Rects from pointList
@@ -146,13 +149,15 @@ public class ThirdActivity extends AppCompatActivity {
             paint_box.setColor(Color.GRAY);
             paint_box.setStyle(Paint.Style.STROKE);
             paint_box.setPathEffect(new DashPathEffect(new float[]{10, 10, 10, 10}, 0));
-            paint_box.setAlpha(70);
+            paint_box.setAlpha(80); // TODO remove hard coded alpha
         }
 
         @Override
 
         public void onDraw(Canvas canvas) {
             super.onDraw(canvas);
+
+            setImageResource(R.drawable.fbd_1);
 
             // draws rectangles around points
             for (Rect rect7 : rectList) {
@@ -296,6 +301,8 @@ public class ThirdActivity extends AppCompatActivity {
             path_arrow.lineTo(loc_arrow_head_right_x, loc_arrow_head_right_y);
 
         }
+
+
     }
 
 //

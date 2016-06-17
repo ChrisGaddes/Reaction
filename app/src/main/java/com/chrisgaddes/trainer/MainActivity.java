@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity { // implements View.OnTouch
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
 //        final Intent pIntent = new Intent(MainActivity.this, SecondActivity.class);
 
         findViewById(R.id.btn_load_second_activity).setOnClickListener(new View.OnClickListener() {
