@@ -62,9 +62,14 @@ public class ThirdActivity extends AppCompatActivity {
         private final float dim_btn_radius_buffer;
         private final long time_anim_arrow_dur;
 
+        private int k;
+        private int rectList_indice;
+        private int rectListArrowHead_indice;
+        private boolean clicked_on_arrow_head;
+
         // initialize ArrayLists for paths and points
         private ArrayList<Point> pointList = new ArrayList<>();
-        private ArrayList<Rect> rectList = new ArrayList<>();
+        private ArrayList<Rect> rectListButtons = new ArrayList<>();
 
         private ArrayList<Rect> rectListArrowHead = new ArrayList<>();
 
@@ -74,6 +79,7 @@ public class ThirdActivity extends AppCompatActivity {
 
 
         private ArrayList<Point> pointListArrowHead = new ArrayList<>();
+        private ArrayList<Integer> pointListArrowHeadButton = new ArrayList<>();
 
         private Path path_arrow;
 
@@ -144,7 +150,7 @@ public class ThirdActivity extends AppCompatActivity {
 
             // create Rects from pointList
             for (Point g : pointList) {
-                rectList.add(new Rect(g.x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), g.y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), g.x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), g.y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
+                rectListButtons.add(new Rect(g.x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), g.y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), g.x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), g.y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
             }
 
 
@@ -195,7 +201,7 @@ public class ThirdActivity extends AppCompatActivity {
 
 
             // draws rectangles around points
-            for (Rect rect7 : rectList) {
+            for (Rect rect7 : rectListButtons) {
                 canvas.drawRect(rect7, paint_box);
             }
 
@@ -220,19 +226,41 @@ public class ThirdActivity extends AppCompatActivity {
                 case MotionEvent.ACTION_DOWN:
                     Log.d(TAG, " ACTION_DOWN Clicked: " + clicked_in_button);
 
-
-                    for (Rect rect7 : rectList) {
+                    // check if button is clicked on
+                    k = 0;
+                    for (Rect rect7 : rectListButtons) {
                         if (rect7.contains(X, Y)) {
                             Log.d(TAG, "click contains xy ");
                             clicked_in_button = true;
 
+                            // notes indice of counter in rectListButtons for future use
+                            rectList_indice = k;
+
                             btn_loc_x = rect7.centerX();
                             btn_loc_y = rect7.centerY();
                         }
+                        k++;
+                    }
+
+                    // check if arrow head is clicked on
+                    k = 0;
+                    for (Rect rect5 : rectListArrowHead) {
+                        if (rect5.contains(X, Y)) {
+                            Log.d(TAG, "click contains xy ");
+                            //clicked_in_button = true;
+                            clicked_on_arrow_head = true;
+
+                            // notes indice of counter in rectListButtons for future use
+                            rectListArrowHead_indice = k;
+
+                            btn_loc_x = rectListButtons.get(rectList_indice).centerX();
+                            btn_loc_y = rectListButtons.get(rectList_indice).centerY();
+                        }
+                        k++;
                     }
 
                     if (clicked_in_button) {
-                        Log.d(TAG, " ACTION_DOWN if was true");
+                        Log.d(TAG, " clicked on button");
                         path_arrow = new Path();
                         pathList.add(path_arrow); // <-- Add this line.
                         path_arrow.reset();
@@ -241,12 +269,29 @@ public class ThirdActivity extends AppCompatActivity {
                         angle = Math.atan2(loc_arrow_point_y - btn_loc_y, loc_arrow_point_x - btn_loc_x);
                         drawArrow();
                         invalidate();// call invalidate to refresh the draw
+
+                    } else if (clicked_on_arrow_head){
+                        Log.d(TAG, " clicked on arrow head");
+
+                        // replace arrow
+                        path_arrow = new Path();
+                        pathList.set(rectListArrowHead_indice,path_arrow); // <-- Add this line.
+                        path_arrow.reset();
+                        loc_arrow_point_x = X;
+                        loc_arrow_point_y = Y;
+
+                        btn_loc_x = rectListButtons.get(rectList_indice).centerX();
+                        btn_loc_y = rectListButtons.get(rectList_indice).centerY();
+
+                        angle = Math.atan2(loc_arrow_point_y - btn_loc_y, loc_arrow_point_x - btn_loc_x);
+                        drawArrow();
+                        invalidate();// call invalidate to refresh the draw
                     }
                     break;
 
                 case MotionEvent.ACTION_MOVE:
                     Log.d(TAG, " ACTION_MOVE: " + clicked_in_button);
-                    if (clicked_in_button) {
+                    if (clicked_in_button || clicked_on_arrow_head) {
 
                         path_arrow.reset();
                         loc_arrow_point_x = X;
@@ -259,7 +304,7 @@ public class ThirdActivity extends AppCompatActivity {
 
                 case MotionEvent.ACTION_UP:
                     Log.d(TAG, " ACTION_UP: " + clicked_in_button);
-                    if (clicked_in_button) {
+                    if (clicked_in_button || clicked_on_arrow_head) {
                         clicked_in_button = false;
                         path_arrow.reset();
                         loc_arrow_point_x = X;
@@ -297,11 +342,18 @@ public class ThirdActivity extends AppCompatActivity {
 
                                 // creates rects to draw boxes at arrow heads once animation is done
                                 if (arrow_animated_fraction == 1){
-                                    int size77 = pointListArrowHead.size();
-                                    Log.d(TAG, "size77 = " + size77);
+//                                    int size77 = pointListArrowHead.size();
+//                                    Log.d(TAG, "size77 = " + size77);
 
-                                    twoDimArray.get(0).add(size77);
-                                    pointListArrowHead.add(new Point(loc_arrow_point_x, loc_arrow_point_y));
+//                                    twoDimArray.get(0).add(size77);
+//                                    twoDimArray.get(1).add(rectList_indice);
+
+                                if (clicked_on_arrow_head) {
+                                    pointListArrowHead.set(rectList_indice, new Point(loc_arrow_point_x, loc_arrow_point_y));
+                                }else if (clicked_in_button) {
+                                        pointListArrowHead.add(new Point(loc_arrow_point_x, loc_arrow_point_y));
+                                        //pointListArrowHeadButton.add(rectList_indice);
+                                    }
 
                                     rectListArrowHead.add(new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
                                 }
