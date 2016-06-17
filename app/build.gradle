@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'realm-android'
 
 android {
     compileSdkVersion 24
@@ -26,5 +25,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:24.0.0'
     compile 'com.android.support:support-v4:24.0.0'
     compile 'com.android.support:design:24.0.0'
-    compile 'com.heinrichreimersoftware:material-intro:1.5.4' //TODO add material-intro from HeinrichReimer
+    //compile 'com.heinrichreimersoftware:material-intro:1.5.4' //TODO add material-intro from HeinrichReimer
 }

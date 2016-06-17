@@ -2,7 +2,6 @@ package com.chrisgaddes.trainer;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
@@ -19,6 +18,7 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ThirdActivity extends AppCompatActivity {
 
@@ -34,7 +34,7 @@ public class ThirdActivity extends AppCompatActivity {
 
         setContentView(ev);
 
-        Resources resources = getResources();
+        //Resources resources = getResources();
 
 //
 //        ImageView imagehey = new ImageView(this);
@@ -63,9 +63,18 @@ public class ThirdActivity extends AppCompatActivity {
         private final long time_anim_arrow_dur;
 
         // initialize ArrayLists for paths and points
-        private final ArrayList<Point> pointList = new ArrayList<>();
-        private final ArrayList<Rect> rectList = new ArrayList<>();
-        private final ArrayList<Path> pathList = new ArrayList<>();
+        private ArrayList<Point> pointList = new ArrayList<>();
+        private ArrayList<Rect> rectList = new ArrayList<>();
+
+        private ArrayList<Rect> rectListArrowHead = new ArrayList<>();
+
+        private ArrayList<Path> pathList = new ArrayList<>();
+
+        private List<List<Integer>> twoDimArray = new ArrayList<>();
+
+
+        private ArrayList<Point> pointListArrowHead = new ArrayList<>();
+
         private Path path_arrow;
 
         private int btn_loc_x;
@@ -89,6 +98,8 @@ public class ThirdActivity extends AppCompatActivity {
         private float loc_arrow_head_right_x;
         private float loc_arrow_head_right_y;
         private boolean clicked_in_button;
+        private List<Integer> xValues;
+        private List<Integer> yValues;
 
 
 
@@ -105,7 +116,7 @@ public class ThirdActivity extends AppCompatActivity {
             Point pointTwo = new Point(730, 1407);
             Point pointThree = new Point(1303, 1407);
             Point pointFour = new Point(199, 1407);
-            //pointList.add(pointOne);
+            //pointList.add(new Point(275, 500););
             pointList.add(pointTwo);
             pointList.add(pointThree);
             pointList.add(pointFour);
@@ -136,6 +147,24 @@ public class ThirdActivity extends AppCompatActivity {
                 rectList.add(new Rect(g.x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), g.y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), g.x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), g.y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
             }
 
+
+
+
+            // add 2 ros to twoDimArray ArrayList
+            twoDimArray.add(new ArrayList<Integer>());
+            twoDimArray.add(new ArrayList<Integer>());
+
+
+
+//            twoDimArray.add(Arrays.asList(0, 1, 0, 1, 0));
+//            twoDimArray.add(Arrays.asList(0, 1, 1, 0, 1));
+//            twoDimArray.add(Arrays.asList(0, 0, 0, 1, 0));
+
+
+
+            // http://stackoverflow.com/questions/5022824/how-to-fill-a-two-dimensional-arraylist-in-java-with-integers
+
+
             // sets style of arrows
             paint_arrow.setStyle(Paint.Style.FILL);
             paint_arrow.setStrokeWidth(20f);
@@ -158,6 +187,12 @@ public class ThirdActivity extends AppCompatActivity {
             super.onDraw(canvas);
 
             setImageResource(R.drawable.fbd_1);
+
+            // draws rectangles around arrowheads
+            for (Rect rect1 : rectListArrowHead) {
+                canvas.drawRect(rect1, paint_box);
+            }
+
 
             // draws rectangles around points
             for (Rect rect7 : rectList) {
@@ -184,6 +219,7 @@ public class ThirdActivity extends AppCompatActivity {
             switch (eventaction) {
                 case MotionEvent.ACTION_DOWN:
                     Log.d(TAG, " ACTION_DOWN Clicked: " + clicked_in_button);
+
 
                     for (Rect rect7 : rectList) {
                         if (rect7.contains(X, Y)) {
@@ -258,6 +294,18 @@ public class ThirdActivity extends AppCompatActivity {
                                 loc_arrow_point_y = (int) (len_arrow_shaft_current * Math.sin(angle) + btn_loc_y);
                                 loc_arrow_point_x = (int) (len_arrow_shaft_current * Math.cos(angle) + btn_loc_x);
                                 path_arrow.reset();
+
+                                // creates rects to draw boxes at arrow heads once animation is done
+                                if (arrow_animated_fraction == 1){
+                                    int size77 = pointListArrowHead.size();
+                                    Log.d(TAG, "size77 = " + size77);
+
+                                    twoDimArray.get(0).add(size77);
+                                    pointListArrowHead.add(new Point(loc_arrow_point_x, loc_arrow_point_y));
+
+                                    rectListArrowHead.add(new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
+                                }
+
                                 drawArrow();
                                 invalidate(); // TODO: Change to invalidate("just the arrow drawn")
                             }
@@ -273,6 +321,17 @@ public class ThirdActivity extends AppCompatActivity {
                         }
 
                         Snackbar.make(this, "Created force at " + angle_degrees + "\u00B0", Snackbar.LENGTH_SHORT).show();
+
+                        // add location of arrow point to arraylist to create "buttons" there
+                        //twoDimArray.get(0).add(loc_arrow_point_x);
+                        //twoDimArray.get(1).add(loc_arrow_point_y);
+
+
+
+//                        xValues = twoDimArray.get(0);
+//                        yValues = twoDimArray.get(1);
+//                        System.out.println("X's = " + xValues);
+//                        System.out.println("Y's = " + yValues);
                     }
                     break;
             }
