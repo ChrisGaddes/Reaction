@@ -23,7 +23,6 @@ import java.util.ArrayList;
 public class ThirdActivity extends AppCompatActivity {
 
     private static final String TAG = "ThirdActivity";
-
     //TODO add pinch to zoom http://stackoverflow.com/questions/30979647/how-to-draw-by-finger-on-canvas-after-pinch-to-zoom-coordinates-changed-in-andro
 
     @Override
@@ -31,15 +30,10 @@ public class ThirdActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_third);
         DrawArrowsView ev = new DrawArrowsView(this);
-
         setContentView(ev);
-
         //Resources resources = getResources();
-//
 //        ImageView imagehey = new ImageView(this);
-//
 //        imagehey.setImageDrawable(resources.getDrawable(R.drawable.fbd_1));
-
     }
 
     public class DrawArrowsView extends ImageView {
@@ -71,11 +65,13 @@ public class ThirdActivity extends AppCompatActivity {
         private ArrayList<Rect> rectListButtons = new ArrayList<>();
         private ArrayList<Rect> rectListArrowHead = new ArrayList<>();
         private ArrayList<Path> pathList = new ArrayList<>();
-//        private List<List<Integer>> twoDimArray = new ArrayList<>();
         private ArrayList<Point> pointListArrowHead = new ArrayList<>();
         private ArrayList<Integer> pointListArrowHead_CorVal = new ArrayList<>();
+//        private List<List<Integer>> twoDimArray = new ArrayList<>();
 
         private Path path_arrow;
+
+        private Integer indice;
 
         private int btn_loc_x;
         private int loc_arrow_point_x;
@@ -99,10 +95,12 @@ public class ThirdActivity extends AppCompatActivity {
         private float loc_arrow_head_right_y;
         private boolean clicked_in_button;
         private boolean long_pressed_in_button;
+        private boolean inside_button;
 
         public DrawArrowsView(Context context) {
             super(context);
 
+            // create new paints
             paint_arrow = new Paint();
             path_arrow = new Path();
             paint_box = new Paint();
@@ -125,7 +123,6 @@ public class ThirdActivity extends AppCompatActivity {
             loc_arrow_point_x = btn_loc_x;
             loc_arrow_point_y = btn_loc_y;
 
-            // TODO move these inside loop
             loc_arrow_head_left_x = btn_loc_x;
             loc_arrow_head_left_y = btn_loc_y;
             loc_arrow_head_right_x = btn_loc_x;
@@ -209,6 +206,16 @@ public class ThirdActivity extends AppCompatActivity {
             int X = (int) event.getX();
             int Y = (int) event.getY();
 
+
+//            // return inside_button = true if inside button
+//            if (rectListButtons.get(rectList_indice).contains(X, Y)) {
+//                handler.removeCallbacks(mLongPressed);
+//                inside_button = true;
+//            }else{
+//                inside_button = false;
+//            }
+
+
             switch (eventaction) {
                 case MotionEvent.ACTION_DOWN:
                     // check if button is clicked on
@@ -254,6 +261,8 @@ public class ThirdActivity extends AppCompatActivity {
                         loc_arrow_point_x = X;
                         loc_arrow_point_y = Y;
 
+//                        indice = pointListArrowHead_CorVal.get(rectListArrowHead_indice);
+                        Log.d(TAG,"indice" + indice);
                         btn_loc_x = rectListButtons.get(pointListArrowHead_CorVal.get(rectListArrowHead_indice)).centerX();
                         btn_loc_y = rectListButtons.get(pointListArrowHead_CorVal.get(rectListArrowHead_indice)).centerY();
 
@@ -265,9 +274,23 @@ public class ThirdActivity extends AppCompatActivity {
 
                 case MotionEvent.ACTION_MOVE:
                     if (clicked_in_button || clicked_on_arrow_head) {
+
                         // cancels long press handler if touch is dragged outside box
-                        if (!rectListButtons.get(rectList_indice).contains(X, Y)) {
+
+                        // return inside_button = true if inside button
+                        if (rectListButtons.get(rectList_indice).contains(X, Y))  {
+                            inside_button = true;
                             handler.removeCallbacks(mLongPressed);
+                        }else{
+                            inside_button = false;
+                            handler.removeCallbacks(mLongPressed);
+                        }
+
+                        if (long_pressed_in_button){
+                            clicked_in_button = false;
+                            path_arrow.reset();
+                            long_pressed_in_button = false;
+                            break;
                         }
 
                         path_arrow.reset();
@@ -281,6 +304,41 @@ public class ThirdActivity extends AppCompatActivity {
 
                 case MotionEvent.ACTION_UP:
                     if (clicked_in_button || clicked_on_arrow_head) {
+
+                        // check if release in button
+                        k = 0;
+                        for (Rect rect_tmp3 : rectListButtons) {
+                            if (rect_tmp3.contains(X, Y)) {
+                                inside_button = true;
+                            }
+                            k++;
+                        }
+
+                        if (!inside_button){
+                            inside_button = false;
+                            handler.removeCallbacks(mLongPressed);
+                        }
+
+
+                        // break if released inside button
+                        if (inside_button){
+                            Log.d(TAG, "released in button");
+                            clicked_in_button = false;
+                            path_arrow.reset();
+                            long_pressed_in_button = false;
+                            Log.d(TAG, "inside button " + inside_button);
+                            break;
+                        }
+
+//                        if (inside_button){
+//                            clicked_in_button = false;
+//                            path_arrow.reset();
+//                            long_pressed_in_button = false;
+//                            break;
+//                        }
+
+                        Log.d(TAG, "inside button " + inside_button);
+
                         path_arrow.reset();
                         loc_arrow_point_x = X;
                         loc_arrow_point_y = Y;
@@ -350,6 +408,7 @@ public class ThirdActivity extends AppCompatActivity {
                         }
 
                         Snackbar.make(this, "Created force at " + angle_degrees + "\u00B0", Snackbar.LENGTH_SHORT).show();
+                        inside_button = false;
                     }
                     break;
             }
