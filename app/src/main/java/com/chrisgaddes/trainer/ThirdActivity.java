@@ -35,14 +35,12 @@ public class ThirdActivity extends AppCompatActivity {
         setContentView(ev);
 
         //Resources resources = getResources();
-
 //
 //        ImageView imagehey = new ImageView(this);
 //
 //        imagehey.setImageDrawable(resources.getDrawable(R.drawable.fbd_1));
 
     }
-
 
     public class DrawArrowsView extends ImageView {
 
@@ -54,6 +52,7 @@ public class ThirdActivity extends AppCompatActivity {
         // initialize variables
         private final Paint paint_points;
         private final Paint paint_arrow;
+        private final Paint paint_arrow_head_box;
         private final Paint paint_box;
         private final double len_arrow_shaft;
         private final double len_arrow_head;
@@ -62,6 +61,7 @@ public class ThirdActivity extends AppCompatActivity {
         private final long time_anim_arrow_dur;
 
         private int k;
+        private int b;
         private int rectList_indice;
         private int rectListArrowHead_indice;
         private boolean clicked_on_arrow_head;
@@ -115,14 +115,15 @@ public class ThirdActivity extends AppCompatActivity {
             paint_arrow = new Paint();
             path_arrow = new Path();
             paint_box = new Paint();
+            paint_arrow_head_box = new Paint();
 
             // set point locations TODO: import these from database
             // TODO convert these to dp or percentages (note, aspect ratio may not always be same)
-            Point pointOne = new Point(275, 500);
-            Point pointTwo = new Point(730, 1407);
-            Point pointThree = new Point(1303, 1407);
-            Point pointFour = new Point(199, 1407);
-            //pointList.add(new Point(275, 500););
+            Point pointOne = new Point(190, 719);
+            Point pointThree = new Point(730, 1407);
+            Point pointFour = new Point(1303, 1407);
+            Point pointTwo = new Point(199, 1407);
+            pointList.add(pointOne);
             pointList.add(pointTwo);
             pointList.add(pointThree);
             pointList.add(pointFour);
@@ -173,6 +174,12 @@ public class ThirdActivity extends AppCompatActivity {
             paint_arrow.setStyle(Paint.Style.STROKE);
             paint_arrow.setStrokeCap(Paint.Cap.ROUND);
 
+            paint_arrow_head_box.setStyle(Paint.Style.FILL);
+            paint_arrow_head_box.setStrokeWidth(20f);
+            paint_arrow_head_box.setColor(Color.TRANSPARENT);
+            paint_arrow_head_box.setStyle(Paint.Style.STROKE);
+
+
             //TODO set beginning of shaft to transparent so arrow appears to be at surface
             paint_box.setStyle(Paint.Style.FILL);
             paint_box.setStrokeWidth(5f);
@@ -191,7 +198,7 @@ public class ThirdActivity extends AppCompatActivity {
 
             // draws rectangles around arrowheads
             for (Rect rect1 : rectListArrowHead) {
-                canvas.drawRect(rect1, paint_box);
+                canvas.drawRect(rect1, paint_arrow_head_box);
             }
 
             // draws rectangles around points
@@ -208,7 +215,6 @@ public class ThirdActivity extends AppCompatActivity {
             for (Path pthLst_arrows : pathList) {
                 canvas.drawPath(pthLst_arrows, paint_arrow);
             }
-
         }
 
         public boolean onTouchEvent(MotionEvent event) {
@@ -232,32 +238,35 @@ public class ThirdActivity extends AppCompatActivity {
 
                             btn_loc_x = rect_tmp1.centerX();
                             btn_loc_y = rect_tmp1.centerY();
+                            Log.d(TAG, "On Btn CLick, loc x =  " + btn_loc_x);
                         }
                         k++;
                     }
 
                     // check if arrow head is clicked on
-                    k = 0;
+                    b = 0;
                     for (Rect rect_tmp2 : rectListArrowHead) {
                         if (rect_tmp2.contains(X, Y)) {
-                            Log.d(TAG, "click contains xy ");
+                            //Log.d(TAG, "click contains xy ");
                             //clicked_in_button = true;
                             clicked_on_arrow_head = true;
 
-                            // notes indice of counter in rectListButtons for future use
-                            rectListArrowHead_indice = k;
+                            rectListArrowHead_indice = b;
                             int text2 = pointListArrowHead_CorVal.get(rectListArrowHead_indice);
-                            Log.d(TAG, "indice from PtlistarrowCor " + test2);
+                            Log.d(TAG, "rectListArrowHead_indice #" + rectListArrowHead_indice);
+                            Log.d(TAG, "pointListArrowHead_CorVal @ pt " + text2);
+
+
                             btn_loc_x = rectListButtons.get(pointListArrowHead_CorVal.get(rectListArrowHead_indice)).centerX();
+                            Log.d(TAG, "On Arrow CLick, loc x =  " + btn_loc_x);
 
                             btn_loc_y = rectListButtons.get(pointListArrowHead_CorVal.get(rectListArrowHead_indice)).centerY();
-
                         }
-                        k++;
+                        b++;
                     }
 
                     if (clicked_in_button) {
-                        Log.d(TAG, " clicked on button");
+                        //Log.d(TAG, " clicked on button");
                         path_arrow = new Path();
                         pathList.add(path_arrow); // <-- Add this line.
                         path_arrow.reset();
@@ -268,7 +277,7 @@ public class ThirdActivity extends AppCompatActivity {
                         invalidate();// call invalidate to refresh the draw
 
                     } else if (clicked_on_arrow_head) {
-                        Log.d(TAG, " clicked on arrow head");
+                        //Log.d(TAG, " clicked on arrow head");
 
                         // replace arrow
                         path_arrow = new Path();
@@ -277,8 +286,8 @@ public class ThirdActivity extends AppCompatActivity {
                         loc_arrow_point_x = X;
                         loc_arrow_point_y = Y;
 
-                        btn_loc_x = rectListButtons.get(rectList_indice).centerX();
-                        btn_loc_y = rectListButtons.get(rectList_indice).centerY();
+                        btn_loc_x = rectListButtons.get(pointListArrowHead_CorVal.get(rectListArrowHead_indice)).centerX();
+                        btn_loc_y = rectListButtons.get(pointListArrowHead_CorVal.get(rectListArrowHead_indice)).centerY();
 
                         angle = Math.atan2(loc_arrow_point_y - btn_loc_y, loc_arrow_point_x - btn_loc_x);
                         drawArrow();
@@ -339,17 +348,17 @@ public class ThirdActivity extends AppCompatActivity {
 
                                 // creates rects to draw boxes at arrow heads once animation is done
                                 if (arrow_animated_fraction == 1) {
-
+                                    Log.d(TAG, "finished animation ");
                                     if (clicked_on_arrow_head) {
 
                                         // TODO, if I click two arrows in a row it has the wrong rectListButtons indices
                                         pointListArrowHead.set(rectListArrowHead_indice, new Point(loc_arrow_point_x, loc_arrow_point_y));
+
                                         rectListArrowHead.set(rectListArrowHead_indice, new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
                                         clicked_in_button = false;
                                         clicked_on_arrow_head = false;
                                     }
 
-                                    Log.d(TAG, " ACTION_DOWN Clicked: " + clicked_in_button);
                                     if (clicked_in_button) {
                                         //pointListArrowHead_CorVal.set(rectList_indice);
 
@@ -360,11 +369,7 @@ public class ThirdActivity extends AppCompatActivity {
                                         clicked_in_button = false;
                                         clicked_on_arrow_head = false;
                                     }
-
                                 }
-
-
-
                                 drawArrow();
                                 invalidate(); // TODO: Change to invalidate("just the arrow drawn")
                             }
