@@ -10,6 +10,7 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -18,7 +19,6 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ThirdActivity extends AppCompatActivity {
 
@@ -69,14 +69,9 @@ public class ThirdActivity extends AppCompatActivity {
         // initialize ArrayLists for paths and points
         private ArrayList<Point> pointList = new ArrayList<>();
         private ArrayList<Rect> rectListButtons = new ArrayList<>();
-
         private ArrayList<Rect> rectListArrowHead = new ArrayList<>();
-
         private ArrayList<Path> pathList = new ArrayList<>();
-
-        private List<List<Integer>> twoDimArray = new ArrayList<>();
-
-
+//        private List<List<Integer>> twoDimArray = new ArrayList<>();
         private ArrayList<Point> pointListArrowHead = new ArrayList<>();
         private ArrayList<Integer> pointListArrowHead_CorVal = new ArrayList<>();
 
@@ -103,11 +98,7 @@ public class ThirdActivity extends AppCompatActivity {
         private float loc_arrow_head_right_x;
         private float loc_arrow_head_right_y;
         private boolean clicked_in_button;
-        private List<Integer> xValues;
-        private List<Integer> yValues;
-
-        private int test2;
-
+        private boolean long_pressed_in_button;
 
         public DrawArrowsView(Context context) {
             super(context);
@@ -141,6 +132,7 @@ public class ThirdActivity extends AppCompatActivity {
             loc_arrow_head_right_y = btn_loc_y;
 
             clicked_in_button = false;
+            long_pressed_in_button = false;
             clicked_on_arrow_head = false;
 
             // sets constants  // TODO: change these constants to dp of f
@@ -155,18 +147,6 @@ public class ThirdActivity extends AppCompatActivity {
                 rectListButtons.add(new Rect(g.x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), g.y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), g.x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), g.y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
             }
 
-            // add 2 ros to twoDimArray ArrayList
-            twoDimArray.add(new ArrayList<Integer>());
-            twoDimArray.add(new ArrayList<Integer>());
-
-//            twoDimArray.add(Arrays.asList(0, 1, 0, 1, 0));
-//            twoDimArray.add(Arrays.asList(0, 1, 1, 0, 1));
-//            twoDimArray.add(Arrays.asList(0, 0, 0, 1, 0));
-
-
-            // http://stackoverflow.com/questions/5022824/how-to-fill-a-two-dimensional-arraylist-in-java-with-integers
-
-
             // sets style of arrows
             paint_arrow.setStyle(Paint.Style.FILL);
             paint_arrow.setStrokeWidth(20f);
@@ -179,7 +159,6 @@ public class ThirdActivity extends AppCompatActivity {
             paint_arrow_head_box.setColor(Color.TRANSPARENT);
             paint_arrow_head_box.setStyle(Paint.Style.STROKE);
 
-
             //TODO set beginning of shaft to transparent so arrow appears to be at surface
             paint_box.setStyle(Paint.Style.FILL);
             paint_box.setStrokeWidth(5f);
@@ -190,7 +169,6 @@ public class ThirdActivity extends AppCompatActivity {
         }
 
         @Override
-
         public void onDraw(Canvas canvas) {
             super.onDraw(canvas);
 
@@ -217,6 +195,15 @@ public class ThirdActivity extends AppCompatActivity {
             }
         }
 
+        // triggers long press
+        final Handler handler = new Handler();
+        Runnable mLongPressed = new Runnable() {
+            public void run() {
+                Log.i("", "Long press!");
+                long_pressed_in_button = true;
+            }
+        };
+
         public boolean onTouchEvent(MotionEvent event) {
             int eventaction = event.getAction();
             int X = (int) event.getX();
@@ -224,21 +211,15 @@ public class ThirdActivity extends AppCompatActivity {
 
             switch (eventaction) {
                 case MotionEvent.ACTION_DOWN:
-                    Log.d(TAG, " ACTION_DOWN Clicked: " + clicked_in_button);
-
                     // check if button is clicked on
                     k = 0;
                     for (Rect rect_tmp1 : rectListButtons) {
                         if (rect_tmp1.contains(X, Y)) {
-
                             clicked_in_button = true;
-
-                            // notes indice of counter in rectListButtons for future use
+                            handler.postDelayed(mLongPressed, 500);
                             rectList_indice = k;
-
                             btn_loc_x = rect_tmp1.centerX();
                             btn_loc_y = rect_tmp1.centerY();
-                            Log.d(TAG, "On Btn CLick, loc x =  " + btn_loc_x);
                         }
                         k++;
                     }
@@ -247,26 +228,15 @@ public class ThirdActivity extends AppCompatActivity {
                     b = 0;
                     for (Rect rect_tmp2 : rectListArrowHead) {
                         if (rect_tmp2.contains(X, Y)) {
-                            //Log.d(TAG, "click contains xy ");
-                            //clicked_in_button = true;
                             clicked_on_arrow_head = true;
-
                             rectListArrowHead_indice = b;
-                            int text2 = pointListArrowHead_CorVal.get(rectListArrowHead_indice);
-                            Log.d(TAG, "rectListArrowHead_indice #" + rectListArrowHead_indice);
-                            Log.d(TAG, "pointListArrowHead_CorVal @ pt " + text2);
-
-
                             btn_loc_x = rectListButtons.get(pointListArrowHead_CorVal.get(rectListArrowHead_indice)).centerX();
-                            Log.d(TAG, "On Arrow CLick, loc x =  " + btn_loc_x);
-
                             btn_loc_y = rectListButtons.get(pointListArrowHead_CorVal.get(rectListArrowHead_indice)).centerY();
                         }
                         b++;
                     }
 
                     if (clicked_in_button) {
-                        //Log.d(TAG, " clicked on button");
                         path_arrow = new Path();
                         pathList.add(path_arrow); // <-- Add this line.
                         path_arrow.reset();
@@ -277,8 +247,6 @@ public class ThirdActivity extends AppCompatActivity {
                         invalidate();// call invalidate to refresh the draw
 
                     } else if (clicked_on_arrow_head) {
-                        //Log.d(TAG, " clicked on arrow head");
-
                         // replace arrow
                         path_arrow = new Path();
                         pathList.set(rectListArrowHead_indice, path_arrow); // <-- Add this line.
@@ -296,8 +264,11 @@ public class ThirdActivity extends AppCompatActivity {
                     break;
 
                 case MotionEvent.ACTION_MOVE:
-                    //Log.d(TAG, " ACTION_MOVE: " + clicked_in_button);
                     if (clicked_in_button || clicked_on_arrow_head) {
+                        // cancels long press handler if touch is dragged outside box
+                        if (!rectListButtons.get(rectList_indice).contains(X, Y)) {
+                            handler.removeCallbacks(mLongPressed);
+                        }
 
                         path_arrow.reset();
                         loc_arrow_point_x = X;
@@ -309,9 +280,7 @@ public class ThirdActivity extends AppCompatActivity {
                     break;
 
                 case MotionEvent.ACTION_UP:
-                    //Log.d(TAG, " ACTION_UP: " + clicked_in_button);
                     if (clicked_in_button || clicked_on_arrow_head) {
-
                         path_arrow.reset();
                         loc_arrow_point_x = X;
                         loc_arrow_point_y = Y;
@@ -348,10 +317,8 @@ public class ThirdActivity extends AppCompatActivity {
 
                                 // creates rects to draw boxes at arrow heads once animation is done
                                 if (arrow_animated_fraction == 1) {
-                                    Log.d(TAG, "finished animation ");
                                     if (clicked_on_arrow_head) {
 
-                                        // TODO, if I click two arrows in a row it has the wrong rectListButtons indices
                                         pointListArrowHead.set(rectListArrowHead_indice, new Point(loc_arrow_point_x, loc_arrow_point_y));
 
                                         rectListArrowHead.set(rectListArrowHead_indice, new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
@@ -360,8 +327,6 @@ public class ThirdActivity extends AppCompatActivity {
                                     }
 
                                     if (clicked_in_button) {
-                                        //pointListArrowHead_CorVal.set(rectList_indice);
-
                                         pointListArrowHead.add(new Point(loc_arrow_point_x, loc_arrow_point_y));
                                         pointListArrowHead_CorVal.add(rectList_indice);
 
@@ -385,16 +350,6 @@ public class ThirdActivity extends AppCompatActivity {
                         }
 
                         Snackbar.make(this, "Created force at " + angle_degrees + "\u00B0", Snackbar.LENGTH_SHORT).show();
-
-                        // add location of arrow point to arraylist to create "buttons" there
-                        //twoDimArray.get(0).add(loc_arrow_point_x);
-                        //twoDimArray.get(1).add(loc_arrow_point_y);
-
-
-//                        xValues = twoDimArray.get(0);
-//                        yValues = twoDimArray.get(1);
-//                        System.out.println("X's = " + xValues);
-//                        System.out.println("Y's = " + yValues);
                     }
                     break;
             }
@@ -423,31 +378,4 @@ public class ThirdActivity extends AppCompatActivity {
             path_arrow.lineTo(loc_arrow_head_right_x, loc_arrow_head_right_y);
         }
     }
-
-//
-//    Runnable myRunnable = new Runnable() {
-//        @Override
-//        public void run() {
-//            while (len_arrow_shaft_current > len_arrow_shaft) {
-//                Thread.sleep(1000); // Waits for 1 second (1000 milliseconds)
-////                String updateWords = updateAuto(); // make updateAuto() return a string
-//                loc_arrow_point_y = (int) (len_arrow_shaft * Math.sin(angle3) + btn_loc_y);
-//                loc_arrow_point_x = (int) (len_arrow_shaft * Math.cos(angle3) + btn_loc_x);
-//
-//                drawArrow();
-//                invalidate();
-//
-//                myTextView.post(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        myTextView.setText(updateWords);
-//                    }
-//
-//                });
-//            }
-//        }
-//
-//        ;
-//
-//    };
 }
