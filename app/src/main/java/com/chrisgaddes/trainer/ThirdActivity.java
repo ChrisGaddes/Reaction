@@ -10,7 +10,6 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -131,7 +130,8 @@ public class ThirdActivity extends AppCompatActivity {
             loc_arrow_head_right_y = btn_loc_y;
 
             clicked_in_button = false;
-            long_pressed_in_button = false;
+            inside_button = false;
+            //long_pressed_in_button = false;
             clicked_on_arrow_head = false;
 
             // sets constants  // TODO: change these constants to dp of f
@@ -154,9 +154,10 @@ public class ThirdActivity extends AppCompatActivity {
             paint_arrow.setStrokeCap(Paint.Cap.ROUND);
 
             paint_arrow_head_box.setStyle(Paint.Style.FILL);
-            paint_arrow_head_box.setStrokeWidth(20f);
-            paint_arrow_head_box.setColor(Color.TRANSPARENT);
+            paint_arrow_head_box.setStrokeWidth(5f);
+            paint_arrow_head_box.setColor(Color.GREEN);
             paint_arrow_head_box.setStyle(Paint.Style.STROKE);
+            paint_arrow_head_box.setPathEffect(new DashPathEffect(new float[]{10, 10, 10, 10}, 0));
 
             paint_text.setTextSize(23f);
 
@@ -204,18 +205,32 @@ public class ThirdActivity extends AppCompatActivity {
             canvas.drawText("indice_arr_cor = " + String.valueOf(indice_arr_cor),20,400 , paint_text);
             canvas.drawText("rectListArrowHead.size = " + String.valueOf(rectListArrowHead.size()),20,460 , paint_text);
             canvas.drawText("rectListArrowHead = " + String.valueOf(rectListArrowHead),20,520 , paint_text);
+
+            canvas.drawText("inside_button = " + String.valueOf(inside_button),1000,100 , paint_text);
+            canvas.drawText("rectList_indice = " + String.valueOf(rectList_indice),20,160 , paint_text);
+            canvas.drawText("rectListArrowHead_indice = " + String.valueOf(rectListArrowHead_indice),20,220 , paint_text);
+            canvas.drawText("linkList = " + String.valueOf(linkList),20,280 , paint_text);
+            canvas.drawText("pointListArrowHead = " + String.valueOf(pointListArrowHead),20,340 , paint_text);
+            canvas.drawText("indice_arr_cor = " + String.valueOf(indice_arr_cor),20,400 , paint_text);
+            canvas.drawText("rectListArrowHead.size = " + String.valueOf(rectListArrowHead.size()),20,460 , paint_text);
+            canvas.drawText("rectListArrowHead = " + String.valueOf(rectListArrowHead),20,520 , paint_text);
+
+
+
         }
 
-        // triggers long press
-        final Handler handler = new Handler();
-        Runnable mLongPressed = new Runnable() {
-            public void run() {
-                Log.i("", "Long press!");
-                long_pressed_in_button = true;
-                path_arrow.reset();
-                invalidate();
-            }
-        };
+//        // triggers long press
+//        final Handler handler = new Handler();
+//        Runnable mLongPressed = new Runnable() {
+//            public void run() {
+//                Log.i("", "Long press!");
+//                long_pressed_in_button = true;
+//                inside_button = false;
+//                //TODO add these back
+//                path_arrow.reset();
+//                invalidate();
+//            }
+//        };
 
         public boolean onTouchEvent(MotionEvent event) {
             int eventaction = event.getAction();
@@ -240,7 +255,9 @@ public class ThirdActivity extends AppCompatActivity {
                         if (rect_tmp1.contains(X, Y)) {
                             clicked_in_button = true;
                             clicked_on_arrow_head = false;
-                            handler.postDelayed(mLongPressed, 500);
+
+                            //TODO add this back long_press
+                            //handler.postDelayed(mLongPressed, 1000);
                             rectList_indice = k;
                             btn_loc_x = rect_tmp1.centerX();
                             btn_loc_y = rect_tmp1.centerY();
@@ -300,18 +317,25 @@ public class ThirdActivity extends AppCompatActivity {
                         // return inside_button = true if inside button
                         if (rectListButtons.get(rectList_indice).contains(X, Y))  {
                             inside_button = true;
-                            handler.removeCallbacks(mLongPressed);
+
+                            //TODO add this back long_press
+                            //handler.removeCallbacks(mLongPressed);
                         }else{
                             inside_button = false;
-                            handler.removeCallbacks(mLongPressed);
+
+                            //TODO add this back long_press
+                            //handler.removeCallbacks(mLongPressed);
                         }
 
-                        if (long_pressed_in_button){
-                            clicked_in_button = false;
-                            path_arrow.reset();
-                            long_pressed_in_button = false;
-                            break;
-                        }
+
+                        //TODO add this back long_press
+//                        if (long_pressed_in_button){
+//                            clicked_in_button = false;
+//                            path_arrow.reset();
+//                            long_pressed_in_button = false;
+//                            invalidate(); //TODO this may not be needed
+//                            break;
+//                        }
 
                         path_arrow.reset();
                         loc_arrow_point_x = X;
@@ -335,17 +359,20 @@ public class ThirdActivity extends AppCompatActivity {
                         }
 
                         if (!inside_button){
-                            inside_button = false;
-                            handler.removeCallbacks(mLongPressed);
+                            inside_button = false; // TODO why us this here?
+                            //TODO add this back long_press
+                            //handler.removeCallbacks(mLongPressed);
                         }
 
 
                         // break if released inside button
                         if (inside_button){
                             Log.d(TAG, "released in button");
-                            clicked_in_button = false;
+                            //clicked_in_button = false;
                             path_arrow.reset();
-                            long_pressed_in_button = false;
+
+                            //TODO add this back long_press
+                            //long_pressed_in_button = false;
                             Log.d(TAG, "inside button " + inside_button);
 
                             Log.d(TAG, "pointListArrowHead" + pointListArrowHead);
@@ -353,10 +380,12 @@ public class ThirdActivity extends AppCompatActivity {
                             Log.d(TAG, "pathList" + pathList);
 
 
-                            pointListArrowHead.remove(rectListArrowHead_indice);
-                            linkList.remove(rectListArrowHead_indice);
-                            pathList.remove(rectListArrowHead_indice);
-                            rectListArrowHead.remove(rectListArrowHead_indice);
+                            if (clicked_on_arrow_head) {
+                                pointListArrowHead.remove(rectListArrowHead_indice);
+                                linkList.remove(rectListArrowHead_indice);
+                                pathList.remove(rectListArrowHead_indice);
+                                rectListArrowHead.remove(rectListArrowHead_indice);
+                            }
 
                             break;
                         }
