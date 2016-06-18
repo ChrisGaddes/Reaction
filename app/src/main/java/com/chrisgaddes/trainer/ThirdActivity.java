@@ -215,8 +215,6 @@ public class ThirdActivity extends AppCompatActivity {
             canvas.drawText("rectListArrowHead.size = " + String.valueOf(rectListArrowHead.size()),20,460 , paint_text);
             canvas.drawText("rectListArrowHead = " + String.valueOf(rectListArrowHead),20,520 , paint_text);
 
-
-
         }
 
 //        // triggers long press
@@ -379,12 +377,16 @@ public class ThirdActivity extends AppCompatActivity {
                             Log.d(TAG, "rectListArrowHead" + rectListArrowHead);
                             Log.d(TAG, "pathList" + pathList);
 
-
                             if (clicked_on_arrow_head) {
                                 pointListArrowHead.remove(rectListArrowHead_indice);
                                 linkList.remove(rectListArrowHead_indice);
                                 pathList.remove(rectListArrowHead_indice);
                                 rectListArrowHead.remove(rectListArrowHead_indice);
+
+                                // set booleans to false state
+                                clicked_in_button = false;
+                                clicked_on_arrow_head = false;
+                                inside_button = false;
                             }
 
                             break;
