@@ -1,4 +1,4 @@
-package com.chrisgaddes.trainer;
+package com.chrisgaddes.reaction;
 
 import android.content.Intent;
 import android.os.Bundle;

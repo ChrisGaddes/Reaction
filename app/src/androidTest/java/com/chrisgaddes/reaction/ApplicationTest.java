@@ -1,4 +1,4 @@
-package com.chrisgaddes.trainer;
+package com.chrisgaddes.reaction;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
