@@ -72,7 +72,7 @@ public class ThirdActivity extends AppCompatActivity {
 
         private Path path_arrow;
 
-        private Integer indice_arr_cor;
+//        private Integer indice_arr_cor;
 
         private int btn_loc_x;
         private int loc_arrow_point_x;
@@ -197,17 +197,16 @@ public class ThirdActivity extends AppCompatActivity {
                 canvas.drawPath(pthLst_arrows, paint_arrow);
             }
 
-            canvas.drawText("inside_button = " + String.valueOf(inside_button),20,100 , paint_text);
-            canvas.drawText("rectList_indice = " + String.valueOf(rectList_indice),20,160 , paint_text);
-            canvas.drawText("rectListArrowHead_indice = " + String.valueOf(rectListArrowHead_indice),20,220 , paint_text);
-            canvas.drawText("linkList = " + String.valueOf(linkList),20,280 , paint_text);
-            canvas.drawText("pointListArrowHead = " + String.valueOf(pointListArrowHead),20,340 , paint_text);
-            canvas.drawText("indice_arr_cor = " + String.valueOf(indice_arr_cor) + " linkList.get(rectListArrowHead_indice)",20,400 , paint_text);
-            canvas.drawText("rectListArrowHead.size = " + String.valueOf(rectListArrowHead.size()),20,460 , paint_text);
-            canvas.drawText("rectListArrowHead = " + String.valueOf(rectListArrowHead),20,520 , paint_text);
-            canvas.drawText("clicked_in_button = " + String.valueOf(clicked_in_button),20,580 , paint_text);
-            canvas.drawText("clicked_on_arrow_head = " + String.valueOf(clicked_in_button),20,640 , paint_text);
-            canvas.drawText("inside_button = " + String.valueOf(inside_button),600,640 , paint_text);
+//            canvas.drawText("inside_button = " + String.valueOf(inside_button),20,100 , paint_text);
+//            canvas.drawText("rectList_indice = " + String.valueOf(rectList_indice),20,160 , paint_text);
+//            canvas.drawText("rectListArrowHead_indice = " + String.valueOf(rectListArrowHead_indice),20,220 , paint_text);
+//            canvas.drawText("linkList = " + String.valueOf(linkList),20,280 , paint_text);
+//            canvas.drawText("pointListArrowHead = " + String.valueOf(pointListArrowHead),20,340 , paint_text);
+//            canvas.drawText("rectListArrowHead.size = " + String.valueOf(rectListArrowHead.size()),20,460 , paint_text);
+//            canvas.drawText("rectListArrowHead = " + String.valueOf(rectListArrowHead),20,520 , paint_text);
+//            canvas.drawText("clicked_in_button = " + String.valueOf(clicked_in_button),20,580 , paint_text);
+//            canvas.drawText("clicked_on_arrow_head = " + String.valueOf(clicked_in_button),20,640 , paint_text);
+//            canvas.drawText("inside_button = " + String.valueOf(inside_button),600,640 , paint_text);
         }
 
 //        // triggers long press
@@ -270,7 +269,7 @@ public class ThirdActivity extends AppCompatActivity {
                                 clicked_in_button = false;
                                 rectListArrowHead_indice = b;
 
-                                indice_arr_cor = linkList.get(rectListArrowHead_indice);
+//                                indice_arr_cor = linkList.get(rectListArrowHead_indice);
 
                                 btn_loc_x = rectListButtons.get(linkList.get(rectListArrowHead_indice)).centerX();
                                 btn_loc_y = rectListButtons.get(linkList.get(rectListArrowHead_indice)).centerY();
