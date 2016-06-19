@@ -114,7 +114,7 @@ public class ThirdActivity extends AppCompatActivity {
             Point pointThree = new Point(730, 1407);
             Point pointFour = new Point(1303, 1407);
             Point pointTwo = new Point(199, 1407);
-            //pointList.add(pointOne);
+            pointList.add(pointOne);
             pointList.add(pointTwo);
             pointList.add(pointThree);
             pointList.add(pointFour);
@@ -197,16 +197,20 @@ public class ThirdActivity extends AppCompatActivity {
                 canvas.drawPath(pthLst_arrows, paint_arrow);
             }
 
-//            canvas.drawText("inside_button = " + String.valueOf(inside_button),20,100 , paint_text);
-//            canvas.drawText("rectList_indice = " + String.valueOf(rectList_indice),20,160 , paint_text);
-//            canvas.drawText("rectListArrowHead_indice = " + String.valueOf(rectListArrowHead_indice),20,220 , paint_text);
-//            canvas.drawText("linkList = " + String.valueOf(linkList),20,280 , paint_text);
-//            canvas.drawText("pointListArrowHead = " + String.valueOf(pointListArrowHead),20,340 , paint_text);
-//            canvas.drawText("rectListArrowHead.size = " + String.valueOf(rectListArrowHead.size()),20,460 , paint_text);
-//            canvas.drawText("rectListArrowHead = " + String.valueOf(rectListArrowHead),20,520 , paint_text);
-//            canvas.drawText("clicked_in_button = " + String.valueOf(clicked_in_button),20,580 , paint_text);
-//            canvas.drawText("clicked_on_arrow_head = " + String.valueOf(clicked_in_button),20,640 , paint_text);
-//            canvas.drawText("inside_button = " + String.valueOf(inside_button),600,640 , paint_text);
+            canvas.drawText("inside_button = " + String.valueOf(inside_button),20,100 , paint_text);
+            canvas.drawText("rectList_indice = " + String.valueOf(rectList_indice),20,160 , paint_text);
+            canvas.drawText("rectListArrowHead_indice = " + String.valueOf(rectListArrowHead_indice),20,220 , paint_text);
+            canvas.drawText("linkList = " + String.valueOf(linkList),20,280 , paint_text);
+            canvas.drawText("pointListArrowHead = " + String.valueOf(pointListArrowHead),20,340 , paint_text);
+            canvas.drawText("rectListArrowHead.size = " + String.valueOf(rectListArrowHead.size()),20,460 , paint_text);
+            canvas.drawText("rectListArrowHead = " + String.valueOf(rectListArrowHead),20,520 , paint_text);
+            canvas.drawText("clicked_in_button = " + String.valueOf(clicked_in_button),20,580 , paint_text);
+            canvas.drawText("clicked_on_arrow_head = " + String.valueOf(clicked_in_button),20,640 , paint_text);
+
+            canvas.drawText("inside_button = " + String.valueOf(inside_button),600, 100 , paint_text);
+            canvas.drawText("size of pathlist = " + String.valueOf(pathList.size()),600,160 , paint_text);
+
+
         }
 
 //        // triggers long press
@@ -361,6 +365,7 @@ public class ThirdActivity extends AppCompatActivity {
                         }
 
 
+
                         // break if released inside button
                         if (inside_button){
                             Log.d(TAG, "released in button");
@@ -370,11 +375,6 @@ public class ThirdActivity extends AppCompatActivity {
                             //TODO add this back long_press
                             //long_pressed_in_button = false;
                             Log.d(TAG, "inside button " + inside_button);
-
-                            Log.d(TAG, "pointListArrowHead" + pointListArrowHead);
-                            Log.d(TAG, "rectListArrowHead" + rectListArrowHead);
-                            Log.d(TAG, "pathList" + pathList);
-
 
                             if (clicked_on_arrow_head) {
                                 pointListArrowHead.remove(rectListArrowHead_indice);
