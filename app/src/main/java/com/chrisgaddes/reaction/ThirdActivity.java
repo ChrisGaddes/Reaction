@@ -99,7 +99,7 @@ public class ThirdActivity extends AppCompatActivity {
         private boolean clicked_in_button;
         private boolean long_pressed_in_button;
         private boolean inside_button;
-        private boolean hit_this_point;
+        private boolean able_to_click;
 
         public DrawArrowsView(Context context) {
             super(context);
@@ -137,6 +137,7 @@ public class ThirdActivity extends AppCompatActivity {
             inside_button = false;
             //long_pressed_in_button = false;
             clicked_on_arrow_head = false;
+            able_to_click = true;
 
             // sets constants  // TODO: change these constants to dp of f
             len_arrow_shaft = 200;
@@ -222,10 +223,12 @@ public class ThirdActivity extends AppCompatActivity {
             canvas.drawText("size of rectListArrowHead = " + String.valueOf(rectListArrowHead.size()),600,400 , paint_text);
             canvas.drawText("arrow_animated_fraction = " + String.valueOf(arrow_animated_fraction),600,460 , paint_text);
 
+            canvas.drawText("able_to_click = " + String.valueOf(able_to_click),600,520 , paint_text);
 
-            canvas.drawText("mLastClickTime = " + String.valueOf(mLastClickTime),600,520 , paint_text);
 
-            canvas.drawText("SystemClock.elapsedRealtime() - mLastClickTime = " + String.valueOf(SystemClock.elapsedRealtime() - mLastClickTime),600,580 , paint_text);
+            canvas.drawText("mLastClickTime = " + String.valueOf(mLastClickTime),600,580 , paint_text);
+
+            canvas.drawText("SystemClock.elapsedRealtime() - mLastClickTime = " + String.valueOf(SystemClock.elapsedRealtime() - mLastClickTime),600,640 , paint_text);
 
         }
 
@@ -264,13 +267,14 @@ public class ThirdActivity extends AppCompatActivity {
             switch (eventaction) {
                 case MotionEvent.ACTION_DOWN:
 
+                    if (able_to_click) {
 //                    if (pointListArrowHead.size() == pathList.size() && pathList.size() == linkList.size() ){
 //                        Toast.makeText(getApplicationContext(), "Error: Not the same length", Toast.LENGTH_SHORT).show();
 //                    }
 
-                    // check if button is clicked on
+                        // check if button is clicked on
 
-                    // prevents rapid clicks which can cause problems
+                        // prevents rapid clicks which can cause problems
 //                    if (SystemClock.elapsedRealtime() - mLastClickTime < 400) {
 //                        Toast.makeText(getApplicationContext(), "Don't click so fast!!", Toast.LENGTH_SHORT).show();
 //                        Log.d(TAG, "Don't click so fast");
@@ -278,75 +282,76 @@ public class ThirdActivity extends AppCompatActivity {
 //                    }
 //                    mLastClickTime = SystemClock.elapsedRealtime();
 
-                    k = 0;
-                    for (Rect rect_tmp1 : rectListButtons) {
-                        if (rect_tmp1.contains(X, Y)) {
-                            clicked_in_button = true;
-                            clicked_on_arrow_head = false;
+                        k = 0;
+                        for (Rect rect_tmp1 : rectListButtons) {
+                            if (rect_tmp1.contains(X, Y)) {
+                                clicked_in_button = true;
+                                clicked_on_arrow_head = false;
 
-                            //TODO add this back long_press
-                            //handler.postDelayed(mLongPressed, 1000);
-                            rectList_indice = k;
-                            btn_loc_x = rect_tmp1.centerX();
-                            btn_loc_y = rect_tmp1.centerY();
-                            rectListArrowHead_indice = rectListArrowHead.size();
+                                //TODO add this back long_press
+                                //handler.postDelayed(mLongPressed, 1000);
+                                rectList_indice = k;
+                                btn_loc_x = rect_tmp1.centerX();
+                                btn_loc_y = rect_tmp1.centerY();
+                                rectListArrowHead_indice = rectListArrowHead.size();
+                            }
+                            k++;
                         }
-                        k++;
-                    }
 
-                    // check if arrow head is clicked on
-                    b = 0;
-                    if (!clicked_in_button) {
-                        for (Rect rect_tmp2 : rectListArrowHead) {
-                            if (rect_tmp2.contains(X, Y)) {
-                                Log.d(TAG, "changed to true");
-                                clicked_on_arrow_head = true;
-                                clicked_in_button = false;
-                                rectListArrowHead_indice = b;
+                        // check if arrow head is clicked on
+                        b = 0;
+                        if (!clicked_in_button) {
+                            for (Rect rect_tmp2 : rectListArrowHead) {
+                                if (rect_tmp2.contains(X, Y)) {
+                                    Log.d(TAG, "changed to true");
+                                    clicked_on_arrow_head = true;
+                                    clicked_in_button = false;
+                                    rectListArrowHead_indice = b;
 
 //                                indice_arr_cor = linkList.get(rectListArrowHead_indice);
 
-                                btn_loc_x = rectListButtons.get(linkList.get(rectListArrowHead_indice)).centerX();
-                                btn_loc_y = rectListButtons.get(linkList.get(rectListArrowHead_indice)).centerY();
+                                    btn_loc_x = rectListButtons.get(linkList.get(rectListArrowHead_indice)).centerX();
+                                    btn_loc_y = rectListButtons.get(linkList.get(rectListArrowHead_indice)).centerY();
+                                }
+                                b++;
                             }
-                            b++;
                         }
-                    }
 
-                    if (clicked_in_button) {
-                        path_arrow = new Path();
-                        pathList.add(path_arrow); // <-- Add this line.
-                        path_arrow.reset();
-                        loc_arrow_point_x = X;
-                        loc_arrow_point_y = Y;
-                        angle = Math.atan2(loc_arrow_point_y - btn_loc_y, loc_arrow_point_x - btn_loc_x);
+                        if (clicked_in_button) {
+                            path_arrow = new Path();
+                            pathList.add(path_arrow); // <-- Add this line.
+                            path_arrow.reset();
+                            loc_arrow_point_x = X;
+                            loc_arrow_point_y = Y;
+                            angle = Math.atan2(loc_arrow_point_y - btn_loc_y, loc_arrow_point_x - btn_loc_x);
 
-                        pointListArrowHead.add(new Point(loc_arrow_point_x, loc_arrow_point_y));
-                        linkList.add(rectList_indice);
+                            pointListArrowHead.add(new Point(loc_arrow_point_x, loc_arrow_point_y));
+                            linkList.add(rectList_indice);
 
-                        rectListArrowHead.add(new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
+                            rectListArrowHead.add(new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
 
 
-                        drawArrow();
-                        invalidate();// call invalidate to refresh the draw
+                            drawArrow();
+                            invalidate();// call invalidate to refresh the draw
 
-                    } else if (clicked_on_arrow_head) {
-                        // replace arrow
-                        path_arrow = new Path();
-                        pathList.set(rectListArrowHead_indice, path_arrow); // <-- Add this line.
-                        path_arrow.reset();
-                        loc_arrow_point_x = X;
-                        loc_arrow_point_y = Y;
+                        } else if (clicked_on_arrow_head) {
+                            // replace arrow
+                            path_arrow = new Path();
+                            pathList.set(rectListArrowHead_indice, path_arrow); // <-- Add this line.
+                            path_arrow.reset();
+                            loc_arrow_point_x = X;
+                            loc_arrow_point_y = Y;
 
-                        btn_loc_x = rectListButtons.get(linkList.get(rectListArrowHead_indice)).centerX();
-                        btn_loc_y = rectListButtons.get(linkList.get(rectListArrowHead_indice)).centerY();
+                            btn_loc_x = rectListButtons.get(linkList.get(rectListArrowHead_indice)).centerX();
+                            btn_loc_y = rectListButtons.get(linkList.get(rectListArrowHead_indice)).centerY();
 
-                        angle = Math.atan2(loc_arrow_point_y - btn_loc_y, loc_arrow_point_x - btn_loc_x);
-                        drawArrow();
-                        invalidate();// call invalidate to refresh the draw
+                            angle = Math.atan2(loc_arrow_point_y - btn_loc_y, loc_arrow_point_x - btn_loc_x);
+                            drawArrow();
+                            invalidate();// call invalidate to refresh the draw
+                        }
+
                     }
                     break;
-
                 case MotionEvent.ACTION_MOVE:
                     if (clicked_in_button || clicked_on_arrow_head) {
 
@@ -494,11 +499,12 @@ public class ThirdActivity extends AppCompatActivity {
 //                                        clicked_in_button = false;
 //                                        clicked_on_arrow_head = true;
 //                                    }
-
+                                able_to_click = false;
                                 // stops loo[ at end of animation
                                 if (arrow_animated_fraction == 1) {
                                     clicked_in_button = false;
                                     clicked_on_arrow_head = false;
+                                    able_to_click = true;
                                 }
 
                                 drawArrow();
