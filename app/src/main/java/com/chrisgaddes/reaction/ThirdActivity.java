@@ -10,6 +10,7 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -60,6 +61,7 @@ public class ThirdActivity extends AppCompatActivity {
         private int rectList_indice;
         private int rectListArrowHead_indice;
         private boolean clicked_on_arrow_head;
+        private long mLastClickTime;
 
         // initialize ArrayLists for paths and points
         private ArrayList<Point> pointList = new ArrayList<>();
@@ -142,6 +144,8 @@ public class ThirdActivity extends AppCompatActivity {
             dim_btn_radius_buffer = 60f;
             time_anim_arrow_dur = 250;
 
+            mLastClickTime = 0;
+
             // create Rects from pointList
             for (Point g : pointList) {
                 rectListButtons.add(new Rect(g.x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), g.y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), g.x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), g.y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
@@ -156,7 +160,7 @@ public class ThirdActivity extends AppCompatActivity {
 
             paint_arrow_head_box.setStyle(Paint.Style.FILL);
             paint_arrow_head_box.setStrokeWidth(5f);
-            paint_arrow_head_box.setColor(Color.TRANSPARENT);
+            paint_arrow_head_box.setColor(Color.GREEN);
             paint_arrow_head_box.setStyle(Paint.Style.STROKE);
             paint_arrow_head_box.setPathEffect(new DashPathEffect(new float[]{10, 10, 10, 10}, 0));
 
@@ -201,15 +205,26 @@ public class ThirdActivity extends AppCompatActivity {
             canvas.drawText("rectList_indice = " + String.valueOf(rectList_indice),20,160 , paint_text);
             canvas.drawText("rectListArrowHead_indice = " + String.valueOf(rectListArrowHead_indice),20,220 , paint_text);
             canvas.drawText("linkList = " + String.valueOf(linkList),20,280 , paint_text);
-            canvas.drawText("pointListArrowHead = " + String.valueOf(pointListArrowHead),20,340 , paint_text);
+            canvas.drawText("pointListArrowHead = " + String.valueOf(pointListArrowHead),20,1840 , paint_text);
             canvas.drawText("rectListArrowHead.size = " + String.valueOf(rectListArrowHead.size()),20,460 , paint_text);
-            canvas.drawText("rectListArrowHead = " + String.valueOf(rectListArrowHead),20,520 , paint_text);
+//            canvas.drawText("rectListArrowHead = " + String.valueOf(rectListArrowHead),20,520 , paint_text);
             canvas.drawText("clicked_in_button = " + String.valueOf(clicked_in_button),20,580 , paint_text);
             canvas.drawText("clicked_on_arrow_head = " + String.valueOf(clicked_in_button),20,640 , paint_text);
 
             canvas.drawText("inside_button = " + String.valueOf(inside_button),600, 100 , paint_text);
-            canvas.drawText("size of pathlist = " + String.valueOf(pathList.size()),600,160 , paint_text);
+            canvas.drawText("size of pointlist = " + String.valueOf(pointList.size()),600,160 , paint_text);
 
+            canvas.drawText("size of pathlist = " + String.valueOf(pathList.size()),600,220 , paint_text);
+
+            canvas.drawText("size of linklist = " + String.valueOf(linkList.size()),600,280 , paint_text);
+            canvas.drawText("size of pointListArrowHead = " + String.valueOf(pointListArrowHead.size()),600,340 , paint_text);
+            canvas.drawText("size of rectListArrowHead = " + String.valueOf(rectListArrowHead.size()),600,400 , paint_text);
+            canvas.drawText("arrow_animated_fraction = " + String.valueOf(arrow_animated_fraction),600,460 , paint_text);
+
+
+            canvas.drawText("mLastClickTime = " + String.valueOf(mLastClickTime),600,520 , paint_text);
+
+            canvas.drawText("SystemClock.elapsedRealtime() - mLastClickTime = " + String.valueOf(SystemClock.elapsedRealtime() - mLastClickTime),600,580 , paint_text);
 
         }
 
@@ -244,9 +259,24 @@ public class ThirdActivity extends AppCompatActivity {
 //            }
 
 
+
             switch (eventaction) {
                 case MotionEvent.ACTION_DOWN:
+
+//                    if (pointListArrowHead.size() == pathList.size() && pathList.size() == linkList.size() ){
+//                        Toast.makeText(getApplicationContext(), "Error: Not the same length", Toast.LENGTH_SHORT).show();
+//                    }
+
                     // check if button is clicked on
+
+                    // prevents rapid clicks which can cause problems
+//                    if (SystemClock.elapsedRealtime() - mLastClickTime < 400) {
+//                        Toast.makeText(getApplicationContext(), "Don't click so fast!!", Toast.LENGTH_SHORT).show();
+//                        Log.d(TAG, "Don't click so fast");
+//                        break;
+//                    }
+//                    mLastClickTime = SystemClock.elapsedRealtime();
+
                     k = 0;
                     for (Rect rect_tmp1 : rectListButtons) {
                         if (rect_tmp1.contains(X, Y)) {
@@ -364,8 +394,6 @@ public class ThirdActivity extends AppCompatActivity {
                             //handler.removeCallbacks(mLongPressed);
                         }
 
-
-
                         // break if released inside button
                         if (inside_button){
                             Log.d(TAG, "released in button");
@@ -461,6 +489,9 @@ public class ThirdActivity extends AppCompatActivity {
                                 invalidate(); // TODO: Change to invalidate("just the arrow drawn")
                             }
                         });
+
+
+
                         animator.start();
 
                         // prints angle snapped to in degrees to snackbar
