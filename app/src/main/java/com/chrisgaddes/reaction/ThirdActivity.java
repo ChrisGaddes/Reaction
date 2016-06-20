@@ -10,6 +10,7 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +18,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -32,6 +34,10 @@ public class ThirdActivity extends AppCompatActivity {
         DrawArrowsView ev = new DrawArrowsView(this);
 //        ev.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.FILL_PARENT));
         setContentView(ev);
+
+        //TODO: learn how to generate view Id https://gist.github.com/omegasoft7/fdf7225a5b2955a1aba8
+        //ev.generateViewId();
+
         //Resources resources = getResources();
 //        ImageView imagehey = new ImageView(this);
 //        imagehey.setImageDrawable(resources.getDrawable(R.drawable.fbd_1));
@@ -70,11 +76,8 @@ public class ThirdActivity extends AppCompatActivity {
         private ArrayList<Path> pathList = new ArrayList<>();
         private ArrayList<Point> pointListArrowHead = new ArrayList<>();
         private ArrayList<Integer> linkList = new ArrayList<>();
-//        private List<List<Integer>> twoDimArray = new ArrayList<>();
 
         private Path path_arrow;
-
-//        private Integer indice_arr_cor;
 
         private int btn_loc_x;
         private int loc_arrow_point_x;
@@ -97,7 +100,6 @@ public class ThirdActivity extends AppCompatActivity {
         private float loc_arrow_head_right_x;
         private float loc_arrow_head_right_y;
         private boolean clicked_in_button;
-        private boolean long_pressed_in_button;
         private boolean inside_button;
         private boolean able_to_click;
 
@@ -135,7 +137,6 @@ public class ThirdActivity extends AppCompatActivity {
 
             clicked_in_button = false;
             inside_button = false;
-            //long_pressed_in_button = false;
             clicked_on_arrow_head = false;
             able_to_click = true;
 
@@ -144,11 +145,13 @@ public class ThirdActivity extends AppCompatActivity {
             len_arrow_head = 60;
             dim_btn_radius = 15f;
             dim_btn_radius_buffer = 60f;
-            time_anim_arrow_dur = 250;
+
+            // TODO allow user to set this value to disable animations
+            time_anim_arrow_dur = 150;
 
             mLastClickTime = 0;
 
-            // create Rects from pointList
+            // create Rects from pointList to create buttons at nodes
             for (Point g : pointList) {
                 rectListButtons.add(new Rect(g.x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), g.y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), g.x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), g.y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
             }
@@ -203,84 +206,66 @@ public class ThirdActivity extends AppCompatActivity {
                 canvas.drawPath(pthLst_arrows, paint_arrow);
             }
 
-            canvas.drawText("inside_button = " + String.valueOf(inside_button),20,100 , paint_text);
-            canvas.drawText("rectList_indice = " + String.valueOf(rectList_indice),20,160 , paint_text);
-            canvas.drawText("rectListArrowHead_indice = " + String.valueOf(rectListArrowHead_indice),20,220 , paint_text);
-            canvas.drawText("linkList = " + String.valueOf(linkList),20,280 , paint_text);
-            canvas.drawText("pointListArrowHead = " + String.valueOf(pointListArrowHead),20,1840 , paint_text);
-            canvas.drawText("rectListArrowHead.size = " + String.valueOf(rectListArrowHead.size()),20,460 , paint_text);
-//            canvas.drawText("rectListArrowHead = " + String.valueOf(rectListArrowHead),20,520 , paint_text);
-            canvas.drawText("clicked_in_button = " + String.valueOf(clicked_in_button),20,580 , paint_text);
-            canvas.drawText("clicked_on_arrow_head = " + String.valueOf(clicked_in_button),20,640 , paint_text);
+            // prints variables for debugging
+            canvas.drawText("inside_button = " + String.valueOf(inside_button), 20, 100, paint_text);
+            canvas.drawText("rectList_indice = " + String.valueOf(rectList_indice), 20, 160, paint_text);
+            canvas.drawText("rectListArrowHead_indice = " + String.valueOf(rectListArrowHead_indice), 20, 220, paint_text);
+            canvas.drawText("linkList = " + String.valueOf(linkList), 20, 280, paint_text);
+            canvas.drawText("pointListArrowHead = " + String.valueOf(pointListArrowHead), 20, 1840, paint_text);
+            canvas.drawText("rectListArrowHead.size = " + String.valueOf(rectListArrowHead.size()), 20, 460, paint_text);
+            canvas.drawText("clicked_in_button = " + String.valueOf(clicked_in_button), 20, 580, paint_text);
+            canvas.drawText("clicked_on_arrow_head = " + String.valueOf(clicked_in_button), 20, 640, paint_text);
 
-            canvas.drawText("inside_button = " + String.valueOf(inside_button),600, 100 , paint_text);
-            canvas.drawText("size of pointlist = " + String.valueOf(pointList.size()),600,160 , paint_text);
-
-            canvas.drawText("size of pathlist = " + String.valueOf(pathList.size()),600,220 , paint_text);
-
-            canvas.drawText("size of linklist = " + String.valueOf(linkList.size()),600,280 , paint_text);
-            canvas.drawText("size of pointListArrowHead = " + String.valueOf(pointListArrowHead.size()),600,340 , paint_text);
-            canvas.drawText("size of rectListArrowHead = " + String.valueOf(rectListArrowHead.size()),600,400 , paint_text);
-            canvas.drawText("arrow_animated_fraction = " + String.valueOf(arrow_animated_fraction),600,460 , paint_text);
-
-            canvas.drawText("able_to_click = " + String.valueOf(able_to_click),600,520 , paint_text);
-
-
-            canvas.drawText("mLastClickTime = " + String.valueOf(mLastClickTime),600,580 , paint_text);
-
-            canvas.drawText("SystemClock.elapsedRealtime() - mLastClickTime = " + String.valueOf(SystemClock.elapsedRealtime() - mLastClickTime),600,640 , paint_text);
+            canvas.drawText("inside_button = " + String.valueOf(inside_button), 600, 100, paint_text);
+            canvas.drawText("size of pointlist = " + String.valueOf(pointList.size()), 600, 160, paint_text);
+            canvas.drawText("size of pathlist = " + String.valueOf(pathList.size()), 600, 220, paint_text);
+            canvas.drawText("size of linklist = " + String.valueOf(linkList.size()), 600, 280, paint_text);
+            canvas.drawText("size of pointListArrowHead = " + String.valueOf(pointListArrowHead.size()), 600, 340, paint_text);
+            canvas.drawText("size of rectListArrowHead = " + String.valueOf(rectListArrowHead.size()), 600, 400, paint_text);
+            canvas.drawText("arrow_animated_fraction = " + String.valueOf(arrow_animated_fraction), 600, 460, paint_text);
+            canvas.drawText("able_to_click = " + String.valueOf(able_to_click), 600, 520, paint_text);
+            canvas.drawText("mLastClickTime = " + String.valueOf(mLastClickTime), 600, 580, paint_text);
+            canvas.drawText("SystemClock.elapsedRealtime() - mLastClickTime = " + String.valueOf(SystemClock.elapsedRealtime() - mLastClickTime), 600, 640, paint_text);
 
         }
 
-//        // triggers long press
-//        final Handler handler = new Handler();
-//        Runnable mLongPressed = new Runnable() {
-//            public void run() {
-//                Log.i("", "Long press!");
-//                long_pressed_in_button = true;
-//                inside_button = false;
-//                //TODO add these back
-//                path_arrow.reset();
-//                invalidate();
-//            }
-//        };
+        // triggers long press
+        final Handler handler = new Handler();
+        Runnable mLongPressed = new Runnable() {
+            public void run() {
+                Log.i("", "Long press!");
+                Toast.makeText(getApplicationContext(), "Long Pressed!", Toast.LENGTH_SHORT).show();
+
+                // TODO: Add snackbar. FIgure out view
+               // Snackbar.make(findViewById(), "Created Moment" , Snackbar.LENGTH_SHORT).show();
+
+                path_arrow.reset();
+                pointListArrowHead.remove(rectListArrowHead_indice);
+                linkList.remove(rectListArrowHead_indice);
+                rectListArrowHead.remove(rectListArrowHead_indice);
+                pathList.remove(rectListArrowHead_indice);
+
+                // set booleans to false state
+                clicked_in_button = false;
+                clicked_on_arrow_head = false;
+                inside_button = false;
+                invalidate();
+            }
+        };
 
         public boolean onTouchEvent(MotionEvent event) {
             int eventaction = event.getAction();
             int X = (int) event.getX();
             int Y = (int) event.getY();
 
-            // TODO add error if lengths of lists are not the same
-
-            //if ()
-
-//            // return inside_button = true if inside button
-//            if (rectListButtons.get(rectList_indice).contains(X, Y)) {
-//                handler.removeCallbacks(mLongPressed);
-//                inside_button = true;
-//            }else{
-//                inside_button = false;
-//            }
-
-
-
             switch (eventaction) {
                 case MotionEvent.ACTION_DOWN:
-
+                    invalidate();
                     if (able_to_click) {
+                        // TODO add error if lengths of lists are not the same
 //                    if (pointListArrowHead.size() == pathList.size() && pathList.size() == linkList.size() ){
 //                        Toast.makeText(getApplicationContext(), "Error: Not the same length", Toast.LENGTH_SHORT).show();
 //                    }
-
-                        // check if button is clicked on
-
-                        // prevents rapid clicks which can cause problems
-//                    if (SystemClock.elapsedRealtime() - mLastClickTime < 400) {
-//                        Toast.makeText(getApplicationContext(), "Don't click so fast!!", Toast.LENGTH_SHORT).show();
-//                        Log.d(TAG, "Don't click so fast");
-//                        break;
-//                    }
-//                    mLastClickTime = SystemClock.elapsedRealtime();
 
                         k = 0;
                         for (Rect rect_tmp1 : rectListButtons) {
@@ -289,7 +274,7 @@ public class ThirdActivity extends AppCompatActivity {
                                 clicked_on_arrow_head = false;
 
                                 //TODO add this back long_press
-                                //handler.postDelayed(mLongPressed, 1000);
+                                handler.postDelayed(mLongPressed,400);
                                 rectList_indice = k;
                                 btn_loc_x = rect_tmp1.centerX();
                                 btn_loc_y = rect_tmp1.centerY();
@@ -303,13 +288,9 @@ public class ThirdActivity extends AppCompatActivity {
                         if (!clicked_in_button) {
                             for (Rect rect_tmp2 : rectListArrowHead) {
                                 if (rect_tmp2.contains(X, Y)) {
-                                    Log.d(TAG, "changed to true");
                                     clicked_on_arrow_head = true;
                                     clicked_in_button = false;
                                     rectListArrowHead_indice = b;
-
-//                                indice_arr_cor = linkList.get(rectListArrowHead_indice);
-
                                     btn_loc_x = rectListButtons.get(linkList.get(rectListArrowHead_indice)).centerX();
                                     btn_loc_y = rectListButtons.get(linkList.get(rectListArrowHead_indice)).centerY();
                                 }
@@ -327,9 +308,7 @@ public class ThirdActivity extends AppCompatActivity {
 
                             pointListArrowHead.add(new Point(loc_arrow_point_x, loc_arrow_point_y));
                             linkList.add(rectList_indice);
-
                             rectListArrowHead.add(new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
-
 
                             drawArrow();
                             invalidate();// call invalidate to refresh the draw
@@ -349,47 +328,33 @@ public class ThirdActivity extends AppCompatActivity {
                             drawArrow();
                             invalidate();// call invalidate to refresh the draw
                         }
-
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Don't tap so quickly", Toast.LENGTH_SHORT).show();
                     }
                     break;
                 case MotionEvent.ACTION_MOVE:
                     if (clicked_in_button || clicked_on_arrow_head) {
 
                         // cancels long press handler if touch is dragged outside box
-
                         // return inside_button = true if inside button
-                        if (rectListButtons.get(rectList_indice).contains(X, Y))  {
+                        if (rectListButtons.get(rectList_indice).contains(X, Y)) {
                             inside_button = true;
 
                             //TODO add this back long_press
                             //handler.removeCallbacks(mLongPressed);
-                        }else{
+                        } else {
                             inside_button = false;
 
                             //TODO add this back long_press
-                            //handler.removeCallbacks(mLongPressed);
+                            handler.removeCallbacks(mLongPressed);
                         }
-
-
-                        //TODO add this back long_press
-//                        if (long_pressed_in_button){
-//                            clicked_in_button = false;
-//                            path_arrow.reset();
-//                            long_pressed_in_button = false;
-//                            invalidate(); //TODO this may not be needed
-//                            break;
-//                        }
 
                         path_arrow.reset();
                         loc_arrow_point_x = X;
                         loc_arrow_point_y = Y;
                         angle = Math.atan2(loc_arrow_point_y - btn_loc_y, loc_arrow_point_x - btn_loc_x);
-
-
                         pointListArrowHead.set(rectListArrowHead_indice, new Point(loc_arrow_point_x, loc_arrow_point_y));
                         rectListArrowHead.set(rectListArrowHead_indice, new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
-
-
                         drawArrow();
                         invalidate();// call invalidate to refresh the draw
                     }
@@ -397,6 +362,8 @@ public class ThirdActivity extends AppCompatActivity {
 
                 case MotionEvent.ACTION_UP:
                     if (clicked_in_button || clicked_on_arrow_head) {
+
+                        Log.d(TAG, "ACTION_UP");
 
                         // check if release in button
                         k = 0;
@@ -407,48 +374,28 @@ public class ThirdActivity extends AppCompatActivity {
                             k++;
                         }
 
-                        if (!inside_button){
+                        if (!inside_button) {
                             inside_button = false; // TODO why us this here?
                             //TODO add this back long_press
-                            //handler.removeCallbacks(mLongPressed);
                         }
 
                         // break if released inside button
-                        if (inside_button){
-                            Log.d(TAG, "released in button");
-                            //clicked_in_button = false;
+                        if (inside_button) {
                             path_arrow.reset();
-
+                            handler.removeCallbacks(mLongPressed);
                             //TODO add this back long_press
-                            //long_pressed_in_button = false;
-                            Log.d(TAG, "inside button " + inside_button);
-
-//                            if (clicked_on_arrow_head) {
-                                pointListArrowHead.remove(rectListArrowHead_indice);
-                                linkList.remove(rectListArrowHead_indice);
-
-                                rectListArrowHead.remove(rectListArrowHead_indice);
-
-                                // set booleans to false state
-                                clicked_in_button = false;
-                                clicked_on_arrow_head = false;
-                                inside_button = false;
-//                            }
+                            pointListArrowHead.remove(rectListArrowHead_indice);
+                            linkList.remove(rectListArrowHead_indice);
+                            rectListArrowHead.remove(rectListArrowHead_indice);
                             pathList.remove(rectListArrowHead_indice);
+
+                            // set booleans to false state
                             clicked_in_button = false;
                             clicked_on_arrow_head = false;
+
                             inside_button = false;
                             break;
                         }
-
-//                        if (inside_button){
-//                            clicked_in_button = false;
-//                            path_arrow.reset();
-//                            long_pressed_in_button = false;
-//                            break;
-//                        }
-
-                        Log.d(TAG, "inside button " + inside_button);
 
                         path_arrow.reset();
                         loc_arrow_point_x = X;
@@ -484,23 +431,11 @@ public class ThirdActivity extends AppCompatActivity {
                                 loc_arrow_point_x = (int) (len_arrow_shaft_current * Math.cos(angle) + btn_loc_x);
                                 path_arrow.reset();
 
-//                                    if (clicked_on_arrow_head) {
-                                        pointListArrowHead.set(rectListArrowHead_indice, new Point(loc_arrow_point_x, loc_arrow_point_y));
-                                        rectListArrowHead.set(rectListArrowHead_indice, new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
-//                                    }
+                                pointListArrowHead.set(rectListArrowHead_indice, new Point(loc_arrow_point_x, loc_arrow_point_y));
+                                rectListArrowHead.set(rectListArrowHead_indice, new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
 
-//                                    if (clicked_in_button) {
-//                                        pointListArrowHead.add(new Point(loc_arrow_point_x, loc_arrow_point_y));
-//                                        linkList.add(rectList_indice);
-//
-//                                        rectListArrowHead.add(new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
-//
-//                                        // sets clicked_in_button to false and clicked_on_arrow_head to true so next loop of the animation will go to the loop that sets instead of adds
-//                                        clicked_in_button = false;
-//                                        clicked_on_arrow_head = true;
-//                                    }
                                 able_to_click = false;
-                                // stops loo[ at end of animation
+                                // stops loop at end of animation
                                 if (arrow_animated_fraction == 1) {
                                     clicked_in_button = false;
                                     clicked_on_arrow_head = false;
