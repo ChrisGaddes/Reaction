@@ -99,6 +99,7 @@ public class ThirdActivity extends AppCompatActivity {
         private boolean clicked_in_button;
         private boolean long_pressed_in_button;
         private boolean inside_button;
+        private boolean hit_this_point;
 
         public DrawArrowsView(Context context) {
             super(context);
@@ -319,6 +320,13 @@ public class ThirdActivity extends AppCompatActivity {
                         loc_arrow_point_x = X;
                         loc_arrow_point_y = Y;
                         angle = Math.atan2(loc_arrow_point_y - btn_loc_y, loc_arrow_point_x - btn_loc_x);
+
+                        pointListArrowHead.add(new Point(loc_arrow_point_x, loc_arrow_point_y));
+                        linkList.add(rectList_indice);
+
+                        rectListArrowHead.add(new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
+
+
                         drawArrow();
                         invalidate();// call invalidate to refresh the draw
 
@@ -371,6 +379,12 @@ public class ThirdActivity extends AppCompatActivity {
                         loc_arrow_point_x = X;
                         loc_arrow_point_y = Y;
                         angle = Math.atan2(loc_arrow_point_y - btn_loc_y, loc_arrow_point_x - btn_loc_x);
+
+
+                        pointListArrowHead.set(rectListArrowHead_indice, new Point(loc_arrow_point_x, loc_arrow_point_y));
+                        rectListArrowHead.set(rectListArrowHead_indice, new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
+
+
                         drawArrow();
                         invalidate();// call invalidate to refresh the draw
                     }
@@ -404,7 +418,7 @@ public class ThirdActivity extends AppCompatActivity {
                             //long_pressed_in_button = false;
                             Log.d(TAG, "inside button " + inside_button);
 
-                            if (clicked_on_arrow_head) {
+//                            if (clicked_on_arrow_head) {
                                 pointListArrowHead.remove(rectListArrowHead_indice);
                                 linkList.remove(rectListArrowHead_indice);
 
@@ -414,7 +428,7 @@ public class ThirdActivity extends AppCompatActivity {
                                 clicked_in_button = false;
                                 clicked_on_arrow_head = false;
                                 inside_button = false;
-                            }
+//                            }
                             pathList.remove(rectListArrowHead_indice);
                             clicked_in_button = false;
                             clicked_on_arrow_head = false;
@@ -465,34 +479,36 @@ public class ThirdActivity extends AppCompatActivity {
                                 loc_arrow_point_x = (int) (len_arrow_shaft_current * Math.cos(angle) + btn_loc_x);
                                 path_arrow.reset();
 
-                                // creates rects to draw boxes at arrow heads once animation is done
-                                if (arrow_animated_fraction == 1) {
-                                    if (clicked_on_arrow_head) {
-
+//                                    if (clicked_on_arrow_head) {
                                         pointListArrowHead.set(rectListArrowHead_indice, new Point(loc_arrow_point_x, loc_arrow_point_y));
-
                                         rectListArrowHead.set(rectListArrowHead_indice, new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
-                                        clicked_in_button = false;
-                                        clicked_on_arrow_head = false;
-                                    }
+//                                    }
 
-                                    if (clicked_in_button) {
-                                        pointListArrowHead.add(new Point(loc_arrow_point_x, loc_arrow_point_y));
-                                        linkList.add(rectList_indice);
+//                                    if (clicked_in_button) {
+//                                        pointListArrowHead.add(new Point(loc_arrow_point_x, loc_arrow_point_y));
+//                                        linkList.add(rectList_indice);
+//
+//                                        rectListArrowHead.add(new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
+//
+//                                        // sets clicked_in_button to false and clicked_on_arrow_head to true so next loop of the animation will go to the loop that sets instead of adds
+//                                        clicked_in_button = false;
+//                                        clicked_on_arrow_head = true;
+//                                    }
 
-                                        rectListArrowHead.add(new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
-                                        clicked_in_button = false;
-                                        clicked_on_arrow_head = false;
-                                    }
+                                // stops loo[ at end of animation
+                                if (arrow_animated_fraction == 1) {
+                                    clicked_in_button = false;
+                                    clicked_on_arrow_head = false;
                                 }
+
                                 drawArrow();
                                 invalidate(); // TODO: Change to invalidate("just the arrow drawn")
                             }
                         });
 
-
-
                         animator.start();
+
+                        invalidate();
 
                         // prints angle snapped to in degrees to snackbar
                         // All angles are inverted, so this if statement shows 0.0 instead of -0.0
