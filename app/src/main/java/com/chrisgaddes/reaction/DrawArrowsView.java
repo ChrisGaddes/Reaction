@@ -10,7 +10,7 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Handler;
-import android.support.design.widget.Snackbar;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.animation.OvershootInterpolator;
@@ -83,8 +83,8 @@ public class DrawArrowsView extends ImageView {
 
     private int pointerCount;
 
-    public DrawArrowsView(Context context) {
-        super(context);
+    public DrawArrowsView(Context context, AttributeSet attrs) {
+        super(context, attrs);
 
         // create new paints
         paint_arrow = new Paint();
@@ -444,7 +444,8 @@ public class DrawArrowsView extends ImageView {
                         angle_degrees = Math.round(Math.toDegrees(-angles[idx]));
                     }
 
-                    Snackbar.make(this, "Created force at " + angle_degrees + "\u00B0", Snackbar.LENGTH_SHORT).show();
+                    //TODO add popup or snackbar that says where arrow was placed
+                    //Snackbar.make(this, "Created force at " + angle_degrees + "\u00B0", Snackbar.LENGTH_SHORT).show();
                     inside_button = false;
                 }
                 break;
