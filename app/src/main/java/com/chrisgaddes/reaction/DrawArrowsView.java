@@ -8,9 +8,12 @@ import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Handler;
+import android.support.design.widget.Snackbar;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.animation.OvershootInterpolator;
@@ -40,12 +43,9 @@ public class DrawArrowsView extends ImageView {
     private final float dim_btn_radius_buffer;
     private final long time_anim_arrow_dur;
 
-    private int k;
-    private int b;
     private int rectList_indice;
     private int rectListArrowHead_indice;
     private boolean clicked_on_arrow_head;
-    private long mLastClickTime;
 
     // initialize ArrayLists for paths and points
     private ArrayList<Point> pointList = new ArrayList<>();
@@ -80,8 +80,10 @@ public class DrawArrowsView extends ImageView {
     private boolean clicked_in_button;
     private boolean inside_button;
     private boolean able_to_click;
+    private boolean already_done;
 
-    private int pointerCount;
+    private long viewHeight;
+    private long viewWidth;
 
     public DrawArrowsView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -92,53 +94,51 @@ public class DrawArrowsView extends ImageView {
         paint_box = new Paint();
         paint_arrow_head_box = new Paint();
         paint_text = new Paint();
-
-        // set point locations TODO: import these from database
-        // TODO convert these to dp or percentages (note, aspect ratio may not always be same)
-        Point pointOne = new Point(190, 719);
-        Point pointThree = new Point(730, 1407);
-        Point pointFour = new Point(1303, 1407);
-        Point pointTwo = new Point(199, 1407);
-        pointList.add(pointOne);
-        pointList.add(pointTwo);
-        pointList.add(pointThree);
-        pointList.add(pointFour);
-
         paint_points = new Paint();
-        btn_loc_x = pointList.get(1).x;
-        btn_loc_y = pointList.get(1).y;
-        loc_arrow_point_x = btn_loc_x;
-        loc_arrow_point_y = btn_loc_y;
 
-        loc_arrow_head_left_x = btn_loc_x;
-        loc_arrow_head_left_y = btn_loc_y;
-        loc_arrow_head_right_x = btn_loc_x;
-        loc_arrow_head_right_y = btn_loc_y;
-
+        //setButtonPoints(context);
         clicked_in_button = false;
         inside_button = false;
         clicked_on_arrow_head = false;
         able_to_click = true;
+        already_done = false;
 
-        // sets constants  // TODO: change these constants to dp of f
-        len_arrow_shaft = 200;
-        len_arrow_head = 60;
-        dim_btn_radius = 15f;
-        dim_btn_radius_buffer = 60f;
+        // sets dimensions
+        len_arrow_shaft = dpToPx(62);
+        len_arrow_head = dpToPx(19);
+        dim_btn_radius = dpToPx(4);
+        dim_btn_radius_buffer = dpToPx(19);
 
         // TODO allow user to set this value to disable animations
         time_anim_arrow_dur = 150;
 
-        mLastClickTime = 0;
+        setArrowStyle();
+    }
+
+    private void setButtonPoints(Context context) {
+
+        already_done = true;
+        // set point locations TODO: import these from database
+        PointF pointOne = new PointF((float) 12.857, (float) 32.3);
+        PointF pointThree = new PointF((float) 13.6, (float) 68.25);
+        PointF pointFour = new PointF((float) 90.703, (float) 68.25);
+        PointF pointTwo = new PointF(199, 1407);
+
+        pointList.add(percentToPx(pointOne));
+        pointList.add(percentToPx(pointTwo));
+        pointList.add(percentToPx(pointThree));
+        pointList.add(percentToPx(pointFour));
 
         // create Rects from pointList to create buttons at nodes
         for (Point g : pointList) {
             rectListButtons.add(new Rect(g.x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), g.y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), g.x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), g.y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
         }
+    }
 
+    private void setArrowStyle() {
         // sets style of arrows
         paint_arrow.setStyle(Paint.Style.FILL);
-        paint_arrow.setStrokeWidth(20f);
+        paint_arrow.setStrokeWidth(dpToPx(6));
         paint_arrow.setColor(Color.RED);
         paint_arrow.setStyle(Paint.Style.STROKE);
         paint_arrow.setStrokeCap(Paint.Cap.ROUND);
@@ -161,9 +161,21 @@ public class DrawArrowsView extends ImageView {
     }
 
     @Override
+    protected void onSizeChanged(int xNew, int yNew, int xOld, int yOld) {
+        super.onSizeChanged(xNew, yNew, xOld, yOld);
+        viewWidth = xNew;
+        viewHeight = yNew;
+
+        if (!already_done) {
+            setButtonPoints(getContext());
+        }
+    }
+
+    @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        // TODO change this to something more flexible and controlable
         setImageResource(R.drawable.fbd_1);
 
         // draws rectangles around arrowheads
@@ -186,26 +198,43 @@ public class DrawArrowsView extends ImageView {
             canvas.drawPath(pthLst_arrows, paint_arrow);
         }
 
-        // prints variables for debugging
-        canvas.drawText("inside_button = " + String.valueOf(inside_button), 20, 100, paint_text);
-        canvas.drawText("rectList_indice = " + String.valueOf(rectList_indice), 20, 160, paint_text);
-        canvas.drawText("rectListArrowHead_indice = " + String.valueOf(rectListArrowHead_indice), 20, 220, paint_text);
-        canvas.drawText("linkList = " + String.valueOf(linkList), 20, 280, paint_text);
-        canvas.drawText("pointListArrowHead = " + String.valueOf(pointListArrowHead), 20, 1840, paint_text);
-        canvas.drawText("rectListArrowHead.size = " + String.valueOf(rectListArrowHead.size()), 20, 460, paint_text);
-        canvas.drawText("clicked_in_button = " + String.valueOf(clicked_in_button), 20, 580, paint_text);
-        canvas.drawText("clicked_on_arrow_head = " + String.valueOf(clicked_in_button), 20, 640, paint_text);
+        String msg = "width: " + viewWidth + "  height: " + viewHeight;
 
-        canvas.drawText("inside_button = " + String.valueOf(inside_button), 600, 100, paint_text);
-        canvas.drawText("size of pointlist = " + String.valueOf(pointList.size()), 600, 160, paint_text);
-        canvas.drawText("size of pathlist = " + String.valueOf(pathList.size()), 600, 220, paint_text);
-        canvas.drawText("size of linklist = " + String.valueOf(linkList.size()), 600, 280, paint_text);
-        canvas.drawText("size of pointListArrowHead = " + String.valueOf(pointListArrowHead.size()), 600, 340, paint_text);
-        canvas.drawText("size of rectListArrowHead = " + String.valueOf(rectListArrowHead.size()), 600, 400, paint_text);
-        canvas.drawText("arrow_animated_fraction = " + String.valueOf(arrow_animated_fraction), 600, 460, paint_text);
-        canvas.drawText("able_to_click = " + String.valueOf(able_to_click), 600, 520, paint_text);
-        canvas.drawText("mLastClickTime = " + String.valueOf(mLastClickTime), 600, 580, paint_text);
-        canvas.drawText("event.getPointerCount(); = " + String.valueOf(pointerCount), 600, 640, paint_text);
+
+        //canvas.drawText("View: " + msg, 20, 100, paint_text);
+        //System.out.println(msg);
+
+
+        // prints variables for debugging
+//        canvas.drawText("inside_button = " + String.valueOf(inside_button), 20, 100, paint_text);
+//        canvas.drawText("rectList_indice = " + String.valueOf(rectList_indice), 20, 160, paint_text);
+//        canvas.drawText("rectListArrowHead_indice = " + String.valueOf(rectListArrowHead_indice), 20, 220, paint_text);
+//        canvas.drawText("linkList = " + String.valueOf(linkList), 20, 280, paint_text);
+//        canvas.drawText("pointListArrowHead = " + String.valueOf(pointListArrowHead), 20, 1840, paint_text);
+//        canvas.drawText("rectListArrowHead.size = " + String.valueOf(rectListArrowHead.size()), 20, 460, paint_text);
+//        canvas.drawText("clicked_in_button = " + String.valueOf(clicked_in_button), 20, 580, paint_text);
+//        canvas.drawText("clicked_on_arrow_head = " + String.valueOf(clicked_in_button), 20, 640, paint_text);
+//
+//        canvas.drawText("inside_button = " + String.valueOf(inside_button), 600, 100, paint_text);
+//        canvas.drawText("size of pointlist = " + String.valueOf(pointList.size()), 600, 160, paint_text);
+//        canvas.drawText("size of pathlist = " + String.valueOf(pathList.size()), 600, 220, paint_text);
+//        canvas.drawText("size of linklist = " + String.valueOf(linkList.size()), 600, 280, paint_text);
+//        canvas.drawText("size of pointListArrowHead = " + String.valueOf(pointListArrowHead.size()), 600, 340, paint_text);
+//        canvas.drawText("size of rectListArrowHead = " + String.valueOf(rectListArrowHead.size()), 600, 400, paint_text);
+//        canvas.drawText("arrow_animated_fraction = " + String.valueOf(arrow_animated_fraction), 600, 460, paint_text);
+//        canvas.drawText("able_to_click = " + String.valueOf(able_to_click), 600, 520, paint_text);
+
+//        canvas.drawText("event.getPointerCount(); = " + String.valueOf(pointerCount), 600, 640, paint_text);
+        if (viewHeight != 0 && viewWidth != 0) {
+            long aspect = viewWidth / viewHeight;
+//            Log.d(TAG, "viewHeight = " + viewHeight);
+//            Log.d(TAG, "viewWidth = " + viewWidth);
+//            Log.d(TAG, "viewHeight / viewWidth = " + 100*viewWidth / viewHeight);
+            //canvas.drawText("Aspect Ratio = " + 100*aspect, 600, 640, paint_text);
+        }
+
+//        canvas.drawText("viewWidth " + String.valueOf(viewWidth), 600, 700, paint_text);
+//        canvas.drawText("viewHeight " + String.valueOf(viewHeight), 600, 760, paint_text);
     }
 
     // triggers long press
@@ -237,24 +266,13 @@ public class DrawArrowsView extends ImageView {
         int X = (int) event.getX();
         int Y = (int) event.getY();
 
-
-        pointerCount = event.getPointerCount();
-
-        //TODO use getPointerId to prevent two fingers from touching
-
         switch (eventaction) {
             case MotionEvent.ACTION_DOWN:
 
-                Log.d(TAG, "ACTION_DOWN");
-
                 invalidate();
                 if (able_to_click) {
-                    // TODO add error if lengths of lists are not the same
-//                    if (pointListArrowHead.size() == pathList.size() && pathList.size() == linkList.size() ){
-//                        Toast.makeText(getApplicationContext(), "Error: Not the same length", Toast.LENGTH_SHORT).show();
-//                    }
 
-                    k = 0;
+                    int k = 0;
                     for (Rect rect_tmp1 : rectListButtons) {
                         if (rect_tmp1.contains(X, Y)) {
                             clicked_in_button = true;
@@ -272,17 +290,17 @@ public class DrawArrowsView extends ImageView {
                     }
 
                     // check if arrow head is clicked on
-                    b = 0;
+                    k = 0;
                     if (!clicked_in_button) {
                         for (Rect rect_tmp2 : rectListArrowHead) {
                             if (rect_tmp2.contains(X, Y)) {
                                 clicked_on_arrow_head = true;
                                 clicked_in_button = false;
-                                rectListArrowHead_indice = b;
+                                rectListArrowHead_indice = k;
                                 btn_loc_x = rectListButtons.get(linkList.get(rectListArrowHead_indice)).centerX();
                                 btn_loc_y = rectListButtons.get(linkList.get(rectListArrowHead_indice)).centerY();
                             }
-                            b++;
+                            k++;
                         }
                     }
 
@@ -327,9 +345,9 @@ public class DrawArrowsView extends ImageView {
                     if (rectListButtons.get(rectList_indice).contains(X, Y)) {
                         inside_button = true;
                     } else {
-                        inside_button = false;
                         // cancels long press handler if touch is dragged outside box
                         handler.removeCallbacks(mLongPressed);
+                        inside_button = false;
                     }
 
                     path_arrow.reset();
@@ -348,19 +366,9 @@ public class DrawArrowsView extends ImageView {
             case MotionEvent.ACTION_UP:
                 if (clicked_in_button || clicked_on_arrow_head) {
 
-                    Log.d(TAG, "ACTION_UP");
-
-                    // checks if released inside button
-
-//                        rectListButtons.get(linkList.get(rectListArrowHead_indice));
-
-//                        k = 0;
-//                        for (Rect rect_tmp3 : rectListButtons) {
                     if (rectListButtons.get(linkList.get(rectListArrowHead_indice)).contains(X, Y)) {
                         inside_button = true;
                     }
-//                            k++;
-//                        }
 
                     if (!inside_button) {
                         inside_button = false; // TODO why us this here?
@@ -376,10 +384,9 @@ public class DrawArrowsView extends ImageView {
                         rectListArrowHead.remove(rectListArrowHead_indice);
                         pathList.remove(rectListArrowHead_indice);
 
-                        // set booleans to false state
+                        // reset booleans to false state
                         clicked_in_button = false;
                         clicked_on_arrow_head = false;
-
                         inside_button = false;
                         break;
                     }
@@ -445,7 +452,7 @@ public class DrawArrowsView extends ImageView {
                     }
 
                     //TODO add popup or snackbar that says where arrow was placed
-                    //Snackbar.make(this, "Created force at " + angle_degrees + "\u00B0", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(this, "Created force at " + angle_degrees + "\u00B0", Snackbar.LENGTH_SHORT).show();
                     inside_button = false;
                 }
                 break;
@@ -473,5 +480,32 @@ public class DrawArrowsView extends ImageView {
         path_arrow.moveTo(loc_arrow_head_left_x, loc_arrow_head_left_y);
         path_arrow.lineTo(loc_arrow_point_x, loc_arrow_point_y);
         path_arrow.lineTo(loc_arrow_head_right_x, loc_arrow_head_right_y);
+    }
+
+    public int dpToPx(int dp) {
+        DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
+        return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+    }
+
+    // converts screen percentage to pixels
+    public Point percentToPx(PointF per) {
+        return new Point(Math.round(per.x * viewWidth / 100), Math.round((per.y * viewHeight / 100)));
+    }
+
+    // TODO: remove this before release if unused
+    public int pxToDp(int px) {
+        DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
+        return Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+    }
+
+    // code from https://github.com/jesperborgstrup/buzzingandroid/blob/master/src/com/buzzingandroid/ui/ViewAspectRatioMeasurer.java
+    // The aspect ratio to be respected by the measurer
+    private static final double VIEW_ASPECT_RATIO = .75;
+    private ViewAspectRatioMeasurer varm = new ViewAspectRatioMeasurer(VIEW_ASPECT_RATIO);
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        varm.measure(widthMeasureSpec, heightMeasureSpec);
+        setMeasuredDimension(varm.getMeasuredWidth(), varm.getMeasuredHeight());
     }
 }

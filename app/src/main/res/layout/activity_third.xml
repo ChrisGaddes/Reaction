@@ -5,30 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:theme="@android:style/Theme.NoTitleBar"
     tools:context=".ThirdActivity">
 
 
     <com.chrisgaddes.reaction.DrawArrowsView
         android:id="@+id/my_view"
-        android:layout_width="350dp"
-        android:layout_height="350dp"
-        android:layout_centerHorizontal="true"
-        />
-
-    <Button
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_alignEnd="@+id/button"
-        android:layout_alignParentTop="true"
-        android:layout_alignRight="@+id/button"
-        android:background="@drawable/ic_cached" />
-
-    <Button
-        android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:text="Next Problem" />
+        android:background="#D3D3D3"
+        android:layout_alignParentTop="true"/>
+
 
 </RelativeLayout>

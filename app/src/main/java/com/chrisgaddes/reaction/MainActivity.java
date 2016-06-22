@@ -29,7 +29,11 @@ public class MainActivity extends AppCompatActivity { // implements View.OnTouch
                 Intent intent = new Intent(MainActivity.this, ThirdActivity.class);
                 startActivity(intent);
                 //startActivity(SecondActivity.newIntent(MainActivity.this));
-            }
+
+
+
+
+                }
         });
 //
 //
