@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:theme="@android:style/Theme.NoTitleBar"
     tools:context=".ThirdActivity">
 
 
@@ -14,7 +13,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="#D3D3D3"
-        android:layout_alignParentTop="true"/>
+        android:layout_alignParentTop="true"
+        android:clipChildren="false" />
 
+    <Button
+        android:id="@+id/btn_done"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Done"
+        android:textAllCaps="false"
+        android:layout_below="@+id/my_view"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:id="@+id/btn_refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Refresh"
+        android:textAllCaps="false"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+         />
 
 </RelativeLayout>

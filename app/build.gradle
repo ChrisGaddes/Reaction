@@ -22,8 +22,9 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
+    //compile 'com.heinrichreimersoftware:material-intro:1.5.4' //TODO add material-intro from HeinrichReimer
     compile 'com.android.support:appcompat-v7:24.0.0'
     compile 'com.android.support:support-v4:24.0.0'
     compile 'com.android.support:design:24.0.0'
-    //compile 'com.heinrichreimersoftware:material-intro:1.5.4' //TODO add material-intro from HeinrichReimer
+    compile 'com.dmitrymalkovich.android:material-design-dimens:1.2'
 }

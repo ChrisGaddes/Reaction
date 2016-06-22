@@ -2,6 +2,7 @@ package com.chrisgaddes.reaction;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
@@ -11,6 +12,7 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -41,7 +43,7 @@ public class DrawArrowsView extends ImageView {
     private final double len_arrow_head;
     private final float dim_btn_radius;
     private final float dim_btn_radius_buffer;
-    private final long time_anim_arrow_dur;
+    private long time_anim_arrow_dur;
 
     private int rectList_indice;
     private int rectListArrowHead_indice;
@@ -50,10 +52,10 @@ public class DrawArrowsView extends ImageView {
     // initialize ArrayLists for paths and points
     private ArrayList<Point> pointList = new ArrayList<>();
     private ArrayList<Rect> rectListButtons = new ArrayList<>();
-    private ArrayList<Rect> rectListArrowHead = new ArrayList<>();
-    private ArrayList<Path> pathList = new ArrayList<>();
-    private ArrayList<Point> pointListArrowHead = new ArrayList<>();
-    private ArrayList<Integer> linkList = new ArrayList<>();
+    public ArrayList<Rect> rectListArrowHead = new ArrayList<>();
+    public ArrayList<Path> pathList = new ArrayList<>();
+    public ArrayList<Point> pointListArrowHead = new ArrayList<>();
+    public ArrayList<Integer> linkList = new ArrayList<>();
 
     private Path path_arrow;
 
@@ -81,6 +83,9 @@ public class DrawArrowsView extends ImageView {
     private boolean inside_button;
     private boolean able_to_click;
     private boolean already_done;
+    private boolean refreshVal;
+
+    private boolean debuggingTextToggle;
 
     private long viewHeight;
     private long viewWidth;
@@ -103,6 +108,7 @@ public class DrawArrowsView extends ImageView {
         able_to_click = true;
         already_done = false;
 
+
         // sets dimensions
         len_arrow_shaft = dpToPx(62);
         len_arrow_head = dpToPx(19);
@@ -110,7 +116,7 @@ public class DrawArrowsView extends ImageView {
         dim_btn_radius_buffer = dpToPx(19);
 
         // TODO allow user to set this value to disable animations
-        time_anim_arrow_dur = 150;
+
 
         setArrowStyle();
     }
@@ -136,6 +142,20 @@ public class DrawArrowsView extends ImageView {
     }
 
     private void setArrowStyle() {
+
+        // gets shared preferences
+        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        debuggingTextToggle = SP.getBoolean("debuggingTextToggle", false);
+
+        // toggles animation
+        boolean animationToggle = SP.getBoolean("animationToggle", false);
+        if (animationToggle) {
+            time_anim_arrow_dur = 150;
+        } else {
+            time_anim_arrow_dur = 0;
+        }
+
         // sets style of arrows
         paint_arrow.setStyle(Paint.Style.FILL);
         paint_arrow.setStrokeWidth(dpToPx(6));
@@ -143,9 +163,15 @@ public class DrawArrowsView extends ImageView {
         paint_arrow.setStyle(Paint.Style.STROKE);
         paint_arrow.setStrokeCap(Paint.Cap.ROUND);
 
+        // toggles visibility of boxes around arrow heads
+        boolean arrowBoxesToggle = SP.getBoolean("arrowBoxesToggle", false);
+        if (arrowBoxesToggle) {
+            paint_arrow_head_box.setColor(Color.GREEN);
+        } else {
+            paint_arrow_head_box.setColor(Color.TRANSPARENT);
+        }
         paint_arrow_head_box.setStyle(Paint.Style.FILL);
-        paint_arrow_head_box.setStrokeWidth(5f);
-        paint_arrow_head_box.setColor(Color.GREEN);
+        paint_arrow_head_box.setStrokeWidth(dpToPx(2));
         paint_arrow_head_box.setStyle(Paint.Style.STROKE);
         paint_arrow_head_box.setPathEffect(new DashPathEffect(new float[]{10, 10, 10, 10}, 0));
 
@@ -198,43 +224,25 @@ public class DrawArrowsView extends ImageView {
             canvas.drawPath(pthLst_arrows, paint_arrow);
         }
 
-        String msg = "width: " + viewWidth + "  height: " + viewHeight;
+        if (debuggingTextToggle) {
+            canvas.drawText("inside_button = " + String.valueOf(inside_button), 20, 100, paint_text);
+            canvas.drawText("rectList_indice = " + String.valueOf(rectList_indice), 20, 160, paint_text);
+            canvas.drawText("rectListArrowHead_indice = " + String.valueOf(rectListArrowHead_indice), 20, 220, paint_text);
+            canvas.drawText("linkList = " + String.valueOf(linkList), 20, 280, paint_text);
+            canvas.drawText("pointListArrowHead = " + String.valueOf(pointListArrowHead), 20, 1840, paint_text);
+            canvas.drawText("rectListArrowHead.size = " + String.valueOf(rectListArrowHead.size()), 20, 460, paint_text);
+            canvas.drawText("clicked_in_button = " + String.valueOf(clicked_in_button), 20, 580, paint_text);
+            canvas.drawText("clicked_on_arrow_head = " + String.valueOf(clicked_in_button), 20, 640, paint_text);
 
-
-        //canvas.drawText("View: " + msg, 20, 100, paint_text);
-        //System.out.println(msg);
-
-
-        // prints variables for debugging
-//        canvas.drawText("inside_button = " + String.valueOf(inside_button), 20, 100, paint_text);
-//        canvas.drawText("rectList_indice = " + String.valueOf(rectList_indice), 20, 160, paint_text);
-//        canvas.drawText("rectListArrowHead_indice = " + String.valueOf(rectListArrowHead_indice), 20, 220, paint_text);
-//        canvas.drawText("linkList = " + String.valueOf(linkList), 20, 280, paint_text);
-//        canvas.drawText("pointListArrowHead = " + String.valueOf(pointListArrowHead), 20, 1840, paint_text);
-//        canvas.drawText("rectListArrowHead.size = " + String.valueOf(rectListArrowHead.size()), 20, 460, paint_text);
-//        canvas.drawText("clicked_in_button = " + String.valueOf(clicked_in_button), 20, 580, paint_text);
-//        canvas.drawText("clicked_on_arrow_head = " + String.valueOf(clicked_in_button), 20, 640, paint_text);
-//
-//        canvas.drawText("inside_button = " + String.valueOf(inside_button), 600, 100, paint_text);
-//        canvas.drawText("size of pointlist = " + String.valueOf(pointList.size()), 600, 160, paint_text);
-//        canvas.drawText("size of pathlist = " + String.valueOf(pathList.size()), 600, 220, paint_text);
-//        canvas.drawText("size of linklist = " + String.valueOf(linkList.size()), 600, 280, paint_text);
-//        canvas.drawText("size of pointListArrowHead = " + String.valueOf(pointListArrowHead.size()), 600, 340, paint_text);
-//        canvas.drawText("size of rectListArrowHead = " + String.valueOf(rectListArrowHead.size()), 600, 400, paint_text);
-//        canvas.drawText("arrow_animated_fraction = " + String.valueOf(arrow_animated_fraction), 600, 460, paint_text);
-//        canvas.drawText("able_to_click = " + String.valueOf(able_to_click), 600, 520, paint_text);
-
-//        canvas.drawText("event.getPointerCount(); = " + String.valueOf(pointerCount), 600, 640, paint_text);
-        if (viewHeight != 0 && viewWidth != 0) {
-            long aspect = viewWidth / viewHeight;
-//            Log.d(TAG, "viewHeight = " + viewHeight);
-//            Log.d(TAG, "viewWidth = " + viewWidth);
-//            Log.d(TAG, "viewHeight / viewWidth = " + 100*viewWidth / viewHeight);
-            //canvas.drawText("Aspect Ratio = " + 100*aspect, 600, 640, paint_text);
+            canvas.drawText("inside_button = " + String.valueOf(inside_button), 600, 100, paint_text);
+            canvas.drawText("size of pointlist = " + String.valueOf(pointList.size()), 600, 160, paint_text);
+            canvas.drawText("size of pathlist = " + String.valueOf(pathList.size()), 600, 220, paint_text);
+            canvas.drawText("size of linklist = " + String.valueOf(linkList.size()), 600, 280, paint_text);
+            canvas.drawText("size of pointListArrowHead = " + String.valueOf(pointListArrowHead.size()), 600, 340, paint_text);
+            canvas.drawText("size of rectListArrowHead = " + String.valueOf(rectListArrowHead.size()), 600, 400, paint_text);
+            canvas.drawText("arrow_animated_fraction = " + String.valueOf(arrow_animated_fraction), 600, 460, paint_text);
+            canvas.drawText("able_to_click = " + String.valueOf(able_to_click), 600, 520, paint_text);
         }
-
-//        canvas.drawText("viewWidth " + String.valueOf(viewWidth), 600, 700, paint_text);
-//        canvas.drawText("viewHeight " + String.valueOf(viewHeight), 600, 760, paint_text);
     }
 
     // triggers long press
@@ -379,6 +387,7 @@ public class DrawArrowsView extends ImageView {
                         path_arrow.reset();
                         handler.removeCallbacks(mLongPressed);
                         //TODO add this back long_press
+
                         pointListArrowHead.remove(rectListArrowHead_indice);
                         linkList.remove(rectListArrowHead_indice);
                         rectListArrowHead.remove(rectListArrowHead_indice);
@@ -482,6 +491,45 @@ public class DrawArrowsView extends ImageView {
         path_arrow.lineTo(loc_arrow_head_right_x, loc_arrow_head_right_y);
     }
 
+
+    public void refreshCanvas() {
+
+        //refreshVal = true;
+        ref2();
+    }
+
+    public void ref2() {
+        Log.d(TAG, "Size" + pointListArrowHead.size());
+        Toast.makeText(getContext(), "Refreshed", Toast.LENGTH_SHORT).show();
+
+//
+//        path_arrow = new Path();
+//        pathList.add(path_arrow); // <-- Add this line.
+//        path_arrow.reset();
+//        loc_arrow_point_x = 8;
+//        loc_arrow_point_y = 8;
+//        angle = Math.atan2(loc_arrow_point_y - btn_loc_y, loc_arrow_point_x - btn_loc_x);
+//
+//        pointListArrowHead.add(new Point(loc_arrow_point_x, loc_arrow_point_y));
+//        linkList.add(rectList_indice);
+//        rectListArrowHead.add(new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
+
+//
+
+        path_arrow.reset();
+        pointListArrowHead.clear();
+        linkList.clear();
+        rectListArrowHead.clear();
+        pathList.clear();
+
+        // set booleans to false state
+        clicked_in_button = false;
+        clicked_on_arrow_head = false;
+        inside_button = false;
+        invalidate();
+    }
+
+    // converts dp to pixels
     public int dpToPx(int dp) {
         DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
         return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
@@ -493,6 +541,7 @@ public class DrawArrowsView extends ImageView {
     }
 
     // TODO: remove this before release if unused
+    // converts pixels to dp
     public int pxToDp(int px) {
         DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
         return Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));

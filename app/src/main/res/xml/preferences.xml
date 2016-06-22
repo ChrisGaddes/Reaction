@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--<EditTextPreference android:title="Your Name"-->
+        <!--android:key="username"-->
+        <!--android:summary="Please provide your username"></EditTextPreference>-->
+
+    <!--<CheckBoxPreference android:title="Application Updates"-->
+        <!--android:defaultValue="false"-->
+        <!--android:summary="This option if selected will allow the application to check for latest versions."-->
+        <!--android:key="applicationUpdates" />-->
+
+    <CheckBoxPreference android:title="Enable Animations"
+        android:defaultValue="true"
+        android:summary="Enables or disables animations when drawing arrows."
+        android:key="animationToggle" />
+
+    <CheckBoxPreference android:title="Show Arrow Head Boxes"
+        android:defaultValue="false"
+        android:summary="Toggles visibility of boxes around arrow heads"
+        android:key="arrowBoxesToggle" />
+
+    <CheckBoxPreference android:title="Show Debugging Text"
+        android:defaultValue="false"
+        android:summary="Toggles visibility debugging text"
+        android:key="debuggingTextToggle" />
+
+    <!--<ListPreference     android:title="Download Details"-->
+        <!--android:summary="Select the kind of data that you would like to download"-->
+        <!--android:key="downloadType"-->
+        <!--android:defaultValue="Ace"-->
+        <!--android:entries="@array/listArray"-->
+        <!--android:entryValues="@array/listValues" />-->
+</PreferenceScreen>

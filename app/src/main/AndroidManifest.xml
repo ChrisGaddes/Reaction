@@ -17,8 +17,12 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.chrisgaddes.reaction.ThirdActivity">
+        <activity android:name=".ThirdActivity">
             android:label = "Third Activity Page"
+        </activity>
+
+        <activity android:name=".MyPreferencesActivity">
+            android:label = "My Preferences"
         </activity>
 
     </application>
