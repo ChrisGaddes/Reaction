@@ -3,6 +3,7 @@ package com.chrisgaddes.reaction;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
@@ -11,6 +12,7 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
@@ -63,22 +65,11 @@ public class DrawArrowsView extends ImageView {
     private int loc_arrow_point_x;
     private int loc_arrow_point_y;
     private int btn_loc_y;
-    private double len_arrow_shaft_start;
     private double len_arrow_shaft_current;
     private double angle;
     private double angle_dif;
-    private double angle_degrees;
-    private double tmp_angle_dist;
-    private double angle_dist;
     private double arrow_animated_fraction;
-    private double angle_arrow_head_left;
-    private double angle_arrow_head_right;
-    private float loc_arrow_head_left_x;
 
-    // angles the force arrows snap to
-    private float loc_arrow_head_left_y;
-    private float loc_arrow_head_right_x;
-    private float loc_arrow_head_right_y;
     private boolean clicked_in_button;
     private boolean inside_button;
     private boolean able_to_click;
@@ -89,9 +80,14 @@ public class DrawArrowsView extends ImageView {
 
     private long viewHeight;
     private long viewWidth;
+    private Drawable mCustomImage;
+    private Drawable mCustomImage2;
 
     public DrawArrowsView(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        mCustomImage = context.getResources().getDrawable(R.drawable.fbd_2_bar);
+        mCustomImage2 = context.getResources().getDrawable(R.drawable.fbd_2_greyed);
 
         // create new paints
         paint_arrow = new Paint();
@@ -125,12 +121,12 @@ public class DrawArrowsView extends ImageView {
 
         already_done = true;
         // set point locations TODO: import these from database
-        PointF pointOne = new PointF((float) 12.857, (float) 32.3);
-        PointF pointThree = new PointF((float) 13.6, (float) 68.25);
-        PointF pointFour = new PointF((float) 90.703, (float) 68.25);
-        PointF pointTwo = new PointF(199, 1407);
+        PointF pointOne = new PointF((float) 18, (float) 31.5);
+        PointF pointTwo = new PointF((float) 18, (float) 62.1);
+        PointF pointThree = new PointF((float) 50, (float) 62.1);
+        PointF pointFour = new PointF((float) 87.55, (float) 62.1);
 
-        pointList.add(percentToPx(pointOne));
+       // pointList.add(percentToPx(pointOne));
         pointList.add(percentToPx(pointTwo));
         pointList.add(percentToPx(pointThree));
         pointList.add(percentToPx(pointFour));
@@ -197,12 +193,34 @@ public class DrawArrowsView extends ImageView {
         }
     }
 
+
+    final Resources.Theme theme = getResources().newTheme();
+
+//    theme.applyStyle(R.style.BaubleRound, false);
+//    theme.applyStyle(R.style.BaubleSmall, false);
+//
+//    changeTheme(theme);
+
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        // TODO look into clippath. May be able to use it to isolate the members
+
+        Rect imageBounds = canvas.getClipBounds();  // Adjust this for where you want it
+
+        mCustomImage2.setBounds(imageBounds);
+        mCustomImage2.draw(canvas);
+        mCustomImage.setBounds(imageBounds);
+        mCustomImage.draw(canvas);
+
+
+        //canvas.drawPicture(mCustomImage, paint_arrow_head_box);
+
+
         // TODO change this to something more flexible and controlable
-        setImageResource(R.drawable.fbd_1);
+        //setImageResource(R.drawable.fbd_1);
+
 
         // draws rectangles around arrowheads
         for (Rect rect1 : rectListArrowHead) {
@@ -408,10 +426,10 @@ public class DrawArrowsView extends ImageView {
                     final double angle_start = Math.atan2(loc_arrow_point_y - btn_loc_y, loc_arrow_point_x - btn_loc_x);
 
                     // snaps arrow to pi/4 increments
-                    angle_dist = Math.abs(angles[0] - angle_start);
+                    double angle_dist = Math.abs(angles[0] - angle_start);
                     int idx = 0;
                     for (int c = 1; c < angles.length; c++) {
-                        tmp_angle_dist = Math.abs(angles[c] - angle_start);
+                        double tmp_angle_dist = Math.abs(angles[c] - angle_start);
                         if (tmp_angle_dist < angle_dist) {
                             idx = c;
                             angle_dist = tmp_angle_dist;
@@ -419,7 +437,7 @@ public class DrawArrowsView extends ImageView {
                     }
                     angle_dif = angles[idx] - angle_start;
 
-                    len_arrow_shaft_start = Math.hypot((loc_arrow_point_x - btn_loc_x), (loc_arrow_point_y - btn_loc_y));
+                    double len_arrow_shaft_start = Math.hypot((loc_arrow_point_x - btn_loc_x), (loc_arrow_point_y - btn_loc_y));
 
                     // animates decrease in length and angle
                     ValueAnimator animator = ValueAnimator.ofFloat((float) len_arrow_shaft_start, (float) len_arrow_shaft);
@@ -454,6 +472,7 @@ public class DrawArrowsView extends ImageView {
                     invalidate();
                     // prints angle snapped to in degrees to snackbar
                     // All angles are inverted, so this if statement shows 0.0 instead of -0.0
+                    double angle_degrees;
                     if (angles[idx] == 0.0) {
                         angle_degrees = Math.round(Math.toDegrees(angles[idx]));
                     } else {
@@ -471,14 +490,14 @@ public class DrawArrowsView extends ImageView {
 
     private void drawArrow() {
         // sets angle of arrow head
-        angle_arrow_head_left = 4 * pi / 3 - angle;
-        angle_arrow_head_right = -pi / 3 - angle;
+        double angle_arrow_head_left = 4 * pi / 3 - angle;
+        double angle_arrow_head_right = -pi / 3 - angle;
 
         // calculates location of points for both sides of arrow head
-        loc_arrow_head_left_x = (float) ((float) len_arrow_head * Math.sin(angle_arrow_head_left) + loc_arrow_point_x);
-        loc_arrow_head_left_y = (float) ((float) len_arrow_head * Math.cos(angle_arrow_head_left) + loc_arrow_point_y);
-        loc_arrow_head_right_x = (float) ((float) len_arrow_head * Math.sin(angle_arrow_head_right) + loc_arrow_point_x);
-        loc_arrow_head_right_y = (float) ((float) len_arrow_head * Math.cos(angle_arrow_head_right) + loc_arrow_point_y);
+        float loc_arrow_head_left_x = (float) ((float) len_arrow_head * Math.sin(angle_arrow_head_left) + loc_arrow_point_x);
+        float loc_arrow_head_left_y = (float) ((float) len_arrow_head * Math.cos(angle_arrow_head_left) + loc_arrow_point_y);
+        float loc_arrow_head_right_x = (float) ((float) len_arrow_head * Math.sin(angle_arrow_head_right) + loc_arrow_point_x);
+        float loc_arrow_head_right_y = (float) ((float) len_arrow_head * Math.cos(angle_arrow_head_right) + loc_arrow_point_y);
 
         // draws arrow shaft
         path_arrow.moveTo(btn_loc_x, btn_loc_y);
@@ -491,43 +510,43 @@ public class DrawArrowsView extends ImageView {
         path_arrow.lineTo(loc_arrow_head_right_x, loc_arrow_head_right_y);
     }
 
-
-    public void refreshCanvas() {
-
-        //refreshVal = true;
-        ref2();
-    }
-
-    public void ref2() {
-        Log.d(TAG, "Size" + pointListArrowHead.size());
-        Toast.makeText(getContext(), "Refreshed", Toast.LENGTH_SHORT).show();
-
 //
-//        path_arrow = new Path();
-//        pathList.add(path_arrow); // <-- Add this line.
+//    public void refreshCanvas() {
+//
+//        //refreshVal = true;
+//        ref2();
+//    }
+//
+//    public void ref2() {
+//        Log.d(TAG, "Size" + pointListArrowHead.size());
+//        Toast.makeText(getContext(), "Refreshed", Toast.LENGTH_SHORT).show();
+//
+////
+////        path_arrow = new Path();
+////        pathList.add(path_arrow); // <-- Add this line.
+////        path_arrow.reset();
+////        loc_arrow_point_x = 8;
+////        loc_arrow_point_y = 8;
+////        angle = Math.atan2(loc_arrow_point_y - btn_loc_y, loc_arrow_point_x - btn_loc_x);
+////
+////        pointListArrowHead.add(new Point(loc_arrow_point_x, loc_arrow_point_y));
+////        linkList.add(rectList_indice);
+////        rectListArrowHead.add(new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
+//
+////
+//
 //        path_arrow.reset();
-//        loc_arrow_point_x = 8;
-//        loc_arrow_point_y = 8;
-//        angle = Math.atan2(loc_arrow_point_y - btn_loc_y, loc_arrow_point_x - btn_loc_x);
+//        pointListArrowHead.clear();
+//        linkList.clear();
+//        rectListArrowHead.clear();
+//        pathList.clear();
 //
-//        pointListArrowHead.add(new Point(loc_arrow_point_x, loc_arrow_point_y));
-//        linkList.add(rectList_indice);
-//        rectListArrowHead.add(new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
-
-//
-
-        path_arrow.reset();
-        pointListArrowHead.clear();
-        linkList.clear();
-        rectListArrowHead.clear();
-        pathList.clear();
-
-        // set booleans to false state
-        clicked_in_button = false;
-        clicked_on_arrow_head = false;
-        inside_button = false;
-        invalidate();
-    }
+//        // set booleans to false state
+//        clicked_in_button = false;
+//        clicked_on_arrow_head = false;
+//        inside_button = false;
+//        invalidate();
+//    }
 
     // converts dp to pixels
     public int dpToPx(int dp) {
