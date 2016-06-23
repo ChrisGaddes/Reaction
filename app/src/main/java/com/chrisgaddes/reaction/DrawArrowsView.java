@@ -54,10 +54,10 @@ public class DrawArrowsView extends ImageView {
     // initialize ArrayLists for paths and points
     private ArrayList<Point> pointList = new ArrayList<>();
     private ArrayList<Rect> rectListButtons = new ArrayList<>();
-    public ArrayList<Rect> rectListArrowHead = new ArrayList<>();
-    public ArrayList<Path> pathList = new ArrayList<>();
-    public ArrayList<Point> pointListArrowHead = new ArrayList<>();
-    public ArrayList<Integer> linkList = new ArrayList<>();
+    private ArrayList<Rect> rectListArrowHead = new ArrayList<>();
+    private ArrayList<Path> pathList = new ArrayList<>();
+    private ArrayList<Point> pointListArrowHead = new ArrayList<>();
+    private ArrayList<Integer> linkList = new ArrayList<>();
 
     private Path path_arrow;
 
@@ -396,9 +396,9 @@ public class DrawArrowsView extends ImageView {
                         inside_button = true;
                     }
 
-                    if (!inside_button) {
-                        inside_button = false; // TODO why us this here?
-                    }
+//                    if (!inside_button) {
+//                        inside_button = false; // TODO why us this here?
+//                    }
 
                     // break if released inside button
                     if (inside_button) {
@@ -415,6 +415,7 @@ public class DrawArrowsView extends ImageView {
                         clicked_in_button = false;
                         clicked_on_arrow_head = false;
                         inside_button = false;
+                        invalidate();
                         break;
                     }
 
