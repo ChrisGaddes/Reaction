@@ -15,7 +15,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.design.widget.Snackbar;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -57,6 +56,7 @@ public class DrawArrowsView extends ImageView {
     private ArrayList<Rect> rectListArrowHead = new ArrayList<>();
     private ArrayList<Path> pathList = new ArrayList<>();
     private ArrayList<Point> pointListArrowHead = new ArrayList<>();
+    private ArrayList<Double> angleListArrowHead = new ArrayList<>();
     private ArrayList<Integer> linkList = new ArrayList<>();
 
     private Path path_arrow;
@@ -123,7 +123,7 @@ public class DrawArrowsView extends ImageView {
         // set point locations TODO: import these from database
         PointF pointOne = new PointF((float) 18, (float) 31.5);
         PointF pointTwo = new PointF((float) 18, (float) 62.1);
-        PointF pointThree = new PointF((float) 50, (float) 62.1);
+        PointF pointThree = new PointF((float) 53.5, (float) 62.1);
         PointF pointFour = new PointF((float) 87.55, (float) 62.1);
 
        // pointList.add(percentToPx(pointOne));
@@ -152,6 +152,12 @@ public class DrawArrowsView extends ImageView {
             time_anim_arrow_dur = 0;
         }
 
+        // toggles visibility of dots at nodes
+        boolean nodeDotsToggle = SP.getBoolean("nodeDotsToggle", false);
+        if (!nodeDotsToggle) {
+            paint_points.setAlpha(0); // TODO remove hard coded alpha
+        }
+
         // sets style of arrows
         paint_arrow.setStyle(Paint.Style.FILL);
         paint_arrow.setStrokeWidth(dpToPx(6));
@@ -173,13 +179,23 @@ public class DrawArrowsView extends ImageView {
 
         paint_text.setTextSize(23f);
 
+
+        // toggles visibility of boxes around arrow heads
+        boolean nodeBoxesToggle = SP.getBoolean("nodeBoxesToggle", false);
+        if (nodeBoxesToggle) {
+            paint_box.setColor(Color.GRAY);
+            paint_box.setAlpha(80); // TODO remove hard coded alpha
+        } else {
+            paint_box.setColor(Color.TRANSPARENT);
+            paint_box.setAlpha(0);
+        }
+
         //TODO set beginning of shaft to transparent so arrow appears to be at surface
         paint_box.setStyle(Paint.Style.FILL);
         paint_box.setStrokeWidth(5f);
-        paint_box.setColor(Color.GRAY);
         paint_box.setStyle(Paint.Style.STROKE);
         paint_box.setPathEffect(new DashPathEffect(new float[]{10, 10, 10, 10}, 0));
-        paint_box.setAlpha(80); // TODO remove hard coded alpha
+
     }
 
     @Override
@@ -248,6 +264,8 @@ public class DrawArrowsView extends ImageView {
             canvas.drawText("rectListArrowHead_indice = " + String.valueOf(rectListArrowHead_indice), 20, 220, paint_text);
             canvas.drawText("linkList = " + String.valueOf(linkList), 20, 280, paint_text);
             canvas.drawText("pointListArrowHead = " + String.valueOf(pointListArrowHead), 20, 1840, paint_text);
+            canvas.drawText("angleListArrowHead = " + String.valueOf(angleListArrowHead), 20, 1900, paint_text);
+
             canvas.drawText("rectListArrowHead.size = " + String.valueOf(rectListArrowHead.size()), 20, 460, paint_text);
             canvas.drawText("clicked_in_button = " + String.valueOf(clicked_in_button), 20, 580, paint_text);
             canvas.drawText("clicked_on_arrow_head = " + String.valueOf(clicked_in_button), 20, 640, paint_text);
@@ -257,9 +275,10 @@ public class DrawArrowsView extends ImageView {
             canvas.drawText("size of pathlist = " + String.valueOf(pathList.size()), 600, 220, paint_text);
             canvas.drawText("size of linklist = " + String.valueOf(linkList.size()), 600, 280, paint_text);
             canvas.drawText("size of pointListArrowHead = " + String.valueOf(pointListArrowHead.size()), 600, 340, paint_text);
-            canvas.drawText("size of rectListArrowHead = " + String.valueOf(rectListArrowHead.size()), 600, 400, paint_text);
-            canvas.drawText("arrow_animated_fraction = " + String.valueOf(arrow_animated_fraction), 600, 460, paint_text);
-            canvas.drawText("able_to_click = " + String.valueOf(able_to_click), 600, 520, paint_text);
+            canvas.drawText("size of angleListArrowHead = " + String.valueOf(angleListArrowHead.size()), 600, 400, paint_text);
+            canvas.drawText("size of rectListArrowHead = " + String.valueOf(rectListArrowHead.size()), 600, 460, paint_text);
+            canvas.drawText("arrow_animated_fraction = " + String.valueOf(arrow_animated_fraction), 600, 520, paint_text);
+            canvas.drawText("able_to_click = " + String.valueOf(able_to_click), 600, 580, paint_text);
         }
     }
 
@@ -275,6 +294,7 @@ public class DrawArrowsView extends ImageView {
 
             path_arrow.reset();
             pointListArrowHead.remove(rectListArrowHead_indice);
+            angleListArrowHead.remove(rectListArrowHead_indice);
             linkList.remove(rectListArrowHead_indice);
             rectListArrowHead.remove(rectListArrowHead_indice);
             pathList.remove(rectListArrowHead_indice);
@@ -339,6 +359,7 @@ public class DrawArrowsView extends ImageView {
                         angle = Math.atan2(loc_arrow_point_y - btn_loc_y, loc_arrow_point_x - btn_loc_x);
 
                         pointListArrowHead.add(new Point(loc_arrow_point_x, loc_arrow_point_y));
+                        angleListArrowHead.add(angle);
                         linkList.add(rectList_indice);
                         rectListArrowHead.add(new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
 
@@ -381,6 +402,7 @@ public class DrawArrowsView extends ImageView {
                     loc_arrow_point_y = Y;
                     angle = Math.atan2(loc_arrow_point_y - btn_loc_y, loc_arrow_point_x - btn_loc_x);
                     pointListArrowHead.set(rectListArrowHead_indice, new Point(loc_arrow_point_x, loc_arrow_point_y));
+                    angleListArrowHead.set(rectListArrowHead_indice, angle);
                     rectListArrowHead.set(rectListArrowHead_indice, new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
 
                     drawArrow();
@@ -407,6 +429,7 @@ public class DrawArrowsView extends ImageView {
                         //TODO add this back long_press
 
                         pointListArrowHead.remove(rectListArrowHead_indice);
+                        angleListArrowHead.remove(rectListArrowHead_indice);
                         linkList.remove(rectListArrowHead_indice);
                         rectListArrowHead.remove(rectListArrowHead_indice);
                         pathList.remove(rectListArrowHead_indice);
@@ -454,6 +477,7 @@ public class DrawArrowsView extends ImageView {
                             path_arrow.reset();
 
                             pointListArrowHead.set(rectListArrowHead_indice, new Point(loc_arrow_point_x, loc_arrow_point_y));
+                            angleListArrowHead.set(rectListArrowHead_indice, angle);
                             rectListArrowHead.set(rectListArrowHead_indice, new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
 
                             able_to_click = false;
@@ -481,7 +505,7 @@ public class DrawArrowsView extends ImageView {
                     }
 
                     //TODO add popup or snackbar that says where arrow was placed
-                    Snackbar.make(this, "Created force at " + angle_degrees + "\u00B0", Snackbar.LENGTH_SHORT).show();
+                    //Snackbar.make(this, "Created force at " + angle_degrees + "\u00B0", Snackbar.LENGTH_SHORT).show();
                     inside_button = false;
                 }
                 break;
@@ -511,44 +535,6 @@ public class DrawArrowsView extends ImageView {
         path_arrow.lineTo(loc_arrow_head_right_x, loc_arrow_head_right_y);
     }
 
-//
-//    public void refreshCanvas() {
-//
-//        //refreshVal = true;
-//        ref2();
-//    }
-//
-//    public void ref2() {
-//        Log.d(TAG, "Size" + pointListArrowHead.size());
-//        Toast.makeText(getContext(), "Refreshed", Toast.LENGTH_SHORT).show();
-//
-////
-////        path_arrow = new Path();
-////        pathList.add(path_arrow); // <-- Add this line.
-////        path_arrow.reset();
-////        loc_arrow_point_x = 8;
-////        loc_arrow_point_y = 8;
-////        angle = Math.atan2(loc_arrow_point_y - btn_loc_y, loc_arrow_point_x - btn_loc_x);
-////
-////        pointListArrowHead.add(new Point(loc_arrow_point_x, loc_arrow_point_y));
-////        linkList.add(rectList_indice);
-////        rectListArrowHead.add(new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
-//
-////
-//
-//        path_arrow.reset();
-//        pointListArrowHead.clear();
-//        linkList.clear();
-//        rectListArrowHead.clear();
-//        pathList.clear();
-//
-//        // set booleans to false state
-//        clicked_in_button = false;
-//        clicked_on_arrow_head = false;
-//        inside_button = false;
-//        invalidate();
-//    }
-
     // converts dp to pixels
     public int dpToPx(int dp) {
         DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
@@ -569,7 +555,7 @@ public class DrawArrowsView extends ImageView {
 
     // code from https://github.com/jesperborgstrup/buzzingandroid/blob/master/src/com/buzzingandroid/ui/ViewAspectRatioMeasurer.java
     // The aspect ratio to be respected by the measurer
-    private static final double VIEW_ASPECT_RATIO = .75;
+    private static final double VIEW_ASPECT_RATIO = .75; // Do not change this!!
     private ViewAspectRatioMeasurer varm = new ViewAspectRatioMeasurer(VIEW_ASPECT_RATIO);
 
     @Override

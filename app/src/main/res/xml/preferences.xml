@@ -14,10 +14,20 @@
         android:summary="Enables or disables animations when drawing arrows."
         android:key="animationToggle" />
 
-    <CheckBoxPreference android:title="Show Arrow Head Boxes"
+    <CheckBoxPreference android:title="Show Boxes Around Arrow Heads"
         android:defaultValue="false"
         android:summary="Toggles visibility of boxes around arrow heads"
         android:key="arrowBoxesToggle" />
+
+    <CheckBoxPreference android:title="Show Boxes at Nodes"
+        android:defaultValue="false"
+        android:summary="Toggles visibility of boxes at nodes"
+        android:key="nodeBoxesToggle" />
+
+    <CheckBoxPreference android:title="Show dots at Nodes"
+        android:defaultValue="false"
+        android:summary="Toggles visibility of dots at nodes"
+        android:key="nodeDotsToggle" />
 
     <CheckBoxPreference android:title="Show Debugging Text"
         android:defaultValue="false"
