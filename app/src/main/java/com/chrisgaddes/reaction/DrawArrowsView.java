@@ -126,28 +126,30 @@ public class DrawArrowsView extends ImageView {
     private void setButtonPoints(Context context) {
         // this method sets the location of the points
         // TODO: import these from database
-        // TODO: JAMES SENTELL: I used this variable "already_done" so that it only runs these once
+        // TODO: JAMES SENTELL: I used this variable "already_done" so that it only runs these once. this is probably a lousy way to accomplish this...
         already_done = true;
 
-        // Adds angles to the list of "correc" angles
+        // Adds angles to the list of "correct" angles
         int btn = 0;
         angleListCheck.add(new ArrayList<Double>());
         angleListCheck.add(new ArrayList<Double>());
         angleListCheck.add(new ArrayList<Double>());
-        angleListCheck.get(btn).add(-pi / 6);
-        angleListCheck.get(btn).add(pi / 6);
+        angleListCheck.get(btn).add(0.0);
         angleListCheck.get(btn).add(-pi);
-        angleListCheck.get(btn).add(pi);
-//
-        btn = 1;
-        // add row:
-        angleListCheck.add(new ArrayList<Double>());
-        angleListCheck.get(btn).add(-pi / 3);
-        angleListCheck.get(btn).add(pi / 3);
-        angleListCheck.get(btn).add(-pi);
-        angleListCheck.get(btn).add(pi);
+        angleListCheck.get(btn).add(pi / 2);
+        angleListCheck.get(btn).add(-pi / 2);
 
-        // set point locations
+        btn = 1;
+        angleListCheck.add(new ArrayList<Double>());
+        angleListCheck.get(btn).add(pi / 2);
+        angleListCheck.get(btn).add(-pi / 2);
+
+        btn = 2;
+        angleListCheck.add(new ArrayList<Double>());
+        angleListCheck.get(btn).add(pi / 6);
+        angleListCheck.get(btn).add(-5 * pi / 6);
+
+        // set node locations - touch "button" zones will be placed in boxes around these nodes
         PointF pointOne = new PointF((float) 18, (float) 31.5);
         PointF pointTwo = new PointF((float) 18, (float) 62.1);
         PointF pointThree = new PointF((float) 53.5, (float) 62.1);
@@ -242,6 +244,7 @@ public class DrawArrowsView extends ImageView {
         // TODO JAMES SENTELL: "I needed the size of the canvas in order to calculate the percentage the points were accross the screen, but it won't properly get the size until the view is drawn. So, I trigger setButtonPoints from here once the view is drawn and use the if statement below to only allow it to run once. This seems like a terrible was to do it but it works. I'd love advice on how to improve this if you think it matters"
 
         if (!already_done) {
+            // TODO: JAMES SENTELL "could you explain 'context' to me sometime?"
             setButtonPoints(getContext());
         }
     }
