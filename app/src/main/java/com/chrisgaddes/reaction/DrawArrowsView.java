@@ -75,7 +75,7 @@ public class DrawArrowsView extends ImageView {
 
     private double len_arrow_shaft_current;
     private double angle;
-    private double angle_dif;
+    private double angle_difference;
     private double arrow_animated_fraction;
 
     private boolean clicked_on_button;
@@ -483,7 +483,8 @@ public class DrawArrowsView extends ImageView {
                     // calculates the angle of arrow at release
                     final double angle_start = Math.atan2(loc_arrow_point_y - btn_loc_y, loc_arrow_point_x - btn_loc_x);
 
-                    // snaps arrow to pi/4 increments
+
+                    // snaps arrow to pi/6 (30 degree) increments
                     double angle_dist = Math.abs(angles[0] - angle_start);
                     int idx = 0;
                     for (int c = 1; c < angles.length; c++) {
@@ -493,13 +494,14 @@ public class DrawArrowsView extends ImageView {
                             angle_dist = tmp_angle_dist;
                         }
                     }
-                    angle_dif = angles[idx] - angle_start;
+                    // calculates angle between released angle and the nearest 30 degree increment
+                    angle_difference = angles[idx] - angle_start;
 
                     // breaks if arrows are being stacked
                     for (Point point5 : pointListArrowHead) {
-                        int x_tmp = (int) (len_arrow_shaft * Math.sin(angles[idx]) + btn_loc_y);
-                        int y_tmp = (int) (len_arrow_shaft * Math.cos(angles[idx]) + btn_loc_x);
-                        if (point5.equals(y_tmp, x_tmp)) {
+                        int x_tmp = (int) (len_arrow_shaft * Math.cos(angles[idx]) + btn_loc_x);
+                        int y_tmp = (int) (len_arrow_shaft * Math.sin(angles[idx]) + btn_loc_y);
+                        if (point5.equals(x_tmp, y_tmp)) {
                             Toast.makeText(getContext(), "You can't stack arrows", Toast.LENGTH_SHORT).show();
                             path_arrow.reset();
 
@@ -533,7 +535,7 @@ public class DrawArrowsView extends ImageView {
                         public void onAnimationUpdate(ValueAnimator animation) {
                             arrow_animated_fraction = animation.getAnimatedFraction();
                             len_arrow_shaft_current = (Float) animation.getAnimatedValue();
-                            angle = angle_start + arrow_animated_fraction * angle_dif;
+                            angle = angle_start + arrow_animated_fraction * angle_difference;
                             loc_arrow_point_y = (int) (len_arrow_shaft_current * Math.sin(angle) + btn_loc_y);
                             loc_arrow_point_x = (int) (len_arrow_shaft_current * Math.cos(angle) + btn_loc_x);
                             path_arrow.reset();
