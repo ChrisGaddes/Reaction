@@ -140,6 +140,10 @@ public class DrawArrowsView extends ImageView {
 //        // add a column:
 //        angleListCheck.get(angleListCheck.size() - 1).add(1.0);
 //
+
+
+        // James, look here
+        // Adds angles to the check list
         int btn = 0;
         angleListCheck.add(new ArrayList<Double>());
         angleListCheck.add(new ArrayList<Double>());
@@ -542,14 +546,18 @@ public class DrawArrowsView extends ImageView {
                             if (arrow_animated_fraction == 1) {
                                 clicked_in_button = false;
                                 clicked_on_arrow_head = false;
+
+                                // allow user to click again
                                 able_to_click = true;
 
-                                // TODO figure out what's going on here
+                                // TODO for some reason this only detects the first angle in the list
                                 for (Double ang1 : angleListCheck.get(linkList.get(rectListArrowHead_indice))) {
 
                                     //rectListButtons.get(linkList.get(rectListArrowHead_indice)
 
                                     if (ang1.equals(angle)) {
+
+                                        //Snackbar.make(this, "Angle " + angle_degrees + "\u00B0", Snackbar.LENGTH_SHORT).show();
                                         Toast.makeText(getContext(), "in list", Toast.LENGTH_SHORT).show();
                                         Log.d(TAG, "angle: " + angle );
                                     }
