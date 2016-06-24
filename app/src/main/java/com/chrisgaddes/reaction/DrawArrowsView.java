@@ -14,6 +14,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -34,6 +35,7 @@ public class DrawArrowsView extends ImageView {
     //double angles[] = {-pi, -3 * pi / 4, -pi / 2, -pi / 4, 0, pi / 4, pi / 2, 3 * pi / 4, pi};
     final double[] angles = {-pi, -5 * pi / 6, -2 * pi / 3, -pi / 2, -pi / 3, -pi / 6, 0, pi / 6, pi / 3, pi / 2, 2 * pi / 3, 5 * pi / 6, pi};
 
+    // TODO: ** JAMES SENTELL: "Should I initialize these variables elsewhere?"
     // initialize variables
     private final Paint paint_points;
     private final Paint paint_arrow;
@@ -50,14 +52,13 @@ public class DrawArrowsView extends ImageView {
     private int rectListArrowHead_indice;
     private boolean clicked_on_arrow_head;
 
-    // initialize ArrayLists for paths and points
-    private ArrayList<Point> pointList = new ArrayList<>();
     //private ArrayList<Double> angleListCheck = new ArrayList<>();
 
-    //TODO http://stackoverflow.com/questions/32324876/how-to-save-an-answer-in-a-riddle-game-without-creating-a-database
+    //TODO consider http://stackoverflow.com/questions/32324876/how-to-save-an-answer-in-a-riddle-game-without-creating-a-database
 
+    // initialize ArrayLists for paths and points
+    private ArrayList<Point> pointList = new ArrayList<>();
     List<List<Double>> angleListCheck = new ArrayList<>();
-
     private ArrayList<Rect> rectListButtons = new ArrayList<>();
     private ArrayList<Rect> rectListArrowHead = new ArrayList<>();
     private ArrayList<Path> pathList = new ArrayList<>();
@@ -68,19 +69,19 @@ public class DrawArrowsView extends ImageView {
     private Path path_arrow;
 
     private int btn_loc_x;
+    private int btn_loc_y;
     private int loc_arrow_point_x;
     private int loc_arrow_point_y;
-    private int btn_loc_y;
+
     private double len_arrow_shaft_current;
     private double angle;
     private double angle_dif;
     private double arrow_animated_fraction;
 
-    private boolean clicked_in_button;
+    private boolean clicked_on_button;
     private boolean inside_button;
     private boolean able_to_click;
     private boolean already_done;
-
 
     private boolean debuggingTextToggle;
 
@@ -89,6 +90,7 @@ public class DrawArrowsView extends ImageView {
     private Drawable mFocusedImage;
     private Drawable mGrayedImage;
 
+    // TODO: JAMES SENTELL "Should I have another one of these with Just Contect context, or other things "
     public DrawArrowsView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
@@ -104,51 +106,34 @@ public class DrawArrowsView extends ImageView {
         paint_text = new Paint();
         paint_points = new Paint();
 
-        //setButtonPoints(context);
-        clicked_in_button = false;
+        // set values to false to begin
+        clicked_on_button = false;
         inside_button = false;
         clicked_on_arrow_head = false;
         able_to_click = true;
         already_done = false;
 
-
-        // sets dimensions
+        // sets dimensions of arrow, nodes, and touch areas
         len_arrow_shaft = dpToPx(62);
         len_arrow_head = dpToPx(19);
         dim_btn_radius = dpToPx(4);
         dim_btn_radius_buffer = dpToPx(19);
 
-        // TODO allow user to set this value to disable animations
-
+        // TODO JAMES SENTELL: "is it bad practice how I extracted this setArrowStyle method out here and don't have anything inside the parentheses? (pardon my lack of correct terminology)"
         setArrowStyle();
     }
 
     private void setButtonPoints(Context context) {
-
+        // this method sets the location of the points
+        // TODO: import these from database
+        // TODO: JAMES SENTELL: I used this variable "already_done" so that it only runs these once
         already_done = true;
-        // set point locations TODO: import these from database
-        PointF pointOne = new PointF((float) 18, (float) 31.5);
-        PointF pointTwo = new PointF((float) 18, (float) 62.1);
-        PointF pointThree = new PointF((float) 53.5, (float) 62.1);
-        PointF pointFour = new PointF((float) 87.55, (float) 62.1);
 
-
-// http://stackoverflow.com/questions/5022824/how-to-fill-a-two-dimensional-arraylist-in-java-with-integers
-
-//
-//
-//        // add a column:
-//        angleListCheck.get(angleListCheck.size() - 1).add(1.0);
-//
-
-
-        // James, look here
-        // Adds angles to the check list
+        // Adds angles to the list of "correc" angles
         int btn = 0;
         angleListCheck.add(new ArrayList<Double>());
         angleListCheck.add(new ArrayList<Double>());
         angleListCheck.add(new ArrayList<Double>());
-        angleListCheck.get(btn).add(-pi / 6);
         angleListCheck.get(btn).add(-pi / 6);
         angleListCheck.get(btn).add(pi / 6);
         angleListCheck.get(btn).add(-pi);
@@ -162,8 +147,13 @@ public class DrawArrowsView extends ImageView {
         angleListCheck.get(btn).add(-pi);
         angleListCheck.get(btn).add(pi);
 
-        //angleListCheck.get(row).add(someValue);
+        // set point locations
+        PointF pointOne = new PointF((float) 18, (float) 31.5);
+        PointF pointTwo = new PointF((float) 18, (float) 62.1);
+        PointF pointThree = new PointF((float) 53.5, (float) 62.1);
+        PointF pointFour = new PointF((float) 87.55, (float) 62.1);
 
+// http://stackoverflow.com/questions/5022824/how-to-fill-a-two-dimensional-arraylist-in-java-with-integers
 
         // pointList.add(percentToPx(pointOne));
         pointList.add(percentToPx(pointTwo));
@@ -181,20 +171,14 @@ public class DrawArrowsView extends ImageView {
         // gets shared preferences
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getContext());
 
+        // toggles debugging text - this value can be changed in menu in app
         debuggingTextToggle = SP.getBoolean("debuggingTextToggle", false);
 
-        // toggles animation
-        boolean animationToggle = SP.getBoolean("animationToggle", false);
-        if (animationToggle) {
-            time_anim_arrow_dur = 150;
-        } else {
-            time_anim_arrow_dur = 0;
-        }
 
-        // toggles visibility of dots at nodes
+        // toggles visibility of dots at nodes - this value can be changed in menu in app
         boolean nodeDotsToggle = SP.getBoolean("nodeDotsToggle", false);
         if (!nodeDotsToggle) {
-            paint_points.setAlpha(0); // TODO remove hard coded alpha
+            paint_points.setAlpha(0);
         }
 
         // sets style of arrows
@@ -204,22 +188,40 @@ public class DrawArrowsView extends ImageView {
         paint_arrow.setStyle(Paint.Style.STROKE);
         paint_arrow.setStrokeCap(Paint.Cap.ROUND);
 
-        // toggles visibility of boxes around arrow heads
+        // toggles arrow animation - this value can be changed in menu in app
+        boolean animationToggle = SP.getBoolean("animationToggle", false);
+        if (animationToggle) {
+            // arrow animations enabled
+            time_anim_arrow_dur = 150;
+        } else {
+            // arrow animations disabled
+            time_anim_arrow_dur = 0;
+        }
+
+        // sets style of boxes around arrow heads
+        paint_arrow_head_box.setStyle(Paint.Style.FILL);
+        paint_arrow_head_box.setStrokeWidth(dpToPx(2));
+        paint_arrow_head_box.setStyle(Paint.Style.STROKE);
+        paint_arrow_head_box.setPathEffect(new DashPathEffect(new float[]{10, 10, 10, 10}, 0));
+
+        // toggles visibility of boxes around arrow heads - this value can be changed in menu in app
         boolean arrowBoxesToggle = SP.getBoolean("arrowBoxesToggle", false);
         if (arrowBoxesToggle) {
             paint_arrow_head_box.setColor(Color.GREEN);
         } else {
             paint_arrow_head_box.setColor(Color.TRANSPARENT);
         }
-        paint_arrow_head_box.setStyle(Paint.Style.FILL);
-        paint_arrow_head_box.setStrokeWidth(dpToPx(2));
-        paint_arrow_head_box.setStyle(Paint.Style.STROKE);
-        paint_arrow_head_box.setPathEffect(new DashPathEffect(new float[]{10, 10, 10, 10}, 0));
 
+        // sets text size for debugging text
         paint_text.setTextSize(23f);
 
+        // sets style of boxes around nodes
+        paint_box.setStyle(Paint.Style.FILL);
+        paint_box.setStrokeWidth(5f);
+        paint_box.setStyle(Paint.Style.STROKE);
+        paint_box.setPathEffect(new DashPathEffect(new float[]{10, 10, 10, 10}, 0));
 
-        // toggles visibility of boxes around arrow heads
+        // toggles visibility of boxes around nodes
         boolean nodeBoxesToggle = SP.getBoolean("nodeBoxesToggle", false);
         if (nodeBoxesToggle) {
             paint_box.setColor(Color.GRAY);
@@ -228,20 +230,16 @@ public class DrawArrowsView extends ImageView {
             paint_box.setColor(Color.TRANSPARENT);
             paint_box.setAlpha(0);
         }
-
-        //TODO set beginning of shaft to transparent so arrow appears to be at surface
-        paint_box.setStyle(Paint.Style.FILL);
-        paint_box.setStrokeWidth(5f);
-        paint_box.setStyle(Paint.Style.STROKE);
-        paint_box.setPathEffect(new DashPathEffect(new float[]{10, 10, 10, 10}, 0));
-
     }
 
     @Override
     protected void onSizeChanged(int xNew, int yNew, int xOld, int yOld) {
         super.onSizeChanged(xNew, yNew, xOld, yOld);
+        // gets width of height of the view
         viewWidth = xNew;
         viewHeight = yNew;
+
+        // TODO JAMES SENTELL: "I needed the size of the canvas in order to calculate the percentage the points were accross the screen, but it won't properly get the size until the view is drawn. So, I trigger setButtonPoints from here once the view is drawn and use the if statement below to only allow it to run once. This seems like a terrible was to do it but it works. I'd love advice on how to improve this if you think it matters"
 
         if (!already_done) {
             setButtonPoints(getContext());
@@ -255,6 +253,7 @@ public class DrawArrowsView extends ImageView {
         // TODO look into clippath. May be able to use it to isolate the members
 
         // TODO move some of this outside of onDraw for efficiency
+        // TODO: JAMES SENTELL "I don't have a deep understanding on getClipBounds(). DO you? If so, do you have any advice on how to set the bounds of the image to the full size of the view? I have a func"
         Rect imageBounds = canvas.getClipBounds();  // Adjust this for where you want it
         mGrayedImage.setBounds(imageBounds);
         mFocusedImage.setBounds(imageBounds);
@@ -289,8 +288,8 @@ public class DrawArrowsView extends ImageView {
             canvas.drawText("linkList = " + String.valueOf(linkList), 20, 280, paint_text);
 
             canvas.drawText("rectListArrowHead.size = " + String.valueOf(rectListArrowHead.size()), 20, 460, paint_text);
-            canvas.drawText("clicked_in_button = " + String.valueOf(clicked_in_button), 20, 580, paint_text);
-            canvas.drawText("clicked_on_arrow_head = " + String.valueOf(clicked_in_button), 20, 640, paint_text);
+            canvas.drawText("clicked_on_button = " + String.valueOf(clicked_on_button), 20, 580, paint_text);
+            canvas.drawText("clicked_on_arrow_head = " + String.valueOf(clicked_on_button), 20, 640, paint_text);
 
             canvas.drawText("inside_button = " + String.valueOf(inside_button), 600, 100, paint_text);
             canvas.drawText("size of pointlist = " + String.valueOf(pointList.size()), 600, 160, paint_text);
@@ -302,11 +301,9 @@ public class DrawArrowsView extends ImageView {
             canvas.drawText("arrow_animated_fraction = " + String.valueOf(arrow_animated_fraction), 600, 520, paint_text);
             canvas.drawText("able_to_click = " + String.valueOf(able_to_click), 600, 580, paint_text);
 
-
             canvas.drawText("angleListCheck first row = " + String.valueOf(angleListCheck.get(0)), 20, 1340, paint_text);
             canvas.drawText("angleListCheck second row = " + String.valueOf(angleListCheck.get(1)), 20, 1400, paint_text);
             canvas.drawText("angleListCheck third row = " + String.valueOf(angleListCheck.get(2)), 20, 1460, paint_text);
-
             canvas.drawText("size of angleListCheck first row = " + String.valueOf(angleListCheck.get(0).size()), 20, 1520, paint_text);
             canvas.drawText("size of angleListCheck second row = " + String.valueOf(angleListCheck.get(1).size()), 20, 1580, paint_text);
 
@@ -319,14 +316,14 @@ public class DrawArrowsView extends ImageView {
 
     // triggers long press
     final Handler handler = new Handler();
+    // TODO JAMES SENTELL : "when is it appropriate to start names of things with a lowercase 'm' ?"
     Runnable mLongPressed = new Runnable() {
         public void run() {
             Log.i("", "Long press!");
             Toast.makeText(getContext(), "Long Pressed!", Toast.LENGTH_SHORT).show();
 
-            // TODO: Add snackbar. FIgure out view
-            // Snackbar.make(findViewById(), "Created Moment" , Snackbar.LENGTH_SHORT).show();
-
+            // TODO add moment on long press
+            // remove arrow on long press
             path_arrow.reset();
             pointListArrowHead.remove(rectListArrowHead_indice);
             angleListArrowHead.remove(rectListArrowHead_indice);
@@ -335,7 +332,7 @@ public class DrawArrowsView extends ImageView {
             pathList.remove(rectListArrowHead_indice);
 
             // set booleans to false state
-            clicked_in_button = false;
+            clicked_on_button = false;
             clicked_on_arrow_head = false;
             inside_button = false;
             invalidate();
@@ -349,19 +346,19 @@ public class DrawArrowsView extends ImageView {
 
         switch (eventaction) {
             case MotionEvent.ACTION_DOWN:
-
                 invalidate();
+                // able_to_click is used to eliminate rapid clicks which can cause problems
                 if (able_to_click) {
 
                     int k = 0;
                     for (Rect rect_tmp1 : rectListButtons) {
                         if (rect_tmp1.contains(X, Y)) {
-                            clicked_in_button = true;
+                            // touch is inside button
+                            clicked_on_button = true;
+                            // touch is NOT on arrow head
                             clicked_on_arrow_head = false;
-
                             // starts long press timer
                             handler.postDelayed(mLongPressed, 500);
-
                             rectList_indice = k;
                             btn_loc_x = rect_tmp1.centerX();
                             btn_loc_y = rect_tmp1.centerY();
@@ -370,13 +367,14 @@ public class DrawArrowsView extends ImageView {
                         k++;
                     }
 
-                    // check if arrow head is clicked on
+                    // check if arrow head has just been clicked on
                     k = 0;
-                    if (!clicked_in_button) {
+                    if (!clicked_on_button) {
                         for (Rect rect_tmp2 : rectListArrowHead) {
                             if (rect_tmp2.contains(X, Y)) {
+                                // TODO: I belive the next two lines can be removed. Check if they can safely
                                 clicked_on_arrow_head = true;
-                                clicked_in_button = false;
+                                clicked_on_button = false;
                                 rectListArrowHead_indice = k;
                                 btn_loc_x = rectListButtons.get(linkList.get(rectListArrowHead_indice)).centerX();
                                 btn_loc_y = rectListButtons.get(linkList.get(rectListArrowHead_indice)).centerY();
@@ -385,9 +383,9 @@ public class DrawArrowsView extends ImageView {
                         }
                     }
 
-                    if (clicked_in_button) {
+                    if (clicked_on_button) {
                         path_arrow = new Path();
-                        pathList.add(path_arrow); // <-- Add this line.
+                        pathList.add(path_arrow);
                         path_arrow.reset();
                         loc_arrow_point_x = X;
                         loc_arrow_point_y = Y;
@@ -402,7 +400,6 @@ public class DrawArrowsView extends ImageView {
                         invalidate();
 
                     } else if (clicked_on_arrow_head) {
-                        // replace arrow
                         path_arrow = new Path();
                         pathList.set(rectListArrowHead_indice, path_arrow); // <-- Add this line.
                         path_arrow.reset();
@@ -417,11 +414,13 @@ public class DrawArrowsView extends ImageView {
                         invalidate();
                     }
                 } else {
+                    // this is to prevent rapid clicks causing problems
                     Toast.makeText(getContext(), "Don't tap so quickly", Toast.LENGTH_SHORT).show();
                 }
                 break;
+
             case MotionEvent.ACTION_MOVE:
-                if (clicked_in_button || clicked_on_arrow_head) {
+                if (clicked_on_button || clicked_on_arrow_head) {
 
                     // checks if touch is inside button
                     if (rectListButtons.get(rectList_indice).contains(X, Y)) {
@@ -435,6 +434,7 @@ public class DrawArrowsView extends ImageView {
                     path_arrow.reset();
                     loc_arrow_point_x = X;
                     loc_arrow_point_y = Y;
+
                     angle = Math.atan2(loc_arrow_point_y - btn_loc_y, loc_arrow_point_x - btn_loc_x);
                     pointListArrowHead.set(rectListArrowHead_indice, new Point(loc_arrow_point_x, loc_arrow_point_y));
                     angleListArrowHead.set(rectListArrowHead_indice, angle);
@@ -442,27 +442,26 @@ public class DrawArrowsView extends ImageView {
 
                     drawArrow();
                     invalidate();
-
                 }
                 break;
 
             case MotionEvent.ACTION_UP:
-                if (clicked_in_button || clicked_on_arrow_head) {
+                if (clicked_on_button || clicked_on_arrow_head) {
 
+                    // TODO move this into loop right below. Seems redundant
+                    // checks if release is inside button
                     if (rectListButtons.get(linkList.get(rectListArrowHead_indice)).contains(X, Y)) {
                         inside_button = true;
                     }
 
-//                    if (!inside_button) {
-//                        inside_button = false; // TODO why us this here?
-//                    }
-
-
                     // break if released inside button
                     if (inside_button) {
                         path_arrow.reset();
+
+                        // cancel long press handler
                         handler.removeCallbacks(mLongPressed);
 
+                        // remove arrow
                         pointListArrowHead.remove(rectListArrowHead_indice);
                         angleListArrowHead.remove(rectListArrowHead_indice);
                         linkList.remove(rectListArrowHead_indice);
@@ -470,7 +469,7 @@ public class DrawArrowsView extends ImageView {
                         pathList.remove(rectListArrowHead_indice);
 
                         // reset booleans to false state
-                        clicked_in_button = false;
+                        clicked_on_button = false;
                         clicked_on_arrow_head = false;
                         inside_button = false;
                         invalidate();
@@ -496,7 +495,6 @@ public class DrawArrowsView extends ImageView {
                     }
                     angle_dif = angles[idx] - angle_start;
 
-
                     // breaks if arrows are being stacked
                     for (Point point5 : pointListArrowHead) {
                         int x_tmp = (int) (len_arrow_shaft * Math.sin(angles[idx]) + btn_loc_y);
@@ -504,8 +502,11 @@ public class DrawArrowsView extends ImageView {
                         if (point5.equals(y_tmp, x_tmp)) {
                             Toast.makeText(getContext(), "You can't stack arrows", Toast.LENGTH_SHORT).show();
                             path_arrow.reset();
+
+                            // cancel long press handler
                             handler.removeCallbacks(mLongPressed);
 
+                            // remove arrow from all arraylists
                             pointListArrowHead.remove(rectListArrowHead_indice);
                             angleListArrowHead.remove(rectListArrowHead_indice);
                             linkList.remove(rectListArrowHead_indice);
@@ -513,14 +514,15 @@ public class DrawArrowsView extends ImageView {
                             pathList.remove(rectListArrowHead_indice);
 
                             // reset booleans to false state
-                            clicked_in_button = false;
+                            clicked_on_button = false;
                             clicked_on_arrow_head = false;
                             inside_button = false;
                             invalidate();
-                            return true;
+                            return true; // breaks out of case switch loop
                         }
                     }
 
+                    // calculates the length of the arrow shaft upon release
                     double len_arrow_shaft_start = Math.hypot((loc_arrow_point_x - btn_loc_x), (loc_arrow_point_y - btn_loc_y));
 
                     // animates decrease in length and angle
@@ -536,39 +538,50 @@ public class DrawArrowsView extends ImageView {
                             loc_arrow_point_x = (int) (len_arrow_shaft_current * Math.cos(angle) + btn_loc_x);
                             path_arrow.reset();
 
+                            // replace arrow position with new value each iteration
                             pointListArrowHead.set(rectListArrowHead_indice, new Point(loc_arrow_point_x, loc_arrow_point_y));
                             angleListArrowHead.set(rectListArrowHead_indice, angle);
                             rectListArrowHead.set(rectListArrowHead_indice, new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
 
+                            // prevents user from clicking while the arrow is animating. THis eliminates a bug where "ghost arrows" are created when user click rapidly
                             able_to_click = false;
 
                             // stops loop at end of animation
                             if (arrow_animated_fraction == 1) {
-                                clicked_in_button = false;
+                                clicked_on_button = false;
                                 clicked_on_arrow_head = false;
 
                                 // allow user to click again
                                 able_to_click = true;
 
-                                // TODO for some reason this only detects the first angle in the list
+                                // TODO
+                                // checks if arrow placed is in a correct location
                                 for (Double ang1 : angleListCheck.get(linkList.get(rectListArrowHead_indice))) {
 
                                     //rectListButtons.get(linkList.get(rectListArrowHead_indice)
 
                                     if (ang1.equals(angle)) {
 
-                                        //Snackbar.make(this, "Angle " + angle_degrees + "\u00B0", Snackbar.LENGTH_SHORT).show();
+                                        // convert angle to degrees
+                                        double angle_degrees;
+                                        if (ang1 == 0.0) {
+                                            angle_degrees = Math.round(Math.toDegrees(ang1));
+                                        } else {
+                                            angle_degrees = Math.round(Math.toDegrees(-ang1));
+                                        }
+
+                                        // TODO: JAMES SENTELL: "I can't get a snackbar to work here. Any idea why? I assume it has somehting to do with 'this' "
+                                        // Snackbar.make(this, "Correct angle! " + angle_degrees + "\u00B0", Snackbar.LENGTH_SHORT).show();
                                         Toast.makeText(getContext(), "in list", Toast.LENGTH_SHORT).show();
-                                        Log.d(TAG, "angle: " + angle );
                                     }
                                 }
                             }
-
                             drawArrow();
-                            invalidate(); // TODO: Change to invalidate("just the arrow drawn")
+                            invalidate(); // TODO: Change to invalidate("just the arrow drawn") for efficiency
                         }
                     });
 
+                    // starts animator to snap arrow into position
                     animator.start();
                     invalidate();
                     // prints angle snapped to in degrees to snackbar
@@ -581,7 +594,7 @@ public class DrawArrowsView extends ImageView {
                     }
 
                     //TODO add popup or snackbar that says where arrow was placed
-                    //Snackbar.make(this, "Created force at " + angle_degrees + "\u00B0", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(this, "Created force at " + angle_degrees + "\u00B0", Snackbar.LENGTH_SHORT).show();
                     inside_button = false;
                 }
                 break;
@@ -629,9 +642,10 @@ public class DrawArrowsView extends ImageView {
         return Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 
+    // This method keeps the aspect ration of the view constant. This is necessary since I am placing points on the canvas by percentage of the way across the view
     // code from https://github.com/jesperborgstrup/buzzingandroid/blob/master/src/com/buzzingandroid/ui/ViewAspectRatioMeasurer.java
     // The aspect ratio to be respected by the measurer
-    private static final double VIEW_ASPECT_RATIO = .75; // Do not change this!!
+    private static final double VIEW_ASPECT_RATIO = .75; // Do not change this or you will have to re place all the points at the corect location!!
     private ViewAspectRatioMeasurer varm = new ViewAspectRatioMeasurer(VIEW_ASPECT_RATIO);
 
     @Override

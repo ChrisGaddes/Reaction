@@ -7,7 +7,7 @@ import android.view.View.MeasureSpec;
  * <br />
  * The measurement calculation is differing depending on whether the height and width
  * are fixed (match_parent or a dimension) or not (wrap_content)
- * 
+ *
  * <pre>
  *                | Width fixed | Width dynamic |
  * ---------------+-------------+---------------|
@@ -23,13 +23,13 @@ import android.view.View.MeasureSpec;
  * <li>3: Width fixed, height dynamic:   Set height depending on width</li>
  * <li>4: Both width and height dynamic: Largest size possible</li>
  * </ul>
- * 
+ *
  * @author Jesper Borgstrup
  */
 public class ViewAspectRatioMeasurer {
-	
+
 	private double aspectRatio;
-	
+
 	/**
 	 * Create a ViewAspectRatioMeasurer instance.<br/>
 	 * <br/>
@@ -40,9 +40,9 @@ public class ViewAspectRatioMeasurer {
 	 * @param aspectRatio
 	 */
 	public ViewAspectRatioMeasurer(double aspectRatio) {
-		this.aspectRatio = aspectRatio; 
+		this.aspectRatio = aspectRatio;
 	}
-	
+
 	/**
 	 * Measure with the aspect ratio given at construction.<br />
 	 * <br />
@@ -62,37 +62,37 @@ public class ViewAspectRatioMeasurer {
 	 * and {@link #getMeasuredHeight()} methods, respectively.
 	 * @param widthMeasureSpec The width <tt>MeasureSpec</tt> passed in your <tt>View.onMeasure()</tt> method
 	 * @param heightMeasureSpec The height <tt>MeasureSpec</tt> passed in your <tt>View.onMeasure()</tt> method
-	 * @param aspectRatio The aspect ratio to calculate measurements in respect to 
+	 * @param aspectRatio The aspect ratio to calculate measurements in respect to
 	 */
 	public void measure(int widthMeasureSpec, int heightMeasureSpec, double aspectRatio) {
 		int widthMode = MeasureSpec.getMode( widthMeasureSpec );
 		int widthSize = widthMode == MeasureSpec.UNSPECIFIED ? Integer.MAX_VALUE : MeasureSpec.getSize( widthMeasureSpec );
 		int heightMode = MeasureSpec.getMode( heightMeasureSpec );
 		int heightSize = heightMode == MeasureSpec.UNSPECIFIED ? Integer.MAX_VALUE : MeasureSpec.getSize( heightMeasureSpec );
-		
+
 		if ( heightMode == MeasureSpec.EXACTLY && widthMode == MeasureSpec.EXACTLY ) {
-			/* 
+			/*
 			 * Possibility 1: Both width and height fixed
 			 */
 			measuredWidth = widthSize;
 			measuredHeight = heightSize;
-			
+
 		} else if ( heightMode == MeasureSpec.EXACTLY ) {
 			/*
 			 * Possibility 2: Width dynamic, height fixed
 			 */
 			measuredHeight = (int) Math.min( heightSize, widthSize / aspectRatio );
 			measuredWidth = (int) (measuredHeight * aspectRatio);
-			
+
 		} else if ( widthMode == MeasureSpec.EXACTLY ) {
 			/*
 			 * Possibility 3: Width fixed, height dynamic
 			 */
 			measuredWidth = (int) Math.min( widthSize, heightSize * aspectRatio );
 			measuredHeight = (int) (measuredWidth / aspectRatio);
-			
+
 		} else {
-			/* 
+			/*
 			 * Possibility 4: Both width and height dynamic
 			 */
 			if ( widthSize > heightSize * aspectRatio ) {
@@ -102,10 +102,10 @@ public class ViewAspectRatioMeasurer {
 				measuredWidth = widthSize;
 				measuredHeight = (int) (measuredWidth / aspectRatio);
 			}
-			
+
 		}
 	}
-	
+
 	private Integer measuredWidth = null;
 	/**
 	 * Get the width measured in the latest call to <tt>measure()</tt>.
@@ -127,6 +127,6 @@ public class ViewAspectRatioMeasurer {
 		}
 		return measuredHeight;
 	}
-	
+
 }
 
