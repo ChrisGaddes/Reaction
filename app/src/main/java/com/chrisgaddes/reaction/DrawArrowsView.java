@@ -3,7 +3,6 @@ package com.chrisgaddes.reaction;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
@@ -24,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class DrawArrowsView extends ImageView {
 
@@ -52,6 +52,12 @@ public class DrawArrowsView extends ImageView {
 
     // initialize ArrayLists for paths and points
     private ArrayList<Point> pointList = new ArrayList<>();
+    //private ArrayList<Double> angleListCheck = new ArrayList<>();
+
+    //TODO http://stackoverflow.com/questions/32324876/how-to-save-an-answer-in-a-riddle-game-without-creating-a-database
+
+    List<List<Double>> angleListCheck = new ArrayList<>();
+
     private ArrayList<Rect> rectListButtons = new ArrayList<>();
     private ArrayList<Rect> rectListArrowHead = new ArrayList<>();
     private ArrayList<Path> pathList = new ArrayList<>();
@@ -74,20 +80,21 @@ public class DrawArrowsView extends ImageView {
     private boolean inside_button;
     private boolean able_to_click;
     private boolean already_done;
-    private boolean refreshVal;
+
 
     private boolean debuggingTextToggle;
 
     private long viewHeight;
     private long viewWidth;
-    private Drawable mCustomImage;
-    private Drawable mCustomImage2;
+    private Drawable mFocusedImage;
+    private Drawable mGrayedImage;
 
     public DrawArrowsView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        mCustomImage = context.getResources().getDrawable(R.drawable.fbd_2_bar);
-        mCustomImage2 = context.getResources().getDrawable(R.drawable.fbd_2_greyed);
+        // TODO replace depreciated "getDrawable" with something else
+        mFocusedImage = context.getResources().getDrawable(R.drawable.fbd_2_bar);
+        mGrayedImage = context.getResources().getDrawable(R.drawable.fbd_2_greyed);
 
         // create new paints
         paint_arrow = new Paint();
@@ -113,7 +120,6 @@ public class DrawArrowsView extends ImageView {
 
         // TODO allow user to set this value to disable animations
 
-
         setArrowStyle();
     }
 
@@ -125,6 +131,35 @@ public class DrawArrowsView extends ImageView {
         PointF pointTwo = new PointF((float) 18, (float) 62.1);
         PointF pointThree = new PointF((float) 53.5, (float) 62.1);
         PointF pointFour = new PointF((float) 87.55, (float) 62.1);
+
+
+// http://stackoverflow.com/questions/5022824/how-to-fill-a-two-dimensional-arraylist-in-java-with-integers
+
+//
+//
+//        // add a column:
+//        angleListCheck.get(angleListCheck.size() - 1).add(1.0);
+//
+        int btn = 0;
+        angleListCheck.add(new ArrayList<Double>());
+        angleListCheck.add(new ArrayList<Double>());
+        angleListCheck.add(new ArrayList<Double>());
+        angleListCheck.get(btn).add(-pi / 6);
+        angleListCheck.get(btn).add(-pi / 6);
+        angleListCheck.get(btn).add(pi / 6);
+        angleListCheck.get(btn).add(-pi);
+        angleListCheck.get(btn).add(pi);
+//
+        btn = 1;
+        // add row:
+        angleListCheck.add(new ArrayList<Double>());
+        angleListCheck.get(btn).add(-pi / 3);
+        angleListCheck.get(btn).add(pi / 3);
+        angleListCheck.get(btn).add(-pi);
+        angleListCheck.get(btn).add(pi);
+
+        //angleListCheck.get(row).add(someValue);
+
 
         // pointList.add(percentToPx(pointOne));
         pointList.add(percentToPx(pointTwo));
@@ -209,33 +244,19 @@ public class DrawArrowsView extends ImageView {
         }
     }
 
-
-    final Resources.Theme theme = getResources().newTheme();
-
-//    theme.applyStyle(R.style.BaubleRound, false);
-//    theme.applyStyle(R.style.BaubleSmall, false);
-//
-//    changeTheme(theme);
-
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
         // TODO look into clippath. May be able to use it to isolate the members
 
+        // TODO move some of this outside of onDraw for efficiency
         Rect imageBounds = canvas.getClipBounds();  // Adjust this for where you want it
+        mGrayedImage.setBounds(imageBounds);
+        mFocusedImage.setBounds(imageBounds);
 
-        mCustomImage2.setBounds(imageBounds);
-        mCustomImage2.draw(canvas);
-        mCustomImage.setBounds(imageBounds);
-        mCustomImage.draw(canvas);
-
-        //canvas.drawPicture(mCustomImage, paint_arrow_head_box);
-
-
-        // TODO change this to something more flexible and controlable
-        //setImageResource(R.drawable.fbd_1);
-
+        mGrayedImage.draw(canvas);
+        mFocusedImage.draw(canvas);
 
         // draws rectangles around arrowheads
         for (Rect rect1 : rectListArrowHead) {
@@ -262,8 +283,6 @@ public class DrawArrowsView extends ImageView {
             canvas.drawText("rectList_indice = " + String.valueOf(rectList_indice), 20, 160, paint_text);
             canvas.drawText("rectListArrowHead_indice = " + String.valueOf(rectListArrowHead_indice), 20, 220, paint_text);
             canvas.drawText("linkList = " + String.valueOf(linkList), 20, 280, paint_text);
-            canvas.drawText("pointListArrowHead = " + String.valueOf(pointListArrowHead), 20, 1840, paint_text);
-            canvas.drawText("angleListArrowHead = " + String.valueOf(angleListArrowHead), 20, 1900, paint_text);
 
             canvas.drawText("rectListArrowHead.size = " + String.valueOf(rectListArrowHead.size()), 20, 460, paint_text);
             canvas.drawText("clicked_in_button = " + String.valueOf(clicked_in_button), 20, 580, paint_text);
@@ -278,6 +297,19 @@ public class DrawArrowsView extends ImageView {
             canvas.drawText("size of rectListArrowHead = " + String.valueOf(rectListArrowHead.size()), 600, 460, paint_text);
             canvas.drawText("arrow_animated_fraction = " + String.valueOf(arrow_animated_fraction), 600, 520, paint_text);
             canvas.drawText("able_to_click = " + String.valueOf(able_to_click), 600, 580, paint_text);
+
+
+            canvas.drawText("angleListCheck first row = " + String.valueOf(angleListCheck.get(0)), 20, 1340, paint_text);
+            canvas.drawText("angleListCheck second row = " + String.valueOf(angleListCheck.get(1)), 20, 1400, paint_text);
+            canvas.drawText("angleListCheck third row = " + String.valueOf(angleListCheck.get(2)), 20, 1460, paint_text);
+
+            canvas.drawText("size of angleListCheck first row = " + String.valueOf(angleListCheck.get(0).size()), 20, 1520, paint_text);
+            canvas.drawText("size of angleListCheck second row = " + String.valueOf(angleListCheck.get(1).size()), 20, 1580, paint_text);
+
+            canvas.drawText("pointListArrowHead = " + String.valueOf(pointListArrowHead), 20, 1640, paint_text);
+            canvas.drawText("angleListArrowHead = " + String.valueOf(angleListArrowHead), 20, 1700, paint_text);
+            canvas.drawText("linkList = " + String.valueOf(linkList), 20, 1760, paint_text);
+            canvas.drawText("rectListButtons = " + String.valueOf(rectListButtons), 20, 1820, paint_text);
         }
     }
 
@@ -505,11 +537,23 @@ public class DrawArrowsView extends ImageView {
                             rectListArrowHead.set(rectListArrowHead_indice, new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
 
                             able_to_click = false;
+
                             // stops loop at end of animation
                             if (arrow_animated_fraction == 1) {
                                 clicked_in_button = false;
                                 clicked_on_arrow_head = false;
                                 able_to_click = true;
+
+                                // TODO figure out what's going on here
+                                for (Double ang1 : angleListCheck.get(linkList.get(rectListArrowHead_indice))) {
+
+                                    //rectListButtons.get(linkList.get(rectListArrowHead_indice)
+
+                                    if (ang1.equals(angle)) {
+                                        Toast.makeText(getContext(), "in list", Toast.LENGTH_SHORT).show();
+                                        Log.d(TAG, "angle: " + angle );
+                                    }
+                                }
                             }
 
                             drawArrow();
@@ -587,4 +631,15 @@ public class DrawArrowsView extends ImageView {
         varm.measure(widthMeasureSpec, heightMeasureSpec);
         setMeasuredDimension(varm.getMeasuredWidth(), varm.getMeasuredHeight());
     }
+
+//    @Override
+//    public boolean equals(Object obj) {
+//        return !super.equals(obj);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return getName().hashCode();
+//    }
+
 }
