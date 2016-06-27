@@ -35,22 +35,9 @@ public class DrawArrowsView extends ImageView {
     //double angles[] = {-pi, -3 * pi / 4, -pi / 2, -pi / 4, 0, pi / 4, pi / 2, 3 * pi / 4, pi};
     final double[] angles = {-pi, -5 * pi / 6, -2 * pi / 3, -pi / 2, -pi / 3, -pi / 6, 0, pi / 6, pi / 3, pi / 2, 2 * pi / 3, 5 * pi / 6, pi};
 
-    // TODO: ** JAMES SENTELL: "Should I initialize these variables elsewhere?"
-    // initialize variables
+    // Declare variables
 
-    /**
-     * Chris:
-     * What you are doing right here is declaring the member variables of the DrawArrowsView class.
-     * What I usually do (not sure if this is "best practice" Java or just my habit) is to avoid
-     * initializing variables here, but to just include the declarations (like you did).  Then, I
-     * typically initialize the variables in the class constructor (public DrawArrowsView(Context
-     * context, AttributeSet attrs)).  So, in my opinion, you are doing it right here.
-     *
-     * The one thing I would add is short comment sections on what each member variable is used for.
-     * Hopefully, you will be able to tell what they do by their name, but if not comments help
-     * (see examples below).
-     */
-
+    // TODO: Add descriptions of what each member variable is used for
     /**
      * Description for what paint_points does...
      */
@@ -65,6 +52,10 @@ public class DrawArrowsView extends ImageView {
      * Description for what paint_arrow_head_box does...
      */
     private final Paint paint_arrow_head_box;
+
+    /**
+     * Pai
+     */
     private final Paint paint_box;
     private final Paint paint_text;
     private final double len_arrow_shaft;
@@ -83,6 +74,8 @@ public class DrawArrowsView extends ImageView {
 
     // initialize ArrayLists for paths and points
 
+
+    // TODO figure out how to do this without breaking code sicne they are no longer private if moved inside constructor
     /**
      * Chris:
      * Per comment above at line 42, I would recommend initializing these in the constructor
@@ -121,19 +114,12 @@ public class DrawArrowsView extends ImageView {
     private Drawable mFocusedImage;
     private Drawable mGrayedImage;
 
-    // TODO: JAMES SENTELL "Should I have another one of these with Just Contect context, or other things "
-
-    /**
-     * Chris: That's up to you and how you need to use it.  There is nothing wrong with just having
-     * a constructor with the 2 parameters below.  The only reason I would make another constructor
-     * would be if you needed one with different arguments.  I would add javadoc comments to all
-     * your methods - see examples on methods below
-     */
 
     /**
      * Description of what this Constructor does/is used for...
+     *
      * @param context What is the context argument used for?
-     * @param attrs What is the attrs argument used for?
+     * @param attrs   What is the attrs argument used for?
      */
     public DrawArrowsView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -163,29 +149,16 @@ public class DrawArrowsView extends ImageView {
         dim_btn_radius = dpToPx(4);
         dim_btn_radius_buffer = dpToPx(19);
 
-        // TODO JAMES SENTELL: "is it bad practice how I extracted this setArrowStyle method out here and don't have anything inside the parentheses? (pardon my lack of correct terminology)"
-
-        /**
-         * Chris: Actually this is very good.  Stuff inside the parenthesis are called "parameters"
-         * or "arguments".  Nothing wrong with having a function with no parameters.  In fact, it is
-         * MUCH better to separate out bits of functionality into re-usable functions rather than
-         * cram everything into one function.
-         */
         setArrowStyle();
     }
 
     /**
-     *
-     * @param context
+     * @param context //TODO add what context is used for
      */
     private void setButtonPoints(Context context) {
         // this method sets the location of the points
         // TODO: import these from database
-        // TODO: JAMES SENTELL: I used this variable "already_done" so that it only runs these once. this is probably a lousy way to accomplish this...
-        /**
-         * I think this is perfectly fine (have done similar things myself).  I would just add
-         * comments so that you remember what you are doing when you come back to it after a while.
-         */
+
         already_done = true;
 
         // Adds angles to the list of "correct" angles
@@ -237,7 +210,6 @@ public class DrawArrowsView extends ImageView {
 
         // toggles debugging text - this value can be changed in menu in app
         debuggingTextToggle = SP.getBoolean("debuggingTextToggle", false);
-
 
         // toggles visibility of dots at nodes - this value can be changed in menu in app
         boolean nodeDotsToggle = SP.getBoolean("nodeDotsToggle", false);
@@ -297,7 +269,6 @@ public class DrawArrowsView extends ImageView {
     }
 
     /**
-     *
      * @param xNew
      * @param yNew
      * @param xOld
@@ -310,21 +281,9 @@ public class DrawArrowsView extends ImageView {
         viewWidth = xNew;
         viewHeight = yNew;
 
-        // TODO JAMES SENTELL: "I needed the size of the canvas in order to calculate the percentage the points were accross the screen, but it won't properly get the size until the view is drawn. So, I trigger setButtonPoints from here once the view is drawn and use the if statement below to only allow it to run once. This seems like a terrible was to do it but it works. I'd love advice on how to improve this if you think it matters"
-        /**
-         * This isn't bad, I don't think.  Just looking at the docs you might want to do this in the
-         * override for "onLayout" instead, but I haven't tested it so I don't know for sure.
-         */
-
+        // I needed the size of the canvas in order to calculate the percentage the points were accross the screen, but it won't properly get the size until the view is drawn. So, I trigger setButtonPoints from here once the view is drawn and use the if statement below to only allow it to run once. This seems like a terrible was to do it but it works. I'd love advice on how to improve this if you think it matters"
 
         if (!already_done) {
-            // TODO: JAMES SENTELL "could you explain 'context' to me sometime?"
-
-            /**
-             * Sure, we can talk about this some more, but "context" is an Android system thing.
-             * Just basically contains info about what is currently active on the app and the
-             * device.
-             */
             setButtonPoints(getContext());
         }
     }
@@ -336,7 +295,7 @@ public class DrawArrowsView extends ImageView {
         // TODO look into clippath. May be able to use it to isolate the members
 
         // TODO move some of this outside of onDraw for efficiency
-        // TODO: JAMES SENTELL "I don't have a deep understanding on getClipBounds(). DO you? If so, do you have any advice on how to set the bounds of the image to the full size of the view? I have a func"
+        // JAMES SENTELL: "I don't have a deep understanding on getClipBounds(). DO you? If so, do you have any advice on how to set the bounds of the image to the full size of the view? I have a func"
 
         /**
          * Not entirely sure, perhaps try the following (straight from stackoverflow - use at own
@@ -408,30 +367,6 @@ public class DrawArrowsView extends ImageView {
 
     // triggers long press
     final Handler handler = new Handler();
-    // TODO JAMES SENTELL : "when is it appropriate to start names of things with a lowercase 'm' ?"
-    /**
-     * Different people have different opinions here, but in my experience starting variables with a
-     * lowercase 'm' indicates a member variable of a class.  It is useful when you are writing
-     * an API or something that someone else is going to use and you have a lot of getter/setter
-     * functions (functions that just solely set or get private member variables).  That allows you
-     * to name the setter parameter more clearly for whoever is going to use the api without
-     * worrying about name shadowing or confusion.
-     *
-     * i.e.
-     *
-     * // Assume inside some class...
-     * private int mCoolNumber;
-     *
-     * ...
-     *
-     * public void setCoolNumber(int coolNumber) {
-     *     this.mCoolNumber = coolNumber;
-     *     // or
-     *     mCoolNumber = coolNumber;
-     * }
-     *
-     *
-     */
 
     Runnable mLongPressed = new Runnable() {
         public void run() {
@@ -672,7 +607,7 @@ public class DrawArrowsView extends ImageView {
                                 // allow user to click again
                                 able_to_click = true;
 
-                                // TODO
+                                // TODO add logic here to tell if arrow is placed in correct location
                                 // checks if arrow placed is in a correct location
                                 for (Double ang1 : angleListCheck.get(linkList.get(rectListArrowHead_indice))) {
 
@@ -688,7 +623,7 @@ public class DrawArrowsView extends ImageView {
                                             angle_degrees = Math.round(Math.toDegrees(-ang1));
                                         }
 
-                                        // TODO: JAMES SENTELL: "I can't get a snackbar to work here. Any idea why? I assume it has somehting to do with 'this' "
+
                                         // Snackbar.make(this, "Correct angle! " + angle_degrees + "\u00B0", Snackbar.LENGTH_SHORT).show();
                                         Toast.makeText(getContext(), "in list", Toast.LENGTH_SHORT).show();
                                     }
@@ -711,7 +646,6 @@ public class DrawArrowsView extends ImageView {
                         angle_degrees = Math.round(Math.toDegrees(-angles[idx]));
                     }
 
-                    //TODO add popup or snackbar that says where arrow was placed
                     Snackbar.make(this, "Created force at " + angle_degrees + "\u00B0", Snackbar.LENGTH_SHORT).show();
                     inside_button = false;
                 }
