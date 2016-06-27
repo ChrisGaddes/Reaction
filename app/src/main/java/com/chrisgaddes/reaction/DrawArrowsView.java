@@ -83,12 +83,16 @@ public class DrawArrowsView extends ImageView {
      */
     private ArrayList<Point> pointList = new ArrayList<>();
     List<List<Double>> angleListCheck = new ArrayList<>();
-    private ArrayList<Rect> rectListButtons = new ArrayList<>();
-    private ArrayList<Rect> rectListArrowHead = new ArrayList<>();
-    private ArrayList<Path> pathList = new ArrayList<>();
-    private ArrayList<Point> pointListArrowHead = new ArrayList<>();
-    private ArrayList<Double> angleListArrowHead = new ArrayList<>();
-    private ArrayList<Integer> linkList = new ArrayList<>();
+
+    List<List<List<Double>>> checkMatrix = new ArrayList<>();
+
+
+    private ArrayList<Rect> rectListButtons;
+    private ArrayList<Rect> rectListArrowHead;
+    private ArrayList<Path> pathList;
+    private ArrayList<Point> pointListArrowHead;
+    private ArrayList<Double> angleListArrowHead;
+    private ArrayList<Integer> linkList;
 
     private Path path_arrow;
 
@@ -128,6 +132,16 @@ public class DrawArrowsView extends ImageView {
         mFocusedImage = context.getResources().getDrawable(R.drawable.fbd_2_bar);
         mGrayedImage = context.getResources().getDrawable(R.drawable.fbd_2_greyed);
 
+        pointList = new ArrayList<>();
+        angleListCheck = new ArrayList<>();
+        checkMatrix = new ArrayList<>();
+        rectListButtons = new ArrayList<>();
+        rectListArrowHead = new ArrayList<>();
+        pathList = new ArrayList<>();
+        pointListArrowHead = new ArrayList<>();
+        angleListArrowHead = new ArrayList<>();
+        linkList = new ArrayList<>();
+
         // create new paints
         paint_arrow = new Paint();
         path_arrow = new Path();
@@ -160,6 +174,12 @@ public class DrawArrowsView extends ImageView {
         // TODO: import these from database
 
         already_done = true;
+
+        // creates checkMatrix
+        checkMatrix.add(new ArrayList<List<Double>>());
+        checkMatrix.add(new ArrayList<List<Double>>());
+        checkMatrix.add(new ArrayList<List<Double>>());
+
 
         // Adds angles to the list of "correct" angles
         int btn = 0;
