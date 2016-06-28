@@ -33,7 +33,7 @@ public class DrawArrowsView extends ImageView {
     final double pi = Math.PI;
 
     //double angles[] = {-pi, -3 * pi / 4, -pi / 2, -pi / 4, 0, pi / 4, pi / 2, 3 * pi / 4, pi};
-    final double[] angles = {-pi, -5 * pi / 6, -2 * pi / 3, -pi / 2, -pi / 3, -pi / 6, 0, pi / 6, pi / 3, pi / 2, 2 * pi / 3, 5 * pi / 6, pi};
+    final double[] angles = {-pi, -5 * pi / 6, -2 * pi / 3, -pi / 2, -pi / 3, -pi / 6, 0, pi / 6, pi / 3, pi / 2, 2 * pi / 3, 5 * pi / 6, pi, 2 * pi};
 
     // Declare variables
 
@@ -58,6 +58,7 @@ public class DrawArrowsView extends ImageView {
      */
     private final Paint paint_box;
     private final Paint paint_text;
+    private final Paint paint_angle_check;
     private final double len_arrow_shaft;
     private final double len_arrow_head;
     private final float dim_btn_radius;
@@ -110,6 +111,7 @@ public class DrawArrowsView extends ImageView {
     private boolean inside_button;
     private boolean able_to_click;
     private boolean already_done;
+    private boolean match;
 
     private boolean debuggingTextToggle;
 
@@ -133,7 +135,7 @@ public class DrawArrowsView extends ImageView {
         mGrayedImage = context.getResources().getDrawable(R.drawable.fbd_2_greyed);
 
         pointList = new ArrayList<>();
-        angleListCheck = new ArrayList<>();
+        this.angleListCheck = new ArrayList<>();
         checkMatrix = new ArrayList<>();
         rectListButtons = new ArrayList<>();
         rectListArrowHead = new ArrayList<>();
@@ -149,6 +151,7 @@ public class DrawArrowsView extends ImageView {
         paint_arrow_head_box = new Paint();
         paint_text = new Paint();
         paint_points = new Paint();
+        paint_angle_check = new Paint();
 
         // set values to false to begin
         clicked_on_button = false;
@@ -174,15 +177,122 @@ public class DrawArrowsView extends ImageView {
         // TODO: import these from database
 
         already_done = true;
+        match = false;
 
         // creates checkMatrix
+        //checkMatrix.add((new ArrayList<Double>()).add( new ArrayList<List<Double>()));
+
+        // add buttons layer
         checkMatrix.add(new ArrayList<List<Double>>());
         checkMatrix.add(new ArrayList<List<Double>>());
         checkMatrix.add(new ArrayList<List<Double>>());
 
+        // add 2nd layer
+        int btn = 0;
+        checkMatrix.get(btn).add(new ArrayList<Double>());
+        checkMatrix.get(btn).add(new ArrayList<Double>());
+        checkMatrix.get(btn).add(new ArrayList<Double>());
+        checkMatrix.get(btn).add(new ArrayList<Double>());
+        checkMatrix.get(btn).add(new ArrayList<Double>());
+        btn = 1;
+        checkMatrix.get(btn).add(new ArrayList<Double>());
+        checkMatrix.get(btn).add(new ArrayList<Double>());
+        checkMatrix.get(btn).add(new ArrayList<Double>());
+        checkMatrix.get(btn).add(new ArrayList<Double>());
+        checkMatrix.get(btn).add(new ArrayList<Double>());
+        btn = 2;
+        checkMatrix.get(btn).add(new ArrayList<Double>());
+        checkMatrix.get(btn).add(new ArrayList<Double>());
+        checkMatrix.get(btn).add(new ArrayList<Double>());
+        checkMatrix.get(btn).add(new ArrayList<Double>());
+        checkMatrix.get(btn).add(new ArrayList<Double>());
+
+        // add third layer (contains angles)
+        // [btn#, 0] - "angle"
+        btn = 0;
+        int type_num = 0;
+        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(pi);
+        checkMatrix.get(btn).get(type_num).add(pi / 2);
+        checkMatrix.get(btn).get(type_num).add(-pi / 2);
+
+        // [btn#, 1] - Used
+        btn = 0;
+        type_num = 1;
+        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(0.0);
+
+        // [btn#, 1] - Force angle
+        btn = 0;
+        type_num = 2;
+        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(0.0);
+
+        // [btn#, 3] - Opposite Allowed
+        btn = 0;
+        type_num = 3;
+        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(0.0);
+
+        // [btn#, 4] - Link data
+        btn = 0;
+        type_num = 4;
+        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(0.0);
+
+        // 2nd button
+
+        // add third layer (contains angles)
+        // [btn#, 0] - "angle"
+        btn = 1;
+        type_num = 0;
+        checkMatrix.get(btn).get(type_num).add(pi / 2);
+        checkMatrix.get(btn).get(type_num).add(-pi / 2);
+        checkMatrix.get(btn).get(type_num).add(100.0); // set to 100
+        checkMatrix.get(btn).get(type_num).add(100.0);
+
+        // [btn#, 1] - Used
+        btn = 1;
+        type_num = 1;
+        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(0.0);
+
+        // [btn#, 1] - Force angle
+        btn = 1;
+        type_num = 2;
+        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(0.0);
+
+        // [btn#, 3] - Opposite Allowed
+        btn = 1;
+        type_num = 3;
+        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(0.0);
+
+        // [btn#, 4] - Link data
+        btn = 1;
+        type_num = 4;
+        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(0.0);
 
         // Adds angles to the list of "correct" angles
-        int btn = 0;
+        btn = 01;
         angleListCheck.add(new ArrayList<Double>());
         angleListCheck.add(new ArrayList<Double>());
         angleListCheck.add(new ArrayList<Double>());
@@ -200,6 +310,7 @@ public class DrawArrowsView extends ImageView {
         angleListCheck.add(new ArrayList<Double>());
         angleListCheck.get(btn).add(pi / 6);
         angleListCheck.get(btn).add(-5 * pi / 6);
+
 
         // set node locations - touch "button" zones will be placed in boxes around these nodes
         PointF pointOne = new PointF((float) 18, (float) 31.5);
@@ -236,6 +347,13 @@ public class DrawArrowsView extends ImageView {
         if (!nodeDotsToggle) {
             paint_points.setAlpha(0);
         }
+
+        // sets style of angle check indicator
+        paint_angle_check.setStyle(Paint.Style.FILL);
+        paint_angle_check.setStrokeWidth(dpToPx(6));
+        paint_angle_check.setColor(Color.RED);
+        paint_angle_check.setStyle(Paint.Style.STROKE);
+        paint_angle_check.setStrokeCap(Paint.Cap.ROUND);
 
         // sets style of arrows
         paint_arrow.setStyle(Paint.Style.FILL);
@@ -351,6 +469,13 @@ public class DrawArrowsView extends ImageView {
         for (Path pthLst_arrows : pathList) {
             canvas.drawPath(pthLst_arrows, paint_arrow);
         }
+
+        if (match) {
+            paint_angle_check.setColor(Color.GREEN);
+        } else {
+            paint_angle_check.setColor(Color.RED);
+        }
+        canvas.drawCircle(1000, 500, 50, paint_angle_check);
 
         if (debuggingTextToggle) {
             canvas.drawText("inside_button = " + String.valueOf(inside_button), 20, 100, paint_text);
@@ -491,6 +616,9 @@ public class DrawArrowsView extends ImageView {
                 break;
 
             case MotionEvent.ACTION_MOVE:
+
+                match = false;
+
                 if (clicked_on_button || clicked_on_arrow_head) {
 
                     // checks if touch is inside button
@@ -565,6 +693,7 @@ public class DrawArrowsView extends ImageView {
                             angle_dist = tmp_angle_dist;
                         }
                     }
+
                     // calculates angle between released angle and the nearest 30 degree increment
                     angle_difference = angles[idx] - angle_start;
 
@@ -621,32 +750,49 @@ public class DrawArrowsView extends ImageView {
 
                             // stops loop at end of animation
                             if (arrow_animated_fraction == 1) {
+                                // this if statement changes 2 pi to pi and -pi to pi respectively. This removed "duplicate" angles at the right and left side of the coordinate system while still allowing the arrow to snap to these points from both directions
+                                if (angle == 2 * pi) {
+                                    angle = 0;
+                                } else if (angle == -pi) {
+                                    angle = pi;
+                                }
+
                                 clicked_on_button = false;
                                 clicked_on_arrow_head = false;
 
                                 // allow user to click again
                                 able_to_click = true;
 
-                                // TODO add logic here to tell if arrow is placed in correct location
                                 // checks if arrow placed is in a correct location
-                                for (Double ang1 : angleListCheck.get(linkList.get(rectListArrowHead_indice))) {
 
-                                    //rectListButtons.get(linkList.get(rectListArrowHead_indice)
+                                int u = 0;
+                                int btn_chosen = linkList.get(rectListArrowHead_indice);
 
-                                    if (ang1.equals(angle)) {
+                                for (Double val_ang_mat : checkMatrix.get(btn_chosen).get(0)) {
 
-                                        // convert angle to degrees
-                                        double angle_degrees;
-                                        if (ang1 == 0.0) {
-                                            angle_degrees = Math.round(Math.toDegrees(ang1));
-                                        } else {
-                                            angle_degrees = Math.round(Math.toDegrees(-ang1));
+                                    // if not used already
+                                    Double angle_row = checkMatrix.get(btn_chosen).get(0).get(u);
+                                    Double used_row = checkMatrix.get(btn_chosen).get(1).get(u);
+                                    Double force_ang_row = checkMatrix.get(btn_chosen).get(2).get(u);
+                                    Double oppos_allowed_row = checkMatrix.get(btn_chosen).get(3).get(u);
+
+                                    if (used_row.equals(1.0)) {
+                                        Log.d(TAG, "used_row = " + used_row + "so break");
+                                        // break, don't even check
+                                        match = false;
+                                    } else if (used_row.equals(0.0)) {
+                                        Log.d(TAG, "used_row = " + used_row + "so check angle");
+                                        // check if angle is a match
+                                        if (angle_row.equals(angle)) {
+                                            Log.d(TAG, "used_row = " + used_row + "so check angle");
+                                            match = true;
                                         }
-
-
-                                        // Snackbar.make(this, "Correct angle! " + angle_degrees + "\u00B0", Snackbar.LENGTH_SHORT).show();
-                                        Toast.makeText(getContext(), "in list", Toast.LENGTH_SHORT).show();
                                     }
+
+//                                    if (val_ang_mat.equals(angle)) {
+//
+
+                                    u++;
                                 }
                             }
                             drawArrow();
