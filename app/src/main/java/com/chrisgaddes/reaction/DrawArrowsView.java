@@ -1,5 +1,7 @@
 package com.chrisgaddes.reaction;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -14,7 +16,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.design.widget.Snackbar;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -69,6 +70,10 @@ public class DrawArrowsView extends ImageView {
     private int rectListArrowHead_indice;
     private boolean clicked_on_arrow_head;
 
+    private boolean runLoopEveryOther;
+
+    private int counter33;
+
     //private ArrayList<Double> angleListCheck = new ArrayList<>();
 
     //TODO consider http://stackoverflow.com/questions/32324876/how-to-save-an-answer-in-a-riddle-game-without-creating-a-database
@@ -94,6 +99,7 @@ public class DrawArrowsView extends ImageView {
     private ArrayList<Point> pointListArrowHead;
     private ArrayList<Double> angleListArrowHead;
     private ArrayList<Integer> linkList;
+    List<ArrayList<Integer>> linkList2;
 
     private Path path_arrow;
 
@@ -143,6 +149,11 @@ public class DrawArrowsView extends ImageView {
         pointListArrowHead = new ArrayList<>();
         angleListArrowHead = new ArrayList<>();
         linkList = new ArrayList<>();
+        linkList2 = new ArrayList<>();
+        // add three rows total to linklist2
+        linkList2.add(new ArrayList<Integer>());
+        linkList2.add(new ArrayList<Integer>());
+        linkList2.add(new ArrayList<Integer>());
 
         // create new paints
         paint_arrow = new Paint();
@@ -160,11 +171,15 @@ public class DrawArrowsView extends ImageView {
         able_to_click = true;
         already_done = false;
 
+        runLoopEveryOther = true;
+
         // sets dimensions of arrow, nodes, and touch areas
         len_arrow_shaft = dpToPx(62);
         len_arrow_head = dpToPx(19);
         dim_btn_radius = dpToPx(4);
         dim_btn_radius_buffer = dpToPx(19);
+
+        counter33 = 0;
 
         setArrowStyle();
     }
@@ -292,7 +307,7 @@ public class DrawArrowsView extends ImageView {
         checkMatrix.get(btn).get(type_num).add(0.0);
 
         // Adds angles to the list of "correct" angles
-        btn = 01;
+        btn = 0;
         angleListCheck.add(new ArrayList<Double>());
         angleListCheck.add(new ArrayList<Double>());
         angleListCheck.add(new ArrayList<Double>());
@@ -478,6 +493,7 @@ public class DrawArrowsView extends ImageView {
         canvas.drawCircle(1000, 500, 50, paint_angle_check);
 
         if (debuggingTextToggle) {
+
             canvas.drawText("inside_button = " + String.valueOf(inside_button), 20, 100, paint_text);
             canvas.drawText("rectList_indice = " + String.valueOf(rectList_indice), 20, 160, paint_text);
             canvas.drawText("rectListArrowHead_indice = " + String.valueOf(rectListArrowHead_indice), 20, 220, paint_text);
@@ -486,6 +502,15 @@ public class DrawArrowsView extends ImageView {
             canvas.drawText("rectListArrowHead.size = " + String.valueOf(rectListArrowHead.size()), 20, 460, paint_text);
             canvas.drawText("clicked_on_button = " + String.valueOf(clicked_on_button), 20, 580, paint_text);
             canvas.drawText("clicked_on_arrow_head = " + String.valueOf(clicked_on_button), 20, 640, paint_text);
+
+            canvas.drawText("linkList2 first row = " + String.valueOf(linkList2.get(0)), 20, 700, paint_text);
+            canvas.drawText("linkList2 second row = " + String.valueOf(linkList2.get(1)), 20, 760, paint_text);
+            canvas.drawText("linkList2 third row = " + String.valueOf(linkList2.get(2)), 20, 820, paint_text);
+
+            canvas.drawText("pointListArrowHead = " + String.valueOf(pointListArrowHead), 20, 880, paint_text);
+            canvas.drawText("angleListArrowHead = " + String.valueOf(angleListArrowHead), 20, 940, paint_text);
+            canvas.drawText("linkList = " + String.valueOf(linkList), 20, 1000, paint_text);
+            canvas.drawText("rectListButtons = " + String.valueOf(rectListButtons), 20, 1060, paint_text);
 
             canvas.drawText("inside_button = " + String.valueOf(inside_button), 600, 100, paint_text);
             canvas.drawText("size of pointlist = " + String.valueOf(pointList.size()), 600, 160, paint_text);
@@ -497,16 +522,15 @@ public class DrawArrowsView extends ImageView {
             canvas.drawText("arrow_animated_fraction = " + String.valueOf(arrow_animated_fraction), 600, 520, paint_text);
             canvas.drawText("able_to_click = " + String.valueOf(able_to_click), 600, 580, paint_text);
 
-            canvas.drawText("angleListCheck first row = " + String.valueOf(angleListCheck.get(0)), 20, 1340, paint_text);
-            canvas.drawText("angleListCheck second row = " + String.valueOf(angleListCheck.get(1)), 20, 1400, paint_text);
-            canvas.drawText("angleListCheck third row = " + String.valueOf(angleListCheck.get(2)), 20, 1460, paint_text);
-            canvas.drawText("size of angleListCheck first row = " + String.valueOf(angleListCheck.get(0).size()), 20, 1520, paint_text);
-            canvas.drawText("size of angleListCheck second row = " + String.valueOf(angleListCheck.get(1).size()), 20, 1580, paint_text);
+            canvas.drawText("btn 1, checkMatrix first row = " + String.valueOf(checkMatrix.get(0).get(0)), 20, 1340, paint_text);
+            canvas.drawText("btn 1, checkMatrix second row = " + String.valueOf(checkMatrix.get(0).get(1)), 20, 1400, paint_text);
+            canvas.drawText("btn 1, checkMatrix third row = " + String.valueOf(checkMatrix.get(0).get(2)), 20, 1460, paint_text);
 
-            canvas.drawText("pointListArrowHead = " + String.valueOf(pointListArrowHead), 20, 1640, paint_text);
-            canvas.drawText("angleListArrowHead = " + String.valueOf(angleListArrowHead), 20, 1700, paint_text);
-            canvas.drawText("linkList = " + String.valueOf(linkList), 20, 1760, paint_text);
-            canvas.drawText("rectListButtons = " + String.valueOf(rectListButtons), 20, 1820, paint_text);
+            canvas.drawText("btn 2, checkMatrix first row = " + String.valueOf(checkMatrix.get(1).get(0)), 20, 1580, paint_text);
+            canvas.drawText("btn 2, checkMatrix second row = " + String.valueOf(checkMatrix.get(1).get(1)), 20, 1640, paint_text);
+            canvas.drawText("btn 2, checkMatrix third row = " + String.valueOf(checkMatrix.get(1).get(2)), 20, 1700, paint_text);
+
+
         }
     }
 
@@ -524,6 +548,11 @@ public class DrawArrowsView extends ImageView {
             pointListArrowHead.remove(rectListArrowHead_indice);
             angleListArrowHead.remove(rectListArrowHead_indice);
             linkList.remove(rectListArrowHead_indice);
+
+            //TODO 4f4f add get or something
+            linkList2.get(0).remove(rectListArrowHead_indice);
+            linkList2.get(1).remove(rectListArrowHead_indice);
+            linkList2.get(2).remove(rectListArrowHead_indice);
             rectListArrowHead.remove(rectListArrowHead_indice);
             pathList.remove(rectListArrowHead_indice);
 
@@ -542,6 +571,7 @@ public class DrawArrowsView extends ImageView {
 
         switch (eventaction) {
             case MotionEvent.ACTION_DOWN:
+
                 invalidate();
                 // able_to_click is used to eliminate rapid clicks which can cause problems
                 if (able_to_click) {
@@ -586,10 +616,10 @@ public class DrawArrowsView extends ImageView {
                         loc_arrow_point_x = X;
                         loc_arrow_point_y = Y;
                         angle = Math.atan2(loc_arrow_point_y - btn_loc_y, loc_arrow_point_x - btn_loc_x);
-
                         pointListArrowHead.add(new Point(loc_arrow_point_x, loc_arrow_point_y));
                         angleListArrowHead.add(angle);
                         linkList.add(rectList_indice);
+
                         rectListArrowHead.add(new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
 
                         drawArrow();
@@ -598,6 +628,10 @@ public class DrawArrowsView extends ImageView {
                     } else if (clicked_on_arrow_head) {
                         path_arrow = new Path();
                         pathList.set(rectListArrowHead_indice, path_arrow); // <-- Add this line.
+                        // TODO 4f4f5
+
+                        //checkMatrix.get(0).get(1).set(0,0.0);
+                        checkMatrix.get(linkList2.get(0).get(rectListArrowHead_indice)).get(linkList2.get(1).get(rectListArrowHead_indice)).set(linkList2.get(2).get(rectListArrowHead_indice), 0.0);
                         path_arrow.reset();
                         loc_arrow_point_x = X;
                         loc_arrow_point_y = Y;
@@ -728,9 +762,10 @@ public class DrawArrowsView extends ImageView {
                     double len_arrow_shaft_start = Math.hypot((loc_arrow_point_x - btn_loc_x), (loc_arrow_point_y - btn_loc_y));
 
                     // animates decrease in length and angle
-                    ValueAnimator animator = ValueAnimator.ofFloat((float) len_arrow_shaft_start, (float) len_arrow_shaft);
+                    final ValueAnimator animator = ValueAnimator.ofFloat((float) len_arrow_shaft_start, (float) len_arrow_shaft);
                     animator.setDuration(time_anim_arrow_dur);
                     animator.setInterpolator(new OvershootInterpolator());
+
                     animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                         public void onAnimationUpdate(ValueAnimator animation) {
                             arrow_animated_fraction = animation.getAnimatedFraction();
@@ -748,76 +783,112 @@ public class DrawArrowsView extends ImageView {
                             // prevents user from clicking while the arrow is animating. THis eliminates a bug where "ghost arrows" are created when user click rapidly
                             able_to_click = false;
 
-                            // stops loop at end of animation
-                            if (arrow_animated_fraction == 1) {
-                                // this if statement changes 2 pi to pi and -pi to pi respectively. This removed "duplicate" angles at the right and left side of the coordinate system while still allowing the arrow to snap to these points from both directions
-                                if (angle == 2 * pi) {
-                                    angle = 0;
-                                } else if (angle == -pi) {
-                                    angle = pi;
-                                }
-
-                                clicked_on_button = false;
-                                clicked_on_arrow_head = false;
-
-                                // allow user to click again
-                                able_to_click = true;
-
-                                // checks if arrow placed is in a correct location
-
-                                int u = 0;
-                                int btn_chosen = linkList.get(rectListArrowHead_indice);
-
-                                for (Double val_ang_mat : checkMatrix.get(btn_chosen).get(0)) {
-
-                                    // if not used already
-                                    Double angle_row = checkMatrix.get(btn_chosen).get(0).get(u);
-                                    Double used_row = checkMatrix.get(btn_chosen).get(1).get(u);
-                                    Double force_ang_row = checkMatrix.get(btn_chosen).get(2).get(u);
-                                    Double oppos_allowed_row = checkMatrix.get(btn_chosen).get(3).get(u);
-
-                                    if (used_row.equals(1.0)) {
-                                        Log.d(TAG, "used_row = " + used_row + "so break");
-                                        // break, don't even check
-                                        match = false;
-                                    } else if (used_row.equals(0.0)) {
-                                        Log.d(TAG, "used_row = " + used_row + "so check angle");
-                                        // check if angle is a match
-                                        if (angle_row.equals(angle)) {
-                                            Log.d(TAG, "used_row = " + used_row + "so check angle");
-                                            match = true;
-                                        }
-                                    }
-
-//                                    if (val_ang_mat.equals(angle)) {
-//
-
-                                    u++;
-                                }
-                            }
                             drawArrow();
                             invalidate(); // TODO: Change to invalidate("just the arrow drawn") for efficiency
+                            Toast.makeText(getContext(), "blah", Toast.LENGTH_SHORT).show();
+                        }
+
+                    });
+
+                    // runs at end of arrow animation
+                    animator.addListener(new AnimatorListenerAdapter()
+                    {
+                        @Override
+                        public void onAnimationEnd(Animator animation)
+                        {
+                            clicked_on_button = false;
+                            clicked_on_arrow_head = false;
+
+                            // allow user to click again
+                            able_to_click = true;
+
+                            // checks if arrow is correct
+                            checkArrowIsCorrect();
                         }
                     });
 
                     // starts animator to snap arrow into position
                     animator.start();
-                    invalidate();
-                    // prints angle snapped to in degrees to snackbar
-                    // All angles are inverted, so this if statement shows 0.0 instead of -0.0
-                    double angle_degrees;
-                    if (angles[idx] == 0.0) {
-                        angle_degrees = Math.round(Math.toDegrees(angles[idx]));
-                    } else {
-                        angle_degrees = Math.round(Math.toDegrees(-angles[idx]));
-                    }
+//                    invalidate();
 
-                    Snackbar.make(this, "Created force at " + angle_degrees + "\u00B0", Snackbar.LENGTH_SHORT).show();
+                    // TODO remove this if unwanted
+                    // prints angle snapped to in degrees to snackbar
+//                     All angles are inverted, so this if statement shows 0.0 instead of -0.0
+//                    double angle_degrees;
+//                    if (angles[idx] == 0.0) {
+//                        angle_degrees = Math.round(Math.toDegrees(angles[idx]));
+//                    } else {
+//                        angle_degrees = Math.round(Math.toDegrees(-angles[idx]));
+//                    }
+//
+//                    Snackbar.make(this, "Created force at " + angle_degrees + "\u00B0", Snackbar.LENGTH_SHORT).show();
                     inside_button = false;
                 }
                 break;
         }
         return true;
+    }
+
+    private void checkArrowIsCorrect() {
+        // checks if arrow placed is in a correct location
+
+        // this if statement changes 2 pi to pi and -pi to pi respectively. This removed "duplicate" angles at the right and left side of the coordinate system while still allowing the arrow to snap to these points from both directions
+        if (angle == 2 * pi) {
+            angle = 0;
+        } else if (angle == -pi) {
+            angle = pi;
+        }
+
+        int u = 0;
+        int btn_chosen = linkList.get(rectListArrowHead_indice);
+
+        invalidate();
+        linkList2.get(0).add(linkList.get(rectListArrowHead_indice));
+        linkList2.get(1).add(0);
+        // add angle indice to first row in linklist2
+        linkList2.get(2).add(90);
+        invalidate();
+
+        for (Double val_ang_mat : checkMatrix.get(btn_chosen).get(0)) {
+
+            // if not used already
+            Double angle_row = checkMatrix.get(btn_chosen).get(0).get(u);
+            Double used_row = checkMatrix.get(btn_chosen).get(1).get(u);
+            Double force_ang_row = checkMatrix.get(btn_chosen).get(2).get(u);
+            Double oppos_allowed_row = checkMatrix.get(btn_chosen).get(3).get(u);
+
+
+            if (angle_row.equals(angle)) {
+                if (checkMatrix.get(btn_chosen).get(1).get(u).equals(1.0)) {
+                    Log.d(TAG, "Used already: " + used_row + "so break");
+                    Toast.makeText(getContext(), "Already Used", Toast.LENGTH_SHORT).show();
+                    // break, don't even check
+                    //match = false;
+                } else if (checkMatrix.get(btn_chosen).get(1).get(u).equals(2.0)) {
+                    Log.d(TAG, "Opposite already used, used_row = " + used_row + "so break");
+                } else if (checkMatrix.get(btn_chosen).get(1).get(u).equals(0.0)) {
+                    Log.d(TAG, "Not used yet:  " + used_row + "so check angle");
+                    // check if angle is a match
+
+                    // remove this duplication
+                    if (checkMatrix.get(btn_chosen).get(0).get(u).equals(angle)) {
+                        Log.d(TAG, "used_row = " + used_row + "so check angle");
+                        match = true;
+                        // mark as used
+                        checkMatrix.get(btn_chosen).get(1).set(u, 1.0);
+
+                        // add btn number to first row in linklist2
+                        //linkList2.get(0).set(linkList2.get(0).size()-1,linkList.get(rectListArrowHead_indice));
+
+                        //linkList2.get(1).add(0);
+                        // add angle indice to first row in linklist2
+//                                                linkList2.get(2).set(linkList2.get(0).size() - 1, u);
+                    }
+                }
+            }
+
+            u++;
+        }
     }
 
     private void drawArrow() {
@@ -865,6 +936,13 @@ public class DrawArrowsView extends ImageView {
     // The aspect ratio to be respected by the measurer
     private static final double VIEW_ASPECT_RATIO = .75; // Do not change this or you will have to re place all the points at the corect location!!
     private ViewAspectRatioMeasurer varm = new ViewAspectRatioMeasurer(VIEW_ASPECT_RATIO);
+
+
+
+    void onAnimationEnd (Animator animation){
+
+
+    }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
