@@ -635,16 +635,15 @@ public class DrawArrowsView extends ImageView {
                         path_arrow = new Path();
                         pathList.set(rectListArrowHead_indice, path_arrow); // <-- Add this line.
 
-
                         if (linkList2.get(2).get(rectListArrowHead_indice) != null) {
                             checkMatrix.get(linkList2.get(0).get(rectListArrowHead_indice)).get(linkList2.get(1).get(rectListArrowHead_indice)).set(linkList2.get(2).get(rectListArrowHead_indice), 0.0);
 
+
+                            // this part works fine
                             linkList2.get(0).set(rectListArrowHead_indice, null);
                             linkList2.get(1).set(rectListArrowHead_indice, null);
                             linkList2.get(2).set(rectListArrowHead_indice, null);
-
                         }
-
 
                         path_arrow.reset();
                         loc_arrow_point_x = X;
@@ -712,6 +711,7 @@ public class DrawArrowsView extends ImageView {
                         pointListArrowHead.remove(rectListArrowHead_indice);
                         angleListArrowHead.remove(rectListArrowHead_indice);
                         linkList.remove(rectListArrowHead_indice);
+
 
                         linkList2.get(0).remove(rectListArrowHead_indice);
                         linkList2.get(1).remove(rectListArrowHead_indice);
@@ -809,7 +809,6 @@ public class DrawArrowsView extends ImageView {
 
                             drawArrow();
                             invalidate(); // TODO: Change to invalidate("just the arrow drawn") for efficiency
-                            Toast.makeText(getContext(), "blah", Toast.LENGTH_SHORT).show();
                         }
                     });
 
@@ -895,13 +894,11 @@ public class DrawArrowsView extends ImageView {
                         checkMatrix.get(btn_chosen).get(1).set(u, 1.0);
 
                         // add btn number to first row in linklist2
-                        //linkList2.get(0).set(linkList2.get(0).size()-1,linkList.get(rectListArrowHead_indice));
 
-                        //linkList2.get(1).add(0);
                         // add angle indice to first row in linklist2
-                        linkList2.get(0).set(linkList2.get(0).size() - 1, linkList.get(rectListArrowHead_indice));
-                        linkList2.get(1).set(linkList2.get(0).size() - 1, 1);
-                        linkList2.get(2).set(linkList2.get(0).size() - 1, u);
+                        linkList2.get(0).set(rectListArrowHead_indice, linkList.get(rectListArrowHead_indice));
+                        linkList2.get(1).set(rectListArrowHead_indice, 1);
+                        linkList2.get(2).set(rectListArrowHead_indice, u);
                     }
                 }
             }
