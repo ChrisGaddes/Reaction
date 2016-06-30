@@ -57,6 +57,8 @@ public class DrawArrowsView extends ImageView {
     /**
      * Pai
      */
+
+    private final Paint paint_arrow_wrong;
     private final Paint paint_box;
     private final Paint paint_text;
     private final Paint paint_angle_check;
@@ -74,7 +76,6 @@ public class DrawArrowsView extends ImageView {
 
     private int counter33;
 
-    //private ArrayList<Double> angleListCheck = new ArrayList<>();
 
     //TODO consider http://stackoverflow.com/questions/32324876/how-to-save-an-answer-in-a-riddle-game-without-creating-a-database
 
@@ -88,7 +89,6 @@ public class DrawArrowsView extends ImageView {
      * (public DrawArrowsView(Context, context, AttributeSet attrs)
      */
     private ArrayList<Point> pointList = new ArrayList<>();
-    List<List<Double>> angleListCheck = new ArrayList<>();
 
     List<List<List<Double>>> checkMatrix = new ArrayList<>();
 
@@ -96,12 +96,14 @@ public class DrawArrowsView extends ImageView {
     private ArrayList<Rect> rectListButtons;
     private ArrayList<Rect> rectListArrowHead;
     private ArrayList<Path> pathList;
+    private ArrayList<Path> pathListWrong;
     private ArrayList<Point> pointListArrowHead;
     private ArrayList<Double> angleListArrowHead;
     private ArrayList<Integer> linkList;
     List<ArrayList<Integer>> linkList2;
 
     private Path path_arrow;
+    private Path null_path;
 
     private int btn_loc_x;
     private int btn_loc_y;
@@ -141,11 +143,12 @@ public class DrawArrowsView extends ImageView {
         mGrayedImage = context.getResources().getDrawable(R.drawable.fbd_2_greyed);
 
         pointList = new ArrayList<>();
-        this.angleListCheck = new ArrayList<>();
         checkMatrix = new ArrayList<>();
         rectListButtons = new ArrayList<>();
         rectListArrowHead = new ArrayList<>();
         pathList = new ArrayList<>();
+        pathListWrong = new ArrayList<>();
+
         pointListArrowHead = new ArrayList<>();
         angleListArrowHead = new ArrayList<>();
         linkList = new ArrayList<>();
@@ -157,6 +160,7 @@ public class DrawArrowsView extends ImageView {
 
         // create new paints
         paint_arrow = new Paint();
+        paint_arrow_wrong = new Paint();
         path_arrow = new Path();
         paint_box = new Paint();
         paint_arrow_head_box = new Paint();
@@ -306,26 +310,49 @@ public class DrawArrowsView extends ImageView {
         checkMatrix.get(btn).get(type_num).add(0.0);
         checkMatrix.get(btn).get(type_num).add(0.0);
 
-        // Adds angles to the list of "correct" angles
-        btn = 0;
-        angleListCheck.add(new ArrayList<Double>());
-        angleListCheck.add(new ArrayList<Double>());
-        angleListCheck.add(new ArrayList<Double>());
-        angleListCheck.get(btn).add(0.0);
-        angleListCheck.get(btn).add(-pi);
-        angleListCheck.get(btn).add(pi / 2);
-        angleListCheck.get(btn).add(-pi / 2);
+        // 3rd button
 
-        btn = 1;
-        angleListCheck.add(new ArrayList<Double>());
-        angleListCheck.get(btn).add(pi / 2);
-        angleListCheck.get(btn).add(-pi / 2);
-
+        // add third layer (contains angles)
+        // [btn#, 0] - "angle"
         btn = 2;
-        angleListCheck.add(new ArrayList<Double>());
-        angleListCheck.get(btn).add(pi / 6);
-        angleListCheck.get(btn).add(-5 * pi / 6);
+        type_num = 0;
 
+        checkMatrix.get(btn).get(type_num).add(pi / 6);
+        checkMatrix.get(btn).get(type_num).add(-5 * pi / 6);
+        checkMatrix.get(btn).get(type_num).add(100.0); // set to 100
+        checkMatrix.get(btn).get(type_num).add(100.0);
+
+        // [btn#, 1] - Used
+        btn = 2;
+        type_num = 1;
+        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(0.0);
+
+        // [btn#, 1] - Force angle
+        btn = 2;
+        type_num = 2;
+        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(0.0);
+
+        // [btn#, 3] - Opposite Allowed
+        btn = 2;
+        type_num = 3;
+        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(0.0);
+
+        // [btn#, 4] - Link data
+        btn = 2;
+        type_num = 4;
+        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(0.0);
 
         // set node locations - touch "button" zones will be placed in boxes around these nodes
         PointF pointOne = new PointF((float) 18, (float) 31.5);
@@ -376,6 +403,13 @@ public class DrawArrowsView extends ImageView {
         paint_arrow.setColor(Color.RED);
         paint_arrow.setStyle(Paint.Style.STROKE);
         paint_arrow.setStrokeCap(Paint.Cap.ROUND);
+
+        // sets style of arrow if placed at wrong location
+        paint_arrow_wrong.setStyle(Paint.Style.FILL);
+        paint_arrow_wrong.setStrokeWidth(dpToPx(6));
+        paint_arrow_wrong.setColor(Color.YELLOW);
+        paint_arrow_wrong.setStyle(Paint.Style.STROKE);
+        paint_arrow_wrong.setStrokeCap(Paint.Cap.ROUND);
 
         // toggles arrow animation - this value can be changed in menu in app
         boolean animationToggle = SP.getBoolean("animationToggle", false);
@@ -485,6 +519,11 @@ public class DrawArrowsView extends ImageView {
             canvas.drawPath(pthLst_arrows, paint_arrow);
         }
 
+        // draws wrong arrows from pathlist pthLst_arrows
+        for (Path pthLst_arrows : pathListWrong) {
+            canvas.drawPath(pthLst_arrows, paint_arrow_wrong);
+        }
+
         if (match) {
             paint_angle_check.setColor(Color.GREEN);
         } else {
@@ -530,7 +569,10 @@ public class DrawArrowsView extends ImageView {
             canvas.drawText("btn 2, checkMatrix second row = " + String.valueOf(checkMatrix.get(1).get(1)), 20, 1640, paint_text);
             canvas.drawText("btn 2, checkMatrix third row = " + String.valueOf(checkMatrix.get(1).get(2)), 20, 1700, paint_text);
 
-
+            canvas.drawText("btn 3, checkMatrix first row = " + String.valueOf(checkMatrix.get(2).get(0)), 20, 1820, paint_text);
+            canvas.drawText("btn 3, checkMatrix second row = " + String.valueOf(checkMatrix.get(2).get(1)), 20, 1880, paint_text);
+            canvas.drawText("btn 3, checkMatrix third row = " + String.valueOf(checkMatrix.get(2).get(2)), 20, 1940, paint_text);
+            //TODO fix this so this last line is still on screen
         }
     }
 
@@ -555,6 +597,7 @@ public class DrawArrowsView extends ImageView {
             linkList2.get(2).remove(rectListArrowHead_indice);
             rectListArrowHead.remove(rectListArrowHead_indice);
             pathList.remove(rectListArrowHead_indice);
+            pathListWrong.remove(rectListArrowHead_indice);
 
             // set booleans to false state
             clicked_on_button = false;
@@ -612,6 +655,9 @@ public class DrawArrowsView extends ImageView {
                     if (clicked_on_button) {
                         path_arrow = new Path();
                         pathList.add(path_arrow);
+
+                        null_path = new Path();
+                        pathListWrong.add(null_path);
                         path_arrow.reset();
                         loc_arrow_point_x = X;
                         loc_arrow_point_y = Y;
@@ -634,6 +680,7 @@ public class DrawArrowsView extends ImageView {
                     } else if (clicked_on_arrow_head) {
                         path_arrow = new Path();
                         pathList.set(rectListArrowHead_indice, path_arrow); // <-- Add this line.
+                        pathListWrong.set(rectListArrowHead_indice, null_path);
 
                         if (linkList2.get(2).get(rectListArrowHead_indice) != null) {
                             checkMatrix.get(linkList2.get(0).get(rectListArrowHead_indice)).get(linkList2.get(1).get(rectListArrowHead_indice)).set(linkList2.get(2).get(rectListArrowHead_indice), 0.0);
@@ -719,6 +766,7 @@ public class DrawArrowsView extends ImageView {
 
                         rectListArrowHead.remove(rectListArrowHead_indice);
                         pathList.remove(rectListArrowHead_indice);
+                        pathListWrong.remove(rectListArrowHead_indice);
 
                         // reset booleans to false state
                         clicked_on_button = false;
@@ -772,6 +820,7 @@ public class DrawArrowsView extends ImageView {
 
                             rectListArrowHead.remove(rectListArrowHead_indice);
                             pathList.remove(rectListArrowHead_indice);
+                            pathListWrong.remove(rectListArrowHead_indice);
 
                             // reset booleans to false state
                             clicked_on_button = false;
@@ -904,6 +953,10 @@ public class DrawArrowsView extends ImageView {
             }
             u++;
         }
+        if (!match){
+        pathListWrong.set(rectListArrowHead_indice, path_arrow);
+        }
+
     }
 
     private void drawArrow() {
