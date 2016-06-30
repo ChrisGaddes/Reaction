@@ -620,7 +620,13 @@ public class DrawArrowsView extends ImageView {
                         angleListArrowHead.add(angle);
                         linkList.add(rectList_indice);
 
+                        linkList2.get(0).add(null);//add(linkList.get(rectListArrowHead_indice));
+                        linkList2.get(1).add(null);
+                        // add angle indice to first row in linklist2
+                        linkList2.get(2).add(null);
+
                         rectListArrowHead.add(new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
+
 
                         drawArrow();
                         invalidate();
@@ -628,10 +634,18 @@ public class DrawArrowsView extends ImageView {
                     } else if (clicked_on_arrow_head) {
                         path_arrow = new Path();
                         pathList.set(rectListArrowHead_indice, path_arrow); // <-- Add this line.
-                        // TODO 4f4f5
 
-                        //checkMatrix.get(0).get(1).set(0,0.0);
-                        checkMatrix.get(linkList2.get(0).get(rectListArrowHead_indice)).get(linkList2.get(1).get(rectListArrowHead_indice)).set(linkList2.get(2).get(rectListArrowHead_indice), 0.0);
+
+                        if (linkList2.get(2).get(rectListArrowHead_indice) != null) {
+                            checkMatrix.get(linkList2.get(0).get(rectListArrowHead_indice)).get(linkList2.get(1).get(rectListArrowHead_indice)).set(linkList2.get(2).get(rectListArrowHead_indice), 0.0);
+
+                            linkList2.get(0).set(rectListArrowHead_indice, null);
+                            linkList2.get(1).set(rectListArrowHead_indice, null);
+                            linkList2.get(2).set(rectListArrowHead_indice, null);
+
+                        }
+
+
                         path_arrow.reset();
                         loc_arrow_point_x = X;
                         loc_arrow_point_y = Y;
@@ -698,6 +712,11 @@ public class DrawArrowsView extends ImageView {
                         pointListArrowHead.remove(rectListArrowHead_indice);
                         angleListArrowHead.remove(rectListArrowHead_indice);
                         linkList.remove(rectListArrowHead_indice);
+
+                        linkList2.get(0).remove(rectListArrowHead_indice);
+                        linkList2.get(1).remove(rectListArrowHead_indice);
+                        linkList2.get(2).remove(rectListArrowHead_indice);
+
                         rectListArrowHead.remove(rectListArrowHead_indice);
                         pathList.remove(rectListArrowHead_indice);
 
@@ -746,6 +765,11 @@ public class DrawArrowsView extends ImageView {
                             pointListArrowHead.remove(rectListArrowHead_indice);
                             angleListArrowHead.remove(rectListArrowHead_indice);
                             linkList.remove(rectListArrowHead_indice);
+
+                            linkList2.get(0).remove(rectListArrowHead_indice);
+                            linkList2.get(1).remove(rectListArrowHead_indice);
+                            linkList2.get(2).remove(rectListArrowHead_indice);
+
                             rectListArrowHead.remove(rectListArrowHead_indice);
                             pathList.remove(rectListArrowHead_indice);
 
@@ -761,7 +785,7 @@ public class DrawArrowsView extends ImageView {
                     // calculates the length of the arrow shaft upon release
                     double len_arrow_shaft_start = Math.hypot((loc_arrow_point_x - btn_loc_x), (loc_arrow_point_y - btn_loc_y));
 
-                    // animates decrease in length and angle
+                    // animator which decreases in length and angle
                     final ValueAnimator animator = ValueAnimator.ofFloat((float) len_arrow_shaft_start, (float) len_arrow_shaft);
                     animator.setDuration(time_anim_arrow_dur);
                     animator.setInterpolator(new OvershootInterpolator());
@@ -787,15 +811,12 @@ public class DrawArrowsView extends ImageView {
                             invalidate(); // TODO: Change to invalidate("just the arrow drawn") for efficiency
                             Toast.makeText(getContext(), "blah", Toast.LENGTH_SHORT).show();
                         }
-
                     });
 
                     // runs at end of arrow animation
-                    animator.addListener(new AnimatorListenerAdapter()
-                    {
+                    animator.addListener(new AnimatorListenerAdapter() {
                         @Override
-                        public void onAnimationEnd(Animator animation)
-                        {
+                        public void onAnimationEnd(Animator animation) {
                             clicked_on_button = false;
                             clicked_on_arrow_head = false;
 
@@ -842,11 +863,8 @@ public class DrawArrowsView extends ImageView {
         int u = 0;
         int btn_chosen = linkList.get(rectListArrowHead_indice);
 
-        invalidate();
-        linkList2.get(0).add(linkList.get(rectListArrowHead_indice));
-        linkList2.get(1).add(0);
-        // add angle indice to first row in linklist2
-        linkList2.get(2).add(90);
+
+        // TODO remove this outside so it doesn't keep expanding forever
         invalidate();
 
         for (Double val_ang_mat : checkMatrix.get(btn_chosen).get(0)) {
@@ -856,7 +874,6 @@ public class DrawArrowsView extends ImageView {
             Double used_row = checkMatrix.get(btn_chosen).get(1).get(u);
             Double force_ang_row = checkMatrix.get(btn_chosen).get(2).get(u);
             Double oppos_allowed_row = checkMatrix.get(btn_chosen).get(3).get(u);
-
 
             if (angle_row.equals(angle)) {
                 if (checkMatrix.get(btn_chosen).get(1).get(u).equals(1.0)) {
@@ -882,11 +899,12 @@ public class DrawArrowsView extends ImageView {
 
                         //linkList2.get(1).add(0);
                         // add angle indice to first row in linklist2
-//                                                linkList2.get(2).set(linkList2.get(0).size() - 1, u);
+                        linkList2.get(0).set(linkList2.get(0).size() - 1, linkList.get(rectListArrowHead_indice));
+                        linkList2.get(1).set(linkList2.get(0).size() - 1, 1);
+                        linkList2.get(2).set(linkList2.get(0).size() - 1, u);
                     }
                 }
             }
-
             u++;
         }
     }
@@ -938,8 +956,7 @@ public class DrawArrowsView extends ImageView {
     private ViewAspectRatioMeasurer varm = new ViewAspectRatioMeasurer(VIEW_ASPECT_RATIO);
 
 
-
-    void onAnimationEnd (Animator animation){
+    void onAnimationEnd(Animator animation) {
 
 
     }
