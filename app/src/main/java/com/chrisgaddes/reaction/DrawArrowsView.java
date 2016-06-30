@@ -58,7 +58,7 @@ public class DrawArrowsView extends ImageView {
      * Pai
      */
 
-    private final Paint paint_arrow_wrong;
+    private final Paint paint_arrow_correct_location;
     private final Paint paint_box;
     private final Paint paint_text;
     private final Paint paint_angle_check;
@@ -160,7 +160,7 @@ public class DrawArrowsView extends ImageView {
 
         // create new paints
         paint_arrow = new Paint();
-        paint_arrow_wrong = new Paint();
+        paint_arrow_correct_location = new Paint();
         path_arrow = new Path();
         paint_box = new Paint();
         paint_arrow_head_box = new Paint();
@@ -399,17 +399,18 @@ public class DrawArrowsView extends ImageView {
 
         // sets style of arrows
         paint_arrow.setStyle(Paint.Style.FILL);
-        paint_arrow.setStrokeWidth(dpToPx(6));
-        paint_arrow.setColor(Color.RED);
+        paint_arrow.setStrokeWidth(dpToPx(5));
+        paint_arrow.setColor(Color.BLACK);
+        paint_arrow.setAlpha(40);
         paint_arrow.setStyle(Paint.Style.STROKE);
         paint_arrow.setStrokeCap(Paint.Cap.ROUND);
 
         // sets style of arrow if placed at wrong location
-        paint_arrow_wrong.setStyle(Paint.Style.FILL);
-        paint_arrow_wrong.setStrokeWidth(dpToPx(6));
-        paint_arrow_wrong.setColor(Color.YELLOW);
-        paint_arrow_wrong.setStyle(Paint.Style.STROKE);
-        paint_arrow_wrong.setStrokeCap(Paint.Cap.ROUND);
+        paint_arrow_correct_location.setStyle(Paint.Style.FILL);
+        paint_arrow_correct_location.setStrokeWidth(dpToPx(6));
+        paint_arrow_correct_location.setColor(Color.RED);
+        paint_arrow_correct_location.setStyle(Paint.Style.STROKE);
+        paint_arrow_correct_location.setStrokeCap(Paint.Cap.ROUND);
 
         // toggles arrow animation - this value can be changed in menu in app
         boolean animationToggle = SP.getBoolean("animationToggle", false);
@@ -428,12 +429,12 @@ public class DrawArrowsView extends ImageView {
         paint_arrow_head_box.setPathEffect(new DashPathEffect(new float[]{10, 10, 10, 10}, 0));
 
         // toggles visibility of boxes around arrow heads - this value can be changed in menu in app
-        boolean arrowBoxesToggle = SP.getBoolean("arrowBoxesToggle", false);
-        if (arrowBoxesToggle) {
-            paint_arrow_head_box.setColor(Color.GREEN);
-        } else {
-            paint_arrow_head_box.setColor(Color.TRANSPARENT);
-        }
+//        boolean arrowBoxesToggle = SP.getBoolean("arrowBoxesToggle", false);
+//        if (arrowBoxesToggle) {
+//            paint_arrow_head_box.setColor(Color.GREEN);
+//        } else {
+//            paint_arrow_head_box.setColor(Color.TRANSPARENT);
+//        }
 
         // sets text size for debugging text
         paint_text.setTextSize(23f);
@@ -521,7 +522,7 @@ public class DrawArrowsView extends ImageView {
 
         // draws wrong arrows from pathlist pthLst_arrows
         for (Path pthLst_arrows : pathListWrong) {
-            canvas.drawPath(pthLst_arrows, paint_arrow_wrong);
+            canvas.drawPath(pthLst_arrows, paint_arrow_correct_location);
         }
 
         if (match) {
@@ -953,7 +954,9 @@ public class DrawArrowsView extends ImageView {
             }
             u++;
         }
-        if (!match){
+
+        // overlays gray arrow over red arrow if in wrong location
+        if (match){
         pathListWrong.set(rectListArrowHead_indice, path_arrow);
         }
 
