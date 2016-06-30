@@ -429,12 +429,12 @@ public class DrawArrowsView extends ImageView {
         paint_arrow_head_box.setPathEffect(new DashPathEffect(new float[]{10, 10, 10, 10}, 0));
 
         // toggles visibility of boxes around arrow heads - this value can be changed in menu in app
-//        boolean arrowBoxesToggle = SP.getBoolean("arrowBoxesToggle", false);
-//        if (arrowBoxesToggle) {
-//            paint_arrow_head_box.setColor(Color.GREEN);
-//        } else {
-//            paint_arrow_head_box.setColor(Color.TRANSPARENT);
-//        }
+        boolean arrowBoxesToggle = SP.getBoolean("arrowBoxesToggle", false);
+        if (arrowBoxesToggle) {
+            paint_arrow_head_box.setColor(Color.GREEN);
+        } else {
+            paint_arrow_head_box.setColor(Color.TRANSPARENT);
+        }
 
         // sets text size for debugging text
         paint_text.setTextSize(23f);
@@ -525,12 +525,12 @@ public class DrawArrowsView extends ImageView {
             canvas.drawPath(pthLst_arrows, paint_arrow_correct_location);
         }
 
-        if (match) {
-            paint_angle_check.setColor(Color.GREEN);
-        } else {
-            paint_angle_check.setColor(Color.RED);
-        }
-        canvas.drawCircle(1000, 500, 50, paint_angle_check);
+//        if (match) {
+//            paint_angle_check.setColor(Color.GREEN);
+//        } else {
+//            paint_angle_check.setColor(Color.RED);
+//        }
+//        canvas.drawCircle(1000, 500, 50, paint_angle_check);
 
         if (debuggingTextToggle) {
 
