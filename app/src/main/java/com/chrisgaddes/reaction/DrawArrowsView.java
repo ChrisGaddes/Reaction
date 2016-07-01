@@ -16,6 +16,11 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -72,10 +77,6 @@ public class DrawArrowsView extends ImageView {
     private int rectListArrowHead_indice;
     private boolean clicked_on_arrow_head;
 
-    private boolean runLoopEveryOther;
-
-    private int counter33;
-
 
     //TODO consider http://stackoverflow.com/questions/32324876/how-to-save-an-answer-in-a-riddle-game-without-creating-a-database
 
@@ -112,6 +113,7 @@ public class DrawArrowsView extends ImageView {
 
     private double len_arrow_shaft_current;
     private double angle;
+    private double opp_ang;
     private double angle_difference;
     private double arrow_animated_fraction;
 
@@ -175,15 +177,11 @@ public class DrawArrowsView extends ImageView {
         able_to_click = true;
         already_done = false;
 
-        runLoopEveryOther = true;
-
         // sets dimensions of arrow, nodes, and touch areas
         len_arrow_shaft = dpToPx(62);
         len_arrow_head = dpToPx(19);
         dim_btn_radius = dpToPx(4);
         dim_btn_radius_buffer = dpToPx(19);
-
-        counter33 = 0;
 
         setArrowStyle();
     }
@@ -230,10 +228,10 @@ public class DrawArrowsView extends ImageView {
         // [btn#, 0] - "angle"
         btn = 0;
         int type_num = 0;
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(pi);
         checkMatrix.get(btn).get(type_num).add(pi / 2);
-        checkMatrix.get(btn).get(type_num).add(-pi / 2);
+        checkMatrix.get(btn).get(type_num).add(pi);
+        checkMatrix.get(btn).get(type_num).add(100.0);
+        checkMatrix.get(btn).get(type_num).add(100.0);
 
         // [btn#, 1] - Used
         btn = 0;
@@ -254,8 +252,8 @@ public class DrawArrowsView extends ImageView {
         // [btn#, 3] - Opposite Allowed
         btn = 0;
         type_num = 3;
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(1.0);
+        checkMatrix.get(btn).get(type_num).add(1.0);
         checkMatrix.get(btn).get(type_num).add(0.0);
         checkMatrix.get(btn).get(type_num).add(0.0);
 
@@ -274,7 +272,7 @@ public class DrawArrowsView extends ImageView {
         btn = 1;
         type_num = 0;
         checkMatrix.get(btn).get(type_num).add(pi / 2);
-        checkMatrix.get(btn).get(type_num).add(-pi / 2);
+        checkMatrix.get(btn).get(type_num).add(100.0);
         checkMatrix.get(btn).get(type_num).add(100.0); // set to 100
         checkMatrix.get(btn).get(type_num).add(100.0);
 
@@ -297,7 +295,7 @@ public class DrawArrowsView extends ImageView {
         // [btn#, 3] - Opposite Allowed
         btn = 1;
         type_num = 3;
-        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(1.0);
         checkMatrix.get(btn).get(type_num).add(0.0);
         checkMatrix.get(btn).get(type_num).add(0.0);
         checkMatrix.get(btn).get(type_num).add(0.0);
@@ -317,8 +315,8 @@ public class DrawArrowsView extends ImageView {
         btn = 2;
         type_num = 0;
 
-        checkMatrix.get(btn).get(type_num).add(pi / 6);
         checkMatrix.get(btn).get(type_num).add(-5 * pi / 6);
+        checkMatrix.get(btn).get(type_num).add(100.0);
         checkMatrix.get(btn).get(type_num).add(100.0); // set to 100
         checkMatrix.get(btn).get(type_num).add(100.0);
 
@@ -399,7 +397,7 @@ public class DrawArrowsView extends ImageView {
 
         // sets style of arrows
         paint_arrow.setStyle(Paint.Style.FILL);
-        paint_arrow.setStrokeWidth(dpToPx(5));
+        paint_arrow.setStrokeWidth(dpToPx(4));
         paint_arrow.setColor(Color.BLACK);
         paint_arrow.setAlpha(40);
         paint_arrow.setStyle(Paint.Style.STROKE);
@@ -706,16 +704,13 @@ public class DrawArrowsView extends ImageView {
                     }
                 } else {
                     // this is to prevent rapid clicks causing problems
-                    Toast.makeText(getContext(), "Don't tap so quickly", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(this, "Don't Tap so quickly!", Snackbar.LENGTH_SHORT).show();
                 }
                 break;
 
             case MotionEvent.ACTION_MOVE:
-
                 match = false;
-
                 if (clicked_on_button || clicked_on_arrow_head) {
-
                     // checks if touch is inside button
                     if (rectListButtons.get(rectList_indice).contains(X, Y)) {
                         inside_button = true;
@@ -760,7 +755,6 @@ public class DrawArrowsView extends ImageView {
                         angleListArrowHead.remove(rectListArrowHead_indice);
                         linkList.remove(rectListArrowHead_indice);
 
-
                         linkList2.get(0).remove(rectListArrowHead_indice);
                         linkList2.get(1).remove(rectListArrowHead_indice);
                         linkList2.get(2).remove(rectListArrowHead_indice);
@@ -804,7 +798,9 @@ public class DrawArrowsView extends ImageView {
                         int x_tmp = (int) (len_arrow_shaft * Math.cos(angles[idx]) + btn_loc_x);
                         int y_tmp = (int) (len_arrow_shaft * Math.sin(angles[idx]) + btn_loc_y);
                         if (point5.equals(x_tmp, y_tmp)) {
-                            Toast.makeText(getContext(), "You can't stack arrows", Toast.LENGTH_SHORT).show();
+                            //TODO there is a bug where if you tap right on the tip of a arrow it will remove it
+//                            Toast.makeText(getContext(), "You can't stack arrows", Toast.LENGTH_SHORT).show();
+                            Snackbar.make(this, "You can't stack arrows", Snackbar.LENGTH_SHORT).show();
                             path_arrow.reset();
 
                             // cancel long press handler
@@ -912,8 +908,6 @@ public class DrawArrowsView extends ImageView {
         int u = 0;
         int btn_chosen = linkList.get(rectListArrowHead_indice);
 
-
-        // TODO remove this outside so it doesn't keep expanding forever
         invalidate();
 
         for (Double val_ang_mat : checkMatrix.get(btn_chosen).get(0)) {
@@ -924,28 +918,36 @@ public class DrawArrowsView extends ImageView {
             Double force_ang_row = checkMatrix.get(btn_chosen).get(2).get(u);
             Double oppos_allowed_row = checkMatrix.get(btn_chosen).get(3).get(u);
 
-            if (angle_row.equals(angle)) {
-                if (checkMatrix.get(btn_chosen).get(1).get(u).equals(1.0)) {
-                    Log.d(TAG, "Used already: " + used_row + "so break");
-                    Toast.makeText(getContext(), "Already Used", Toast.LENGTH_SHORT).show();
-                    // break, don't even check
-                    //match = false;
-                } else if (checkMatrix.get(btn_chosen).get(1).get(u).equals(2.0)) {
-                    Log.d(TAG, "Opposite already used, used_row = " + used_row + "so break");
-                } else if (checkMatrix.get(btn_chosen).get(1).get(u).equals(0.0)) {
-                    Log.d(TAG, "Not used yet:  " + used_row + "so check angle");
-                    // check if angle is a match
+            if (oppos_allowed_row == 1.0 || used_row == 0.0) {
+                // test both angles
+                if (angle_row < 0.0) {
+                    opp_ang = angle_row + pi;
+                } else {
+                    opp_ang = angle_row - pi;
+                }
+            }
 
-                    // remove this duplication
-                    if (checkMatrix.get(btn_chosen).get(0).get(u).equals(angle)) {
-                        Log.d(TAG, "used_row = " + used_row + "so check angle");
+            if (opp_ang == angle) {
+                if (used_row.equals(1.0)) {
+                    Snackbar.make(this, "Opposite Already Used", Snackbar.LENGTH_SHORT).show();
+                } else if (used_row.equals(0.0)) {
+                    if (opp_ang == angle) {
                         match = true;
-                        // mark as used
-                        checkMatrix.get(btn_chosen).get(1).set(u, 1.0);
+                        checkMatrix.get(btn_chosen).get(1).set(u, 1.0); // mark as used
+                        linkList2.get(0).set(rectListArrowHead_indice, linkList.get(rectListArrowHead_indice));
+                        linkList2.get(1).set(rectListArrowHead_indice, 1);
+                        linkList2.get(2).set(rectListArrowHead_indice, u);
+                    }
+                }
+            }
 
-                        // add btn number to first row in linklist2
-
-                        // add angle indice to first row in linklist2
+            if (angle_row.equals(angle)) {
+                if (used_row.equals(1.0)) {
+                    Snackbar.make(this, "Opposite Already Used", Snackbar.LENGTH_SHORT).show();
+                } else if (used_row.equals(0.0)) {
+                    if (angle_row.equals(angle)) {
+                        match = true;
+                        checkMatrix.get(btn_chosen).get(1).set(u, 1.0); // mark as used
                         linkList2.get(0).set(rectListArrowHead_indice, linkList.get(rectListArrowHead_indice));
                         linkList2.get(1).set(rectListArrowHead_indice, 1);
                         linkList2.get(2).set(rectListArrowHead_indice, u);
@@ -954,12 +956,33 @@ public class DrawArrowsView extends ImageView {
             }
             u++;
         }
+        showSnackBarArrowPlaced();
+    }
 
-        // overlays gray arrow over red arrow if in wrong location
-        if (match){
-        pathListWrong.set(rectListArrowHead_indice, path_arrow);
+    private void showSnackBarArrowPlaced() {
+        // overlays gray arrow over red arrow if in correct location
+        if (match) {
+            pathListWrong.set(rectListArrowHead_indice, path_arrow);
+            SpannableStringBuilder snackbarText = new SpannableStringBuilder();
+            snackbarText.append("" + convertRadToDegreeAndInvert(angle) + "\u00B0" + " is a ");
+            int boldStart = snackbarText.length();
+            snackbarText.append("Correct Location");
+            snackbarText.setSpan(new ForegroundColorSpan(Color.GREEN), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            snackbarText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            snackbarText.append("");
+
+            Snackbar.make(this, snackbarText, Snackbar.LENGTH_SHORT).show();
+        } else {
+            SpannableStringBuilder snackbarText = new SpannableStringBuilder();
+            snackbarText.append("" + convertRadToDegreeAndInvert(angle) + "\u00B0" + " is a ");
+            int boldStart = snackbarText.length();
+            snackbarText.append("Wrong Location");
+            snackbarText.setSpan(new ForegroundColorSpan(Color.RED), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            snackbarText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            snackbarText.append(" - Try again");
+
+            Snackbar.make(this, snackbarText, Snackbar.LENGTH_SHORT).show();
         }
-
     }
 
     private void drawArrow() {
@@ -1009,8 +1032,21 @@ public class DrawArrowsView extends ImageView {
     private ViewAspectRatioMeasurer varm = new ViewAspectRatioMeasurer(VIEW_ASPECT_RATIO);
 
 
-    void onAnimationEnd(Animator animation) {
+    public double convertRadToDegreeAndInvert(Double angle) {
+        // prints angle snapped to in degrees to snackbar
+        if (angle == 0.0) {
+            // All angles are inverted, so this if statement shows 0.0 instead of -0.0
+            return (double) Math.round(Math.toDegrees(angle));
+        } else {
+            return (double) Math.round(Math.toDegrees(-angle));
+        }
+    }
 
+//                    Snackbar.make(this, "Created force at " + angle_degrees + "\u00B0", Snackbar.LENGTH_SHORT).show();
+
+
+
+    void onAnimationEnd(Animator animation) {
 
     }
 
