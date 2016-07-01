@@ -196,10 +196,27 @@ public class DrawArrowsView extends ImageView {
         already_done = true;
         match = false;
 
-        // creates checkMatrix
-        //checkMatrix.add((new ArrayList<Double>()).add( new ArrayList<List<Double>()));
+        // set node locations - touch "button" zones will be placed in boxes around these nodes
+        PointF pointOne = new PointF((float) 18, (float) 31.5);
+        PointF pointTwo = new PointF((float) 18, (float) 62.1);
+        PointF pointThree = new PointF((float) 53.5, (float) 62.1);
+        PointF pointFour = new PointF((float) 87.55, (float) 62.1);
 
-        // add buttons layer
+        // pointList.add(percentToPx(pointOne));
+        pointList.add(percentToPx(pointTwo));
+        pointList.add(percentToPx(pointThree));
+        pointList.add(percentToPx(pointFour));
+
+        // create Rects from pointList to create buttons at nodes
+        for (Point g : pointList) {
+            rectListButtons.add(new Rect(g.x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), g.y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), g.x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), g.y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
+        }
+
+        loadArrowCheckLocations();
+    }
+
+    private void loadArrowCheckLocations() {
+        // add buttons layers
         checkMatrix.add(new ArrayList<List<Double>>());
         checkMatrix.add(new ArrayList<List<Double>>());
         checkMatrix.add(new ArrayList<List<Double>>());
@@ -351,24 +368,6 @@ public class DrawArrowsView extends ImageView {
         checkMatrix.get(btn).get(type_num).add(0.0);
         checkMatrix.get(btn).get(type_num).add(0.0);
         checkMatrix.get(btn).get(type_num).add(0.0);
-
-        // set node locations - touch "button" zones will be placed in boxes around these nodes
-        PointF pointOne = new PointF((float) 18, (float) 31.5);
-        PointF pointTwo = new PointF((float) 18, (float) 62.1);
-        PointF pointThree = new PointF((float) 53.5, (float) 62.1);
-        PointF pointFour = new PointF((float) 87.55, (float) 62.1);
-
-// http://stackoverflow.com/questions/5022824/how-to-fill-a-two-dimensional-arraylist-in-java-with-integers
-
-        // pointList.add(percentToPx(pointOne));
-        pointList.add(percentToPx(pointTwo));
-        pointList.add(percentToPx(pointThree));
-        pointList.add(percentToPx(pointFour));
-
-        // create Rects from pointList to create buttons at nodes
-        for (Point g : pointList) {
-            rectListButtons.add(new Rect(g.x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), g.y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), g.x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), g.y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
-        }
     }
 
     /**
@@ -799,7 +798,6 @@ public class DrawArrowsView extends ImageView {
                         int y_tmp = (int) (len_arrow_shaft * Math.sin(angles[idx]) + btn_loc_y);
                         if (point5.equals(x_tmp, y_tmp)) {
                             //TODO there is a bug where if you tap right on the tip of a arrow it will remove it
-//                            Toast.makeText(getContext(), "You can't stack arrows", Toast.LENGTH_SHORT).show();
                             Snackbar.make(this, "You can't stack arrows", Snackbar.LENGTH_SHORT).show();
                             path_arrow.reset();
 
@@ -918,25 +916,27 @@ public class DrawArrowsView extends ImageView {
             Double force_ang_row = checkMatrix.get(btn_chosen).get(2).get(u);
             Double oppos_allowed_row = checkMatrix.get(btn_chosen).get(3).get(u);
 
+            // run if opposite angle is chosen
             if (oppos_allowed_row == 1.0 || used_row == 0.0) {
-                // test both angles
+                // calculate opposite angle
                 if (angle_row < 0.0) {
                     opp_ang = angle_row + pi;
                 } else {
                     opp_ang = angle_row - pi;
                 }
-            }
 
-            if (opp_ang == angle) {
-                if (used_row.equals(1.0)) {
-                    Snackbar.make(this, "Opposite Already Used", Snackbar.LENGTH_SHORT).show();
-                } else if (used_row.equals(0.0)) {
-                    if (opp_ang == angle) {
-                        match = true;
-                        checkMatrix.get(btn_chosen).get(1).set(u, 1.0); // mark as used
-                        linkList2.get(0).set(rectListArrowHead_indice, linkList.get(rectListArrowHead_indice));
-                        linkList2.get(1).set(rectListArrowHead_indice, 1);
-                        linkList2.get(2).set(rectListArrowHead_indice, u);
+                // run if opposite angle is chosen
+                if (opp_ang == angle) {
+                    if (used_row.equals(1.0)) {
+                        Snackbar.make(this, "Opposite Already Used", Snackbar.LENGTH_SHORT).show();
+                    } else if (used_row.equals(0.0)) {
+                        if (opp_ang == angle) {
+                            match = true;
+                            checkMatrix.get(btn_chosen).get(1).set(u, 1.0); // mark as used
+                            linkList2.get(0).set(rectListArrowHead_indice, linkList.get(rectListArrowHead_indice));
+                            linkList2.get(1).set(rectListArrowHead_indice, 1);
+                            linkList2.get(2).set(rectListArrowHead_indice, u);
+                        }
                     }
                 }
             }
@@ -964,7 +964,8 @@ public class DrawArrowsView extends ImageView {
         if (match) {
             pathListWrong.set(rectListArrowHead_indice, path_arrow);
             SpannableStringBuilder snackbarText = new SpannableStringBuilder();
-            snackbarText.append("" + convertRadToDegreeAndInvert(angle) + "\u00B0" + " is a ");
+//            snackbarText.append("" + convertRadToDegreeAndInvert(angle) + "\u00B0" + " is a ");
+            snackbarText.append("");
             int boldStart = snackbarText.length();
             snackbarText.append("Correct Location");
             snackbarText.setSpan(new ForegroundColorSpan(Color.GREEN), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -974,10 +975,11 @@ public class DrawArrowsView extends ImageView {
             Snackbar.make(this, snackbarText, Snackbar.LENGTH_SHORT).show();
         } else {
             SpannableStringBuilder snackbarText = new SpannableStringBuilder();
-            snackbarText.append("" + convertRadToDegreeAndInvert(angle) + "\u00B0" + " is a ");
+//            snackbarText.append("" + convertRadToDegreeAndInvert(angle) + "\u00B0" + " is a ");
+            snackbarText.append("");
             int boldStart = snackbarText.length();
             snackbarText.append("Wrong Location");
-            snackbarText.setSpan(new ForegroundColorSpan(Color.RED), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            snackbarText.setSpan(new ForegroundColorSpan(Color.YELLOW), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             snackbarText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             snackbarText.append(" - Try again");
 
@@ -1042,8 +1044,7 @@ public class DrawArrowsView extends ImageView {
         }
     }
 
-//                    Snackbar.make(this, "Created force at " + angle_degrees + "\u00B0", Snackbar.LENGTH_SHORT).show();
-
+    // Snackbar.make(this, "Created force at " + angle_degrees + "\u00B0", Snackbar.LENGTH_SHORT).show();
 
 
     void onAnimationEnd(Animator animation) {
@@ -1055,6 +1056,8 @@ public class DrawArrowsView extends ImageView {
         varm.measure(widthMeasureSpec, heightMeasureSpec);
         setMeasuredDimension(varm.getMeasuredWidth(), varm.getMeasuredHeight());
     }
+
+
 
 //    @Override
 //    public boolean equals(Object obj) {
