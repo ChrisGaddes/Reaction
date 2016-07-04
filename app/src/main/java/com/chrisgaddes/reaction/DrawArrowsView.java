@@ -13,6 +13,7 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -68,7 +69,7 @@ public class DrawArrowsView extends ImageView {
     private final Paint paint_text;
     private final Paint paint_angle_check;
     private final double len_arrow_shaft;
-    private final double len_arrow_head;
+    private double len_arrow_head;
     private final float dim_btn_radius;
     private final float dim_btn_radius_buffer;
     private long time_anim_arrow_dur;
@@ -98,13 +99,25 @@ public class DrawArrowsView extends ImageView {
     private ArrayList<Rect> rectListArrowHead;
     private ArrayList<Path> pathList;
     private ArrayList<Path> pathListWrong;
+    private ArrayList<Path> pathListMoments;
+    private ArrayList<Path> pathListMomentsWrong;
     private ArrayList<Point> pointListArrowHead;
     private ArrayList<Double> angleListArrowHead;
     private ArrayList<Integer> linkList;
     List<ArrayList<Integer>> linkList2;
 
+    private int moment_radius;
+
+    private RectF oval_moment;
+    private int startAngleMoment;
+    private int sweepAngleMoment;
+
     private Path path_arrow;
+    private Path path_moment;
     private Path null_path;
+
+    private int X;
+    private int Y;
 
     private int btn_loc_x;
     private int btn_loc_y;
@@ -148,6 +161,9 @@ public class DrawArrowsView extends ImageView {
         checkMatrix = new ArrayList<>();
         rectListButtons = new ArrayList<>();
         rectListArrowHead = new ArrayList<>();
+
+        pathListMoments = new ArrayList<>();
+        pathListMomentsWrong = new ArrayList<>();
         pathList = new ArrayList<>();
         pathListWrong = new ArrayList<>();
 
@@ -164,11 +180,13 @@ public class DrawArrowsView extends ImageView {
         paint_arrow = new Paint();
         paint_arrow_correct_location = new Paint();
         path_arrow = new Path();
+        path_moment = new Path();
         paint_box = new Paint();
         paint_arrow_head_box = new Paint();
         paint_text = new Paint();
         paint_points = new Paint();
         paint_angle_check = new Paint();
+        oval_moment = new RectF();
 
         // set values to false to begin
         clicked_on_button = false;
@@ -182,6 +200,11 @@ public class DrawArrowsView extends ImageView {
         len_arrow_head = dpToPx(19);
         dim_btn_radius = dpToPx(4);
         dim_btn_radius_buffer = dpToPx(19);
+
+        // set dimensions of moments
+        moment_radius = dpToPx(30);
+        startAngleMoment = 120;
+        sweepAngleMoment = 243;
 
         setArrowStyle();
     }
@@ -477,6 +500,23 @@ public class DrawArrowsView extends ImageView {
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+//        Paint paint_moments = new Paint();
+//        final RectF rect = new RectF();
+//        //Example values
+//
+//        int mWidth = 500;
+//        int mRadius = 80;
+//        int mHeight = 500;
+//
+//        rect.set(mWidth/2- mRadius, mHeight/2 - mRadius, mWidth/2 + mRadius, mHeight/2 + mRadius);
+//        paint_moments.setColor(Color.GREEN);
+//        paint_moments.setStrokeWidth(20);
+//        paint_moments.setAntiAlias(true);
+////        paint_moments.setStrokeCap(Paint.Cap.ROUND);
+//        paint_moments.setStyle(Paint.Style.STROKE);
+//        canvas.drawArc(rect, -70, 140, false, paint_moments);
+
+
         // TODO look into clippath. May be able to use it to isolate the members
 
         // TODO move some of this outside of onDraw for efficiency
@@ -502,6 +542,8 @@ public class DrawArrowsView extends ImageView {
             canvas.drawRect(rect1, paint_arrow_head_box);
         }
 
+//        canvas.drawArc(50.0, );
+
         // draws rectangles around points
         for (Rect rect7 : rectListButtons) {
             canvas.drawRect(rect7, paint_box);
@@ -520,6 +562,11 @@ public class DrawArrowsView extends ImageView {
         // draws wrong arrows from pathlist pthLst_arrows
         for (Path pthLst_arrows : pathListWrong) {
             canvas.drawPath(pthLst_arrows, paint_arrow_correct_location);
+        }
+
+        // draws arrows from pathlist pthLst_arrows
+        for (Path pthLst_moment : pathListMoments) {
+            canvas.drawPath(pthLst_moment, paint_arrow_correct_location);
         }
 
 //        if (match) {
@@ -602,13 +649,42 @@ public class DrawArrowsView extends ImageView {
             clicked_on_arrow_head = false;
             inside_button = false;
             invalidate();
+
+
+            path_moment = new Path();
+            pathListMoments.add(path_moment);
+
+            null_path = new Path();
+            pathListWrong.add(null_path);
+
+            path_moment.reset();
+            loc_arrow_point_x = X;
+            loc_arrow_point_y = Y;
+
+
+//            angle = Math.atan2(loc_arrow_point_y - btn_loc_y, loc_arrow_point_x - btn_loc_x);
+//            pointListArrowHead.add(new Point(loc_arrow_point_x, loc_arrow_point_y));
+//            angleListArrowHead.add(angle);
+//            linkList.add(rectList_indice);
+//
+//            linkList2.get(0).add(null);//add(linkList.get(rectListArrowHead_indice));
+//            linkList2.get(1).add(null);
+//            // add angle indice to first row in linklist2
+//            linkList2.get(2).add(null);
+//
+//            rectListArrowHead.add(new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
+
+
+            drawMoment();
+            invalidate();
+
         }
     };
 
     public boolean onTouchEvent(MotionEvent event) {
         int eventaction = event.getAction();
-        int X = (int) event.getX();
-        int Y = (int) event.getY();
+        X = (int) event.getX();
+        Y = (int) event.getY();
 
         switch (eventaction) {
             case MotionEvent.ACTION_DOWN:
@@ -988,6 +1064,8 @@ public class DrawArrowsView extends ImageView {
     }
 
     private void drawArrow() {
+        // TODO make this modular - inputs = btn_loc_x, btn_loc_y, angle - outputs = path_arrow
+
         // sets angle of arrow head
         double angle_arrow_head_left = 4 * pi / 3 - angle;
         double angle_arrow_head_right = -pi / 3 - angle;
@@ -1008,6 +1086,41 @@ public class DrawArrowsView extends ImageView {
         path_arrow.lineTo(loc_arrow_point_x, loc_arrow_point_y);
         path_arrow.lineTo(loc_arrow_head_right_x, loc_arrow_head_right_y);
     }
+
+    private void drawMoment() {
+        // draws moment shaft
+        oval_moment.set(btn_loc_x - moment_radius, btn_loc_y - moment_radius, btn_loc_x + moment_radius, btn_loc_y + moment_radius);
+        path_moment.arcTo(oval_moment, startAngleMoment, -(float) sweepAngleMoment, true);
+
+        // sets angle of arrow head
+        path_moment.moveTo(btn_loc_x, btn_loc_y);
+        loc_arrow_point_x = (int) (btn_loc_x + moment_radius * Math.sin(Math.toRadians(90 + startAngleMoment)));
+        loc_arrow_point_y = (int) (btn_loc_y - moment_radius * Math.cos(Math.toRadians(90 + startAngleMoment)));
+
+        // pi/17 is used to twist the arrow head such that it looks better
+        double angle_arrow_head_right = pi/17 + -pi / 3 - Math.toRadians(90 + startAngleMoment);
+        double angle_arrow_head_left = pi/17 + 4 * pi / 3 - Math.toRadians(90 + startAngleMoment);
+
+
+
+//        // calculates location of points for both sides of arrow head
+
+        float loc_arrow_head_left_x = (float) ((float) len_arrow_head * Math.sin(angle_arrow_head_left) + loc_arrow_point_x);
+        float loc_arrow_head_left_y = (float) ((float) len_arrow_head * Math.cos(angle_arrow_head_left) + loc_arrow_point_y);
+        float loc_arrow_head_right_x = (float) ((float) len_arrow_head * Math.sin(angle_arrow_head_right) + loc_arrow_point_x);
+        float loc_arrow_head_right_y = (float) ((float) len_arrow_head * Math.cos(angle_arrow_head_right) + loc_arrow_point_y);
+
+//        // draws arrow shaft
+//        path_arrow.moveTo(btn_loc_x, btn_loc_y);
+//        path_arrow.lineTo(loc_arrow_point_x, loc_arrow_point_y);
+//        path_arrow.moveTo(loc_arrow_point_x, loc_arrow_point_y);
+//
+//        // draws arrow head
+        path_moment.moveTo(loc_arrow_head_left_x, loc_arrow_head_left_y);
+        path_moment.lineTo(loc_arrow_point_x, loc_arrow_point_y);
+        path_moment.lineTo(loc_arrow_head_right_x, loc_arrow_head_right_y);
+    }
+
 
     // converts dp to pixels
     public int dpToPx(int dp) {
@@ -1056,7 +1169,6 @@ public class DrawArrowsView extends ImageView {
         varm.measure(widthMeasureSpec, heightMeasureSpec);
         setMeasuredDimension(varm.getMeasuredWidth(), varm.getMeasuredHeight());
     }
-
 
 
 //    @Override
