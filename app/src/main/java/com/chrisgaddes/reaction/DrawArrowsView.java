@@ -73,7 +73,6 @@ public class DrawArrowsView extends ImageView {
     private double len_from_btn_to_touch;
     private double len_arrow_head;
     private double dim_moment_radius;
-    private double len_final_anim;
     private final float dim_btn_radius;
     private final float dim_btn_radius_buffer;
     private long time_anim_arrow_dur;
@@ -106,6 +105,8 @@ public class DrawArrowsView extends ImageView {
 
     private int X;
     private int Y;
+    private int x_tmp;
+    private int y_tmp;
 
     private int btn_loc_x;
     private int btn_loc_y;
@@ -114,7 +115,6 @@ public class DrawArrowsView extends ImageView {
 
     private double len_arrow_shaft_current;
     private double angle;
-    private double opp_ang;
     private double angle_difference;
     private double arrow_animated_fraction;
 
@@ -688,10 +688,24 @@ public class DrawArrowsView extends ImageView {
                     // calculates angle between released angle and the nearest 30 degree increment
                     angle_difference = angles[idx] - angle_start;
 
+
+                    //
+                    if (isMomentList.size() > 0) {
+                        if (isMomentList.get(rectListArrowHead_indice)) {
+                            // gets coordinates of
+                            x_tmp = (int) (dim_moment_radius * Math.cos(angles[idx]) + btn_loc_x);
+                            y_tmp = (int) (dim_moment_radius * Math.sin(angles[idx]) + btn_loc_y);
+
+                        } else {
+                            x_tmp = (int) (len_arrow_shaft * Math.cos(angles[idx]) + btn_loc_x);
+                            y_tmp = (int) (len_arrow_shaft * Math.sin(angles[idx]) + btn_loc_y);
+                        }
+                    }
+
                     // breaks if arrows are being stacked
+//                    int p = 0;
                     for (Point point5 : pointListArrowHead) {
-                        int x_tmp = (int) (len_arrow_shaft * Math.cos(angles[idx]) + btn_loc_x);
-                        int y_tmp = (int) (len_arrow_shaft * Math.sin(angles[idx]) + btn_loc_y);
+
                         if (point5.equals(x_tmp, y_tmp)) {
                             //TODO there is a bug where if you tap right on the tip of a arrow it will remove it
                             Snackbar.make(this, "You can't stack arrows", Snackbar.LENGTH_SHORT).show();
@@ -699,7 +713,7 @@ public class DrawArrowsView extends ImageView {
                             // cancel long press handler
                             handler.removeCallbacks(mLongPressed);
 
-                            // removes vlaues from ArrayLists
+                            // removes values from ArrayLists
                             removeValuesFromArraylists();
 
                             // reset booleans to false state
@@ -709,10 +723,12 @@ public class DrawArrowsView extends ImageView {
                             invalidate();
                             return true; // breaks out of case switch loop
                         }
+//                        p++;
                     }
 
                     // sets different starting and ending values for moments and forces
                     double len_arrow_shaft_start;
+                    double len_final_anim;
                     if (isMomentList.get(rectListArrowHead_indice)) {
                         // sets animation start and end values for moments
                         len_arrow_shaft_start = dim_moment_radius;
@@ -890,10 +906,8 @@ public class DrawArrowsView extends ImageView {
                 }
 
                 linkList.add(rectList_indice);
-
-                linkList2.get(0).add(null);//add(linkList.get(rectListArrowHead_indice));
+                linkList2.get(0).add(null);
                 linkList2.get(1).add(null);
-                // add angle indice to first row in linklist2
                 linkList2.get(2).add(null);
 
                 rectListArrowHead.add(new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
@@ -916,7 +930,6 @@ public class DrawArrowsView extends ImageView {
                 if (linkList2.get(2).get(rectListArrowHead_indice) != null) {
                     checkMatrix.get(linkList2.get(0).get(rectListArrowHead_indice)).get(linkList2.get(1).get(rectListArrowHead_indice)).set(linkList2.get(2).get(rectListArrowHead_indice), 0.0);
 
-                    // this part works fine
                     linkList2.get(0).set(rectListArrowHead_indice, null);
                     linkList2.get(1).set(rectListArrowHead_indice, null);
                     linkList2.get(2).set(rectListArrowHead_indice, null);
@@ -950,6 +963,16 @@ public class DrawArrowsView extends ImageView {
     private void checkArrowIsCorrect() {
         // checks if arrow placed is in a correct location
 
+        if (isMomentList.size() > 0) {
+            if (isMomentList.get(rectListArrowHead_indice)) {
+                drawMoment();
+                invalidate();
+            } else {
+                drawArrow();
+                invalidate();
+            }
+        }
+
         // this if statement changes 2 pi to pi and -pi to pi respectively. This removed "duplicate" angles at the right and left side of the coordinate system while still allowing the arrow to snap to these points from both directions
         if (angle == 2 * pi) {
             angle = 0;
@@ -973,6 +996,7 @@ public class DrawArrowsView extends ImageView {
             // run if opposite angle is chosen
             if (oppos_allowed_row == 1.0 || used_row == 0.0) {
                 // calculate opposite angle
+                double opp_ang;
                 if (angle_row < 0.0) {
                     opp_ang = angle_row + pi;
                 } else {
@@ -1054,15 +1078,15 @@ public class DrawArrowsView extends ImageView {
         float loc_arrow_head_right_x = (float) ((float) len_arrow_head * Math.sin(angle_arrow_head_right) + loc_arrow_point_x);
         float loc_arrow_head_right_y = (float) ((float) len_arrow_head * Math.cos(angle_arrow_head_right) + loc_arrow_point_y);
 
-        // draws arrow shaft
-        path_arrow.moveTo(btn_loc_x, btn_loc_y);
-        path_arrow.lineTo(loc_arrow_point_x, loc_arrow_point_y);
-        path_arrow.moveTo(loc_arrow_point_x, loc_arrow_point_y);
-
         // draws arrow head
         path_arrow.moveTo(loc_arrow_head_left_x, loc_arrow_head_left_y);
         path_arrow.lineTo(loc_arrow_point_x, loc_arrow_point_y);
         path_arrow.lineTo(loc_arrow_head_right_x, loc_arrow_head_right_y);
+
+        // draws arrow shaft
+        path_arrow.moveTo(btn_loc_x, btn_loc_y);
+        path_arrow.lineTo(loc_arrow_point_x, loc_arrow_point_y);
+        path_arrow.moveTo(loc_arrow_point_x, loc_arrow_point_y);
     }
 
     private void drawMoment() {
@@ -1097,14 +1121,14 @@ public class DrawArrowsView extends ImageView {
         float loc_arrow_head_right_x = (float) ((float) len_arrow_head * Math.sin(angle_arrow_head_right) + loc_arrow_point_x);
         float loc_arrow_head_right_y = (float) ((float) len_arrow_head * Math.cos(angle_arrow_head_right) + loc_arrow_point_y);
 
-        // draws moment shaft
-        oval_moment.set((float) (btn_loc_x - len_from_btn_to_touch), (float) (btn_loc_y - len_from_btn_to_touch), (float) (btn_loc_x + len_from_btn_to_touch), (float) (btn_loc_y + len_from_btn_to_touch));
-        path_arrow.arcTo(oval_moment, (float) angle_deg, (float) 184, true);
-
         // draws arrow head
         path_arrow.moveTo(loc_arrow_head_left_x, loc_arrow_head_left_y);
         path_arrow.lineTo(loc_arrow_point_x, loc_arrow_point_y);
         path_arrow.lineTo(loc_arrow_head_right_x, loc_arrow_head_right_y);
+
+        // draws moment shaft
+        oval_moment.set((float) (btn_loc_x - len_from_btn_to_touch), (float) (btn_loc_y - len_from_btn_to_touch), (float) (btn_loc_x + len_from_btn_to_touch), (float) (btn_loc_y + len_from_btn_to_touch));
+        path_arrow.arcTo(oval_moment, (float) angle_deg, (float) 184, true);
     }
 
     // converts dp to pixels
@@ -1139,10 +1163,6 @@ public class DrawArrowsView extends ImageView {
         } else {
             return (double) Math.round(Math.toDegrees(-angle));
         }
-    }
-
-    void onAnimationEnd(Animator animation) {
-
     }
 
     @Override
