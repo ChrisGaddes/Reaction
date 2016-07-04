@@ -97,10 +97,7 @@ public class DrawArrowsView extends ImageView {
      * (public DrawArrowsView(Context, context, AttributeSet attrs)
      */
     private ArrayList<Point> pointList = new ArrayList<>();
-
     List<List<List<Double>>> checkMatrix = new ArrayList<>();
-
-
     private ArrayList<Rect> rectListButtons;
     private ArrayList<Rect> rectListArrowHead;
     private ArrayList<Path> pathList;
@@ -111,14 +108,9 @@ public class DrawArrowsView extends ImageView {
     private ArrayList<Boolean> isMomentList;
     List<ArrayList<Integer>> linkList2;
 
-    private int moment_radius;
-
     private RectF oval_moment;
-    private int startAngleMoment;
-    private int sweepAngleMoment;
 
     private Path path_arrow;
-    //    private Path path_moment;
     private Path null_path;
 
     private int X;
@@ -147,7 +139,6 @@ public class DrawArrowsView extends ImageView {
     private long viewWidth;
     private Drawable mFocusedImage;
     private Drawable mGrayedImage;
-
 
     /**
      * Description of what this Constructor does/is used for...
@@ -185,7 +176,6 @@ public class DrawArrowsView extends ImageView {
         paint_arrow = new Paint();
         paint_arrow_correct_location = new Paint();
         path_arrow = new Path();
-//        path_moment = new Path();
         paint_box = new Paint();
         paint_arrow_head_box = new Paint();
         paint_text = new Paint();
@@ -202,16 +192,13 @@ public class DrawArrowsView extends ImageView {
 
         // sets dimensions of arrow, nodes, and touch areas
         len_arrow_shaft = dpToPx(62);
+
+        // set dimensions of moments
         dim_moment_radius = dpToPx(30);
         len_arrow_shaft_spring = dpToPx(7);
         len_arrow_head = dpToPx(19);
         dim_btn_radius = dpToPx(4);
         dim_btn_radius_buffer = dpToPx(19);
-
-        // set dimensions of moments
-        moment_radius = dpToPx(30);
-        startAngleMoment = 120;
-        sweepAngleMoment = 243;
 
         setArrowStyle();
     }
@@ -906,9 +893,7 @@ public class DrawArrowsView extends ImageView {
             if (!clicked_on_button) {
                 for (Rect rect_tmp2 : rectListArrowHead) {
                     if (rect_tmp2.contains(X, Y)) {
-                        // TODO: I belive the next two lines can be removed. Check if they can safely
                         clicked_on_arrow_head = true;
-                        clicked_on_button = false;
                         rectListArrowHead_indice = k;
                         btn_loc_x = rectListButtons.get(linkList.get(rectListArrowHead_indice)).centerX();
                         btn_loc_y = rectListButtons.get(linkList.get(rectListArrowHead_indice)).centerY();
@@ -932,9 +917,6 @@ public class DrawArrowsView extends ImageView {
                 if (isMomentList.size() < angleListArrowHead.size()) {
                     isMomentList.add(false);
                 }
-
-                // did not click on moment
-
 
                 linkList.add(rectList_indice);
 
@@ -963,7 +945,6 @@ public class DrawArrowsView extends ImageView {
                 if (linkList2.get(2).get(rectListArrowHead_indice) != null) {
                     checkMatrix.get(linkList2.get(0).get(rectListArrowHead_indice)).get(linkList2.get(1).get(rectListArrowHead_indice)).set(linkList2.get(2).get(rectListArrowHead_indice), 0.0);
 
-
                     // this part works fine
                     linkList2.get(0).set(rectListArrowHead_indice, null);
                     linkList2.get(1).set(rectListArrowHead_indice, null);
@@ -988,8 +969,6 @@ public class DrawArrowsView extends ImageView {
                         invalidate();
                     }
                 }
-
-
             }
         } else {
             // this is to prevent rapid clicks causing problems
