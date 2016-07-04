@@ -26,6 +26,7 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -69,7 +70,12 @@ public class DrawArrowsView extends ImageView {
     private final Paint paint_text;
     private final Paint paint_angle_check;
     private final double len_arrow_shaft;
+    private final double len_arrow_shaft_spring;
+    private double len_btn_to_touch;
     private double len_arrow_head;
+    private double len_arrow_shaft_start;
+    private double dim_moment_radius;
+    private double len_final_anim;
     private final float dim_btn_radius;
     private final float dim_btn_radius_buffer;
     private long time_anim_arrow_dur;
@@ -77,6 +83,8 @@ public class DrawArrowsView extends ImageView {
     private int rectList_indice;
     private int rectListArrowHead_indice;
     private boolean clicked_on_arrow_head;
+    private boolean bool_moved_past_moment_radius_already;
+
 
 
     //TODO consider http://stackoverflow.com/questions/32324876/how-to-save-an-answer-in-a-riddle-game-without-creating-a-database
@@ -104,6 +112,7 @@ public class DrawArrowsView extends ImageView {
     private ArrayList<Point> pointListArrowHead;
     private ArrayList<Double> angleListArrowHead;
     private ArrayList<Integer> linkList;
+    private ArrayList<Boolean> isMomentList;
     List<ArrayList<Integer>> linkList2;
 
     private int moment_radius;
@@ -113,7 +122,7 @@ public class DrawArrowsView extends ImageView {
     private int sweepAngleMoment;
 
     private Path path_arrow;
-    private Path path_moment;
+//    private Path path_moment;
     private Path null_path;
 
     private int X;
@@ -170,6 +179,8 @@ public class DrawArrowsView extends ImageView {
         pointListArrowHead = new ArrayList<>();
         angleListArrowHead = new ArrayList<>();
         linkList = new ArrayList<>();
+        isMomentList = new ArrayList<>();
+
         linkList2 = new ArrayList<>();
         // add three rows total to linklist2
         linkList2.add(new ArrayList<Integer>());
@@ -180,7 +191,7 @@ public class DrawArrowsView extends ImageView {
         paint_arrow = new Paint();
         paint_arrow_correct_location = new Paint();
         path_arrow = new Path();
-        path_moment = new Path();
+//        path_moment = new Path();
         paint_box = new Paint();
         paint_arrow_head_box = new Paint();
         paint_text = new Paint();
@@ -197,6 +208,8 @@ public class DrawArrowsView extends ImageView {
 
         // sets dimensions of arrow, nodes, and touch areas
         len_arrow_shaft = dpToPx(62);
+        dim_moment_radius = dpToPx(30);
+        len_arrow_shaft_spring = dpToPx(7);
         len_arrow_head = dpToPx(19);
         dim_btn_radius = dpToPx(4);
         dim_btn_radius_buffer = dpToPx(19);
@@ -605,6 +618,7 @@ public class DrawArrowsView extends ImageView {
             canvas.drawText("size of rectListArrowHead = " + String.valueOf(rectListArrowHead.size()), 600, 460, paint_text);
             canvas.drawText("arrow_animated_fraction = " + String.valueOf(arrow_animated_fraction), 600, 520, paint_text);
             canvas.drawText("able_to_click = " + String.valueOf(able_to_click), 600, 580, paint_text);
+            canvas.drawText("isMomentList = " + String.valueOf(isMomentList), 600, 640, paint_text);
 
             canvas.drawText("btn 1, checkMatrix first row = " + String.valueOf(checkMatrix.get(0).get(0)), 20, 1340, paint_text);
             canvas.drawText("btn 1, checkMatrix second row = " + String.valueOf(checkMatrix.get(0).get(1)), 20, 1400, paint_text);
@@ -626,15 +640,20 @@ public class DrawArrowsView extends ImageView {
 
     Runnable mLongPressed = new Runnable() {
         public void run() {
-            Log.i("", "Long press!");
-            Toast.makeText(getContext(), "Long Pressed!", Toast.LENGTH_SHORT).show();
+
+            // forces minimum size of moment until touch is moved past mimimum
+            bool_moved_past_moment_radius_already = false;
+
+            Toast.makeText(getContext(), "Moment Added", Toast.LENGTH_SHORT).show();
 
             // TODO add moment on long press
             // remove arrow on long press
+            len_btn_to_touch = len_arrow_shaft;
             path_arrow.reset();
             pointListArrowHead.remove(rectListArrowHead_indice);
             angleListArrowHead.remove(rectListArrowHead_indice);
             linkList.remove(rectListArrowHead_indice);
+//            isMomentList.remove(rectListArrowHead_indice);
 
             //TODO 4f4f add get or something
             linkList2.get(0).remove(rectListArrowHead_indice);
@@ -645,19 +664,20 @@ public class DrawArrowsView extends ImageView {
             pathListWrong.remove(rectListArrowHead_indice);
 
             // set booleans to false state
-            clicked_on_button = false;
-            clicked_on_arrow_head = false;
-            inside_button = false;
+//            clicked_on_button = true;
+//            clicked_on_arrow_head = false;
+//            inside_button = false;
             invalidate();
+            isMomentList.remove(rectListArrowHead_indice);
+            isMomentList.add(rectListArrowHead_indice, true);
 
-
-            path_moment = new Path();
-            pathListMoments.add(path_moment);
+//            path_moment = new Path();
+//            pathListMoments.add(path_moment);
 
             null_path = new Path();
             pathListWrong.add(null_path);
 
-            path_moment.reset();
+//            path_moment.reset();
             loc_arrow_point_x = X;
             loc_arrow_point_y = Y;
 
@@ -674,8 +694,7 @@ public class DrawArrowsView extends ImageView {
 //
 //            rectListArrowHead.add(new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
 
-
-            drawMoment();
+            onActionDown();
             invalidate();
 
         }
@@ -688,125 +707,13 @@ public class DrawArrowsView extends ImageView {
 
         switch (eventaction) {
             case MotionEvent.ACTION_DOWN:
-
-                invalidate();
-                // able_to_click is used to eliminate rapid clicks which can cause problems
-                if (able_to_click) {
-
-                    int k = 0;
-                    for (Rect rect_tmp1 : rectListButtons) {
-                        if (rect_tmp1.contains(X, Y)) {
-                            // touch is inside button
-                            clicked_on_button = true;
-                            // touch is NOT on arrow head
-                            clicked_on_arrow_head = false;
-                            // starts long press timer
-                            handler.postDelayed(mLongPressed, 500);
-                            rectList_indice = k;
-                            btn_loc_x = rect_tmp1.centerX();
-                            btn_loc_y = rect_tmp1.centerY();
-                            rectListArrowHead_indice = rectListArrowHead.size();
-                        }
-                        k++;
-                    }
-
-                    // check if arrow head has just been clicked on
-                    k = 0;
-                    if (!clicked_on_button) {
-                        for (Rect rect_tmp2 : rectListArrowHead) {
-                            if (rect_tmp2.contains(X, Y)) {
-                                // TODO: I belive the next two lines can be removed. Check if they can safely
-                                clicked_on_arrow_head = true;
-                                clicked_on_button = false;
-                                rectListArrowHead_indice = k;
-                                btn_loc_x = rectListButtons.get(linkList.get(rectListArrowHead_indice)).centerX();
-                                btn_loc_y = rectListButtons.get(linkList.get(rectListArrowHead_indice)).centerY();
-                            }
-                            k++;
-                        }
-                    }
-
-                    if (clicked_on_button) {
-                        path_arrow = new Path();
-                        pathList.add(path_arrow);
-
-                        null_path = new Path();
-                        pathListWrong.add(null_path);
-                        path_arrow.reset();
-                        loc_arrow_point_x = X;
-                        loc_arrow_point_y = Y;
-                        angle = Math.atan2(loc_arrow_point_y - btn_loc_y, loc_arrow_point_x - btn_loc_x);
-                        pointListArrowHead.add(new Point(loc_arrow_point_x, loc_arrow_point_y));
-                        angleListArrowHead.add(angle);
-                        linkList.add(rectList_indice);
-
-                        linkList2.get(0).add(null);//add(linkList.get(rectListArrowHead_indice));
-                        linkList2.get(1).add(null);
-                        // add angle indice to first row in linklist2
-                        linkList2.get(2).add(null);
-
-                        rectListArrowHead.add(new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
-
-
-                        drawArrow();
-                        invalidate();
-
-                    } else if (clicked_on_arrow_head) {
-                        path_arrow = new Path();
-                        pathList.set(rectListArrowHead_indice, path_arrow); // <-- Add this line.
-                        pathListWrong.set(rectListArrowHead_indice, null_path);
-
-                        if (linkList2.get(2).get(rectListArrowHead_indice) != null) {
-                            checkMatrix.get(linkList2.get(0).get(rectListArrowHead_indice)).get(linkList2.get(1).get(rectListArrowHead_indice)).set(linkList2.get(2).get(rectListArrowHead_indice), 0.0);
-
-
-                            // this part works fine
-                            linkList2.get(0).set(rectListArrowHead_indice, null);
-                            linkList2.get(1).set(rectListArrowHead_indice, null);
-                            linkList2.get(2).set(rectListArrowHead_indice, null);
-                        }
-
-                        path_arrow.reset();
-                        loc_arrow_point_x = X;
-                        loc_arrow_point_y = Y;
-
-                        btn_loc_x = rectListButtons.get(linkList.get(rectListArrowHead_indice)).centerX();
-                        btn_loc_y = rectListButtons.get(linkList.get(rectListArrowHead_indice)).centerY();
-
-                        angle = Math.atan2(loc_arrow_point_y - btn_loc_y, loc_arrow_point_x - btn_loc_x);
-                        drawArrow();
-                        invalidate();
-                    }
-                } else {
-                    // this is to prevent rapid clicks causing problems
-                    Snackbar.make(this, "Don't Tap so quickly!", Snackbar.LENGTH_SHORT).show();
-                }
+                // add false to isMomentList. This is outside onActionDown
+                bool_moved_past_moment_radius_already = true;
+                onActionDown();
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                match = false;
-                if (clicked_on_button || clicked_on_arrow_head) {
-                    // checks if touch is inside button
-                    if (rectListButtons.get(rectList_indice).contains(X, Y)) {
-                        inside_button = true;
-                    } else {
-                        // cancels long press handler if touch is dragged outside box
-                        handler.removeCallbacks(mLongPressed);
-                        inside_button = false;
-                    }
-
-                    path_arrow.reset();
-                    loc_arrow_point_x = X;
-                    loc_arrow_point_y = Y;
-
-                    angle = Math.atan2(loc_arrow_point_y - btn_loc_y, loc_arrow_point_x - btn_loc_x);
-                    pointListArrowHead.set(rectListArrowHead_indice, new Point(loc_arrow_point_x, loc_arrow_point_y));
-                    angleListArrowHead.set(rectListArrowHead_indice, angle);
-                    rectListArrowHead.set(rectListArrowHead_indice, new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
-
-                    drawArrow();
-                    invalidate();
-                }
+                onActionMove();
                 break;
 
             case MotionEvent.ACTION_UP:
@@ -814,12 +721,12 @@ public class DrawArrowsView extends ImageView {
 
                     // TODO move this into loop right below. Seems redundant
                     // checks if release is inside button
-                    if (rectListButtons.get(linkList.get(rectListArrowHead_indice)).contains(X, Y)) {
+                    if (rectListButtons.get(linkList.get(rectListArrowHead_indice)).contains(X, Y) && bool_moved_past_moment_radius_already) {
                         inside_button = true;
                     }
 
                     // break if released inside button
-                    if (inside_button) {
+                    if (inside_button && bool_moved_past_moment_radius_already) {
                         path_arrow.reset();
 
                         // cancel long press handler
@@ -828,6 +735,7 @@ public class DrawArrowsView extends ImageView {
                         // remove arrow
                         pointListArrowHead.remove(rectListArrowHead_indice);
                         angleListArrowHead.remove(rectListArrowHead_indice);
+                        isMomentList.remove(rectListArrowHead_indice);
                         linkList.remove(rectListArrowHead_indice);
 
                         linkList2.get(0).remove(rectListArrowHead_indice);
@@ -844,6 +752,9 @@ public class DrawArrowsView extends ImageView {
                         inside_button = false;
                         invalidate();
                         break;
+                    } else  {
+                        bool_moved_past_moment_radius_already = true;
+                        handler.removeCallbacks(mLongPressed);
                     }
 
                     path_arrow.reset();
@@ -883,6 +794,7 @@ public class DrawArrowsView extends ImageView {
                             // remove arrow from all arraylists
                             pointListArrowHead.remove(rectListArrowHead_indice);
                             angleListArrowHead.remove(rectListArrowHead_indice);
+                            isMomentList.remove(rectListArrowHead_indice);
                             linkList.remove(rectListArrowHead_indice);
 
                             linkList2.get(0).remove(rectListArrowHead_indice);
@@ -902,13 +814,33 @@ public class DrawArrowsView extends ImageView {
                         }
                     }
 
-                    // calculates the length of the arrow shaft upon release
-                    double len_arrow_shaft_start = Math.hypot((loc_arrow_point_x - btn_loc_x), (loc_arrow_point_y - btn_loc_y));
+//                    // calculates the length of the arrow shaft upon release
+//                    if ( bool_moved_past_moment_radius_already) {
+//                        len_arrow_shaft_start = dim_moment_radius;
+//                    } else {
+                        len_arrow_shaft_start = Math.hypot((loc_arrow_point_x - btn_loc_x), (loc_arrow_point_y - btn_loc_y));
+//                    }
 
                     // animator which decreases in length and angle
-                    final ValueAnimator animator = ValueAnimator.ofFloat((float) len_arrow_shaft_start, (float) len_arrow_shaft);
-                    animator.setDuration(time_anim_arrow_dur);
-                    animator.setInterpolator(new OvershootInterpolator());
+
+                    if (isMomentList.get(rectListArrowHead_indice)) {
+                        len_final_anim = dim_moment_radius;
+                    } else {
+                        len_final_anim = len_arrow_shaft;
+                    }
+
+                    final ValueAnimator animator = ValueAnimator.ofFloat((float) len_arrow_shaft_start, (float) len_final_anim);
+
+
+                    if (isMomentList.get(rectListArrowHead_indice)) {
+                        // adds different animation effect to moment
+                        animator.setInterpolator(new DecelerateInterpolator());
+                        animator.setDuration(time_anim_arrow_dur);
+                    } else {
+                        // Adds bounce effect if path is arrow
+                        animator.setInterpolator(new OvershootInterpolator());
+                        animator.setDuration(time_anim_arrow_dur);
+                    }
 
                     animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                         public void onAnimationUpdate(ValueAnimator animation) {
@@ -922,13 +854,21 @@ public class DrawArrowsView extends ImageView {
                             // replace arrow position with new value each iteration
                             pointListArrowHead.set(rectListArrowHead_indice, new Point(loc_arrow_point_x, loc_arrow_point_y));
                             angleListArrowHead.set(rectListArrowHead_indice, angle);
+
                             rectListArrowHead.set(rectListArrowHead_indice, new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
 
                             // prevents user from clicking while the arrow is animating. THis eliminates a bug where "ghost arrows" are created when user click rapidly
                             able_to_click = false;
 
-                            drawArrow();
-                            invalidate(); // TODO: Change to invalidate("just the arrow drawn") for efficiency
+                            if (isMomentList.size() > 0) {
+                                if (isMomentList.get(rectListArrowHead_indice)) {
+                                    drawMoment();
+                                    invalidate();
+                                } else {
+                                    drawArrow();
+                                    invalidate();
+                                }
+                            }
                         }
                     });
 
@@ -967,6 +907,160 @@ public class DrawArrowsView extends ImageView {
                 break;
         }
         return true;
+    }
+
+    private void onActionMove() {
+        match = false;
+        if (clicked_on_button || clicked_on_arrow_head) {
+            // checks if touch is inside button
+            if (rectListButtons.get(rectList_indice).contains(X, Y)) {
+                inside_button = true;
+            } else {
+                // cancels long press handler if touch is dragged outside box
+                handler.removeCallbacks(mLongPressed);
+                inside_button = false;
+            }
+
+            path_arrow.reset();
+            loc_arrow_point_x = X;
+            loc_arrow_point_y = Y;
+
+            angle = Math.atan2(loc_arrow_point_y - btn_loc_y, loc_arrow_point_x - btn_loc_x);
+            pointListArrowHead.set(rectListArrowHead_indice, new Point(loc_arrow_point_x, loc_arrow_point_y));
+            angleListArrowHead.set(rectListArrowHead_indice, angle);
+
+            rectListArrowHead.set(rectListArrowHead_indice, new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
+
+            if (isMomentList.size() > 0) {
+                if (isMomentList.get(rectListArrowHead_indice)) {
+                    drawMoment();
+                    invalidate();
+                } else {
+                    drawArrow();
+                    invalidate();
+                }
+            }
+        }
+    }
+
+    private void onActionDown() {
+        invalidate();
+
+
+        // able_to_click is used to eliminate rapid clicks which can cause problems
+        if (able_to_click) {
+
+            int k = 0;
+            for (Rect rect_tmp1 : rectListButtons) {
+                if (rect_tmp1.contains(X, Y)) {
+                    // touch is inside button
+                    clicked_on_button = true;
+                    // touch is NOT on arrow head
+                    clicked_on_arrow_head = false;
+                    // starts long press timer
+                    handler.postDelayed(mLongPressed, 500);
+                    rectList_indice = k;
+                    btn_loc_x = rect_tmp1.centerX();
+                    btn_loc_y = rect_tmp1.centerY();
+                    rectListArrowHead_indice = rectListArrowHead.size();
+                }
+                k++;
+            }
+
+            // check if arrow head has just been clicked on
+            k = 0;
+            if (!clicked_on_button) {
+                for (Rect rect_tmp2 : rectListArrowHead) {
+                    if (rect_tmp2.contains(X, Y)) {
+                        // TODO: I belive the next two lines can be removed. Check if they can safely
+                        clicked_on_arrow_head = true;
+                        clicked_on_button = false;
+                        rectListArrowHead_indice = k;
+                        btn_loc_x = rectListButtons.get(linkList.get(rectListArrowHead_indice)).centerX();
+                        btn_loc_y = rectListButtons.get(linkList.get(rectListArrowHead_indice)).centerY();
+                    }
+                    k++;
+                }
+            }
+
+            if (clicked_on_button) {
+                path_arrow = new Path();
+                pathList.add(path_arrow);
+
+                null_path = new Path();
+                pathListWrong.add(null_path);
+                path_arrow.reset();
+                loc_arrow_point_x = X;
+                loc_arrow_point_y = Y;
+                angle = Math.atan2(loc_arrow_point_y - btn_loc_y, loc_arrow_point_x - btn_loc_x);
+                pointListArrowHead.add(new Point(loc_arrow_point_x, loc_arrow_point_y));
+                angleListArrowHead.add(angle);
+                if (isMomentList.size() < angleListArrowHead.size()) {
+                    isMomentList.add(false);
+                }
+
+                // did not click on moment
+
+
+                linkList.add(rectList_indice);
+
+                linkList2.get(0).add(null);//add(linkList.get(rectListArrowHead_indice));
+                linkList2.get(1).add(null);
+                // add angle indice to first row in linklist2
+                linkList2.get(2).add(null);
+
+                rectListArrowHead.add(new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
+
+                if (isMomentList.size() > 0) {
+                    if (isMomentList.get(rectListArrowHead_indice)) {
+                        drawMoment();
+                        invalidate();
+                    } else {
+                        drawArrow();
+                        invalidate();
+                    }
+                }
+
+            } else if (clicked_on_arrow_head) {
+                path_arrow = new Path();
+                pathList.set(rectListArrowHead_indice, path_arrow); // <-- Add this line.
+                pathListWrong.set(rectListArrowHead_indice, null_path);
+
+                if (linkList2.get(2).get(rectListArrowHead_indice) != null) {
+                    checkMatrix.get(linkList2.get(0).get(rectListArrowHead_indice)).get(linkList2.get(1).get(rectListArrowHead_indice)).set(linkList2.get(2).get(rectListArrowHead_indice), 0.0);
+
+
+                    // this part works fine
+                    linkList2.get(0).set(rectListArrowHead_indice, null);
+                    linkList2.get(1).set(rectListArrowHead_indice, null);
+                    linkList2.get(2).set(rectListArrowHead_indice, null);
+                }
+
+                path_arrow.reset();
+                loc_arrow_point_x = X;
+                loc_arrow_point_y = Y;
+
+                btn_loc_x = rectListButtons.get(linkList.get(rectListArrowHead_indice)).centerX();
+                btn_loc_y = rectListButtons.get(linkList.get(rectListArrowHead_indice)).centerY();
+
+                angle = Math.atan2(loc_arrow_point_y - btn_loc_y, loc_arrow_point_x - btn_loc_x);
+
+                if (isMomentList.size() > 0) {
+                    if (isMomentList.get(rectListArrowHead_indice)) {
+                        drawMoment();
+                        invalidate();
+                    } else {
+                        drawArrow();
+                        invalidate();
+                    }
+                }
+
+
+            }
+        } else {
+            // this is to prevent rapid clicks causing problems
+            Snackbar.make(this, "Don't Tap so quickly!", Snackbar.LENGTH_SHORT).show();
+        }
     }
 
     private void checkArrowIsCorrect() {
@@ -1088,37 +1182,49 @@ public class DrawArrowsView extends ImageView {
     }
 
     private void drawMoment() {
-        // draws moment shaft
-        oval_moment.set(btn_loc_x - moment_radius, btn_loc_y - moment_radius, btn_loc_x + moment_radius, btn_loc_y + moment_radius);
-        path_moment.arcTo(oval_moment, startAngleMoment, -(float) sweepAngleMoment, true);
+        Log.d(TAG,"angle = " + angle);
+        double angle_deg =  Math.toDegrees(angle);
 
         // sets angle of arrow head
-        path_moment.moveTo(btn_loc_x, btn_loc_y);
-        loc_arrow_point_x = (int) (btn_loc_x + moment_radius * Math.sin(Math.toRadians(90 + startAngleMoment)));
-        loc_arrow_point_y = (int) (btn_loc_y - moment_radius * Math.cos(Math.toRadians(90 + startAngleMoment)));
+        path_arrow.moveTo(btn_loc_x, btn_loc_y);
+
+        len_btn_to_touch = Math.hypot(loc_arrow_point_x-btn_loc_x, loc_arrow_point_y-btn_loc_y);
+
+
+        if (!bool_moved_past_moment_radius_already && len_btn_to_touch <=dim_moment_radius + len_arrow_shaft_spring) {
+            len_btn_to_touch = dim_moment_radius + len_arrow_shaft_spring;
+        } else {
+            bool_moved_past_moment_radius_already = true;
+        }
+
+        if (len_btn_to_touch >= dim_moment_radius + len_arrow_shaft_spring){
+            len_btn_to_touch = dim_moment_radius + len_arrow_shaft_spring;
+        }
+
+        loc_arrow_point_x = (int) (btn_loc_x + len_btn_to_touch * Math.sin(pi/2 + angle));
+        loc_arrow_point_y = (int) (btn_loc_y - len_btn_to_touch * Math.cos(pi/2 + angle));
 
         // pi/17 is used to twist the arrow head such that it looks better
-        double angle_arrow_head_right = pi/17 + -pi / 3 - Math.toRadians(90 + startAngleMoment);
-        double angle_arrow_head_left = pi/17 + 4 * pi / 3 - Math.toRadians(90 + startAngleMoment);
 
 
 
-//        // calculates location of points for both sides of arrow head
+        double angle_arrow_head_right = -pi / 14 + -pi / 3 - (3*pi/2 + angle);
+        double angle_arrow_head_left = -pi / 14 + 4 * pi / 3 - (3*pi/2 + angle);
 
+        // calculates location of points for both sides of arrow head
         float loc_arrow_head_left_x = (float) ((float) len_arrow_head * Math.sin(angle_arrow_head_left) + loc_arrow_point_x);
         float loc_arrow_head_left_y = (float) ((float) len_arrow_head * Math.cos(angle_arrow_head_left) + loc_arrow_point_y);
         float loc_arrow_head_right_x = (float) ((float) len_arrow_head * Math.sin(angle_arrow_head_right) + loc_arrow_point_x);
         float loc_arrow_head_right_y = (float) ((float) len_arrow_head * Math.cos(angle_arrow_head_right) + loc_arrow_point_y);
 
-//        // draws arrow shaft
-//        path_arrow.moveTo(btn_loc_x, btn_loc_y);
-//        path_arrow.lineTo(loc_arrow_point_x, loc_arrow_point_y);
-//        path_arrow.moveTo(loc_arrow_point_x, loc_arrow_point_y);
-//
-//        // draws arrow head
-        path_moment.moveTo(loc_arrow_head_left_x, loc_arrow_head_left_y);
-        path_moment.lineTo(loc_arrow_point_x, loc_arrow_point_y);
-        path_moment.lineTo(loc_arrow_head_right_x, loc_arrow_head_right_y);
+        // draws moment shaft
+        oval_moment.set((float) (btn_loc_x - len_btn_to_touch), (float) (btn_loc_y - len_btn_to_touch), (float) (btn_loc_x + len_btn_to_touch), (float) (btn_loc_y + len_btn_to_touch));
+        path_arrow.arcTo(oval_moment, (float) angle_deg, (float) 184, true);
+
+        // draws arrow head
+        path_arrow.moveTo(loc_arrow_head_left_x, loc_arrow_head_left_y);
+        path_arrow.lineTo(loc_arrow_point_x, loc_arrow_point_y);
+        path_arrow.lineTo(loc_arrow_head_right_x, loc_arrow_head_right_y);
     }
 
 
