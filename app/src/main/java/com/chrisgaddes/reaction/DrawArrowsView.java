@@ -107,6 +107,8 @@ public class DrawArrowsView extends ImageView {
     private int Y;
     private int x_tmp;
     private int y_tmp;
+    int last_touch_x;
+    int last_touch_y;
 
     private int btn_loc_x;
     private int btn_loc_y;
@@ -581,6 +583,7 @@ public class DrawArrowsView extends ImageView {
     Runnable mLongPressed = new Runnable() {
         public void run() {
 
+
             // forces minimum size of moment until touch is moved past mimimum
             moved_outside_radius_already = false;
 
@@ -704,24 +707,33 @@ public class DrawArrowsView extends ImageView {
 
                     // breaks if arrows are being stacked
 //                    int p = 0;
+
                     for (Point point5 : pointListArrowHead) {
 
                         if (point5.equals(x_tmp, y_tmp)) {
-                            //TODO there is a bug where if you tap right on the tip of a arrow it will remove it
-                            Snackbar.make(this, "You can't stack arrows", Snackbar.LENGTH_SHORT).show();
 
-                            // cancel long press handler
-                            handler.removeCallbacks(mLongPressed);
+                            if (last_touch_x == x_tmp && last_touch_y == y_tmp) {
+                                // Tapped on arrow head (Released over same button that was touched)
+                                Toast.makeText(getContext(), "Tapped on Arrow Head", Toast.LENGTH_SHORT).show();
+                                // this is not a reliable way to detect arrow head taps
+//                                Snackbar.make(this, "Tapped on Arrow Head", Snackbar.LENGTH_SHORT).show();
+                            } else {
+                                // Have not tapped on arrow head
+                                Snackbar.make(this, "You can't stack arrows", Snackbar.LENGTH_SHORT).show();
 
-                            // removes values from ArrayLists
-                            removeValuesFromArraylists();
+                                // cancel long press handler
+                                handler.removeCallbacks(mLongPressed);
 
-                            // reset booleans to false state
-                            clicked_on_button = false;
-                            clicked_on_arrow_head = false;
-                            inside_button = false;
-                            invalidate();
-                            return true; // breaks out of case switch loop
+                                // removes values from ArrayLists
+                                removeValuesFromArraylists();
+
+                                // reset booleans to false state
+                                clicked_on_button = false;
+                                clicked_on_arrow_head = false;
+                                inside_button = false;
+                                invalidate();
+                                return true; // breaks out of case switch loop
+                            }
                         }
 //                        p++;
                     }
@@ -942,6 +954,10 @@ public class DrawArrowsView extends ImageView {
                 btn_loc_x = rectListButtons.get(linkList.get(rectListArrowHead_indice)).centerX();
                 btn_loc_y = rectListButtons.get(linkList.get(rectListArrowHead_indice)).centerY();
 
+                last_touch_x = rectListArrowHead.get(rectListArrowHead_indice).centerX();
+                last_touch_y = rectListArrowHead.get(rectListArrowHead_indice).centerY();
+
+
                 angle = Math.atan2(loc_arrow_point_y - btn_loc_y, loc_arrow_point_x - btn_loc_x);
 
                 if (isMomentList.size() > 0) {
@@ -963,15 +979,15 @@ public class DrawArrowsView extends ImageView {
     private void checkArrowIsCorrect() {
         // checks if arrow placed is in a correct location
 
-        if (isMomentList.size() > 0) {
-            if (isMomentList.get(rectListArrowHead_indice)) {
-                drawMoment();
-                invalidate();
-            } else {
-                drawArrow();
-                invalidate();
-            }
-        }
+//        if (isMomentList.size() > 0) {
+//            if (isMomentList.get(rectListArrowHead_indice)) {
+//                drawMoment();
+//                invalidate();
+//            } else {
+//                drawArrow();
+//                invalidate();
+//            }
+//        }
 
         // this if statement changes 2 pi to pi and -pi to pi respectively. This removed "duplicate" angles at the right and left side of the coordinate system while still allowing the arrow to snap to these points from both directions
         if (angle == 2 * pi) {
@@ -1046,7 +1062,7 @@ public class DrawArrowsView extends ImageView {
             snackbarText.append("");
             int boldStart = snackbarText.length();
             snackbarText.append("Correct Location");
-            snackbarText.setSpan(new ForegroundColorSpan(Color.GREEN), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            snackbarText.setSpan(new ForegroundColorSpan(Color.WHITE), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             snackbarText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             snackbarText.append("");
 
