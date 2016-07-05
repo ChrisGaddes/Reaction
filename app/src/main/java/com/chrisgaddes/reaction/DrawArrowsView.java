@@ -82,6 +82,15 @@ public class DrawArrowsView extends ImageView {
     private boolean clicked_on_arrow_head;
     private boolean moved_outside_radius_already;
 
+    int eventaction;
+    int historySize;
+    int pointerCount;
+    int i;
+    int offset;
+    private float stepAngle;
+    private float touchAngle;
+    private float deltaAngle;
+
 
     //TODO consider http://stackoverflow.com/questions/32324876/how-to-save-an-answer-in-a-riddle-game-without-creating-a-database
 
@@ -96,6 +105,7 @@ public class DrawArrowsView extends ImageView {
     private ArrayList<Double> angleListArrowHead;
     private ArrayList<Integer> linkList;
     private ArrayList<Boolean> isMomentList;
+    private ArrayList<Boolean> isClockwiseList;
     List<ArrayList<Integer>> linkList2;
 
     private RectF oval_moment;
@@ -118,7 +128,16 @@ public class DrawArrowsView extends ImageView {
     private double len_arrow_shaft_current;
     private double angle;
     private double angle_difference;
+    private float sweep_angle;
+    private double startAngle;
+    private double angle_moved;
+    private double angle_incre;
+    private boolean used_already2;
+
     private double arrow_animated_fraction;
+
+    private double angle_arrow_head_right;
+    private double angle_arrow_head_left;
 
     private boolean clicked_on_button;
     private boolean inside_button;
@@ -127,6 +146,9 @@ public class DrawArrowsView extends ImageView {
     private boolean match;
 
     private boolean debuggingTextToggle;
+    private boolean moving_clockwise;
+
+    int value;
 
     private long viewHeight;
     private long viewWidth;
@@ -158,6 +180,7 @@ public class DrawArrowsView extends ImageView {
         angleListArrowHead = new ArrayList<>();
         linkList = new ArrayList<>();
         isMomentList = new ArrayList<>();
+        isClockwiseList = new ArrayList<>();
 
         // Initializes linkList2 to have three rows
         linkList2 = new ArrayList<>();
@@ -412,10 +435,10 @@ public class DrawArrowsView extends ImageView {
         paint_arrow.setStyle(Paint.Style.STROKE);
         paint_arrow.setStrokeCap(Paint.Cap.ROUND);
 
-        // sets style of arrow if placed at wrong location
+        // sets style of arrow if placed at correct location
         paint_arrow_correct_location.setStyle(Paint.Style.FILL);
         paint_arrow_correct_location.setStrokeWidth(dpToPx(6));
-        paint_arrow_correct_location.setColor(Color.RED);
+        paint_arrow_correct_location.setColor(Color.BLUE);
         paint_arrow_correct_location.setStyle(Paint.Style.STROKE);
         paint_arrow_correct_location.setStrokeCap(Paint.Cap.ROUND);
 
@@ -549,7 +572,7 @@ public class DrawArrowsView extends ImageView {
             canvas.drawText("pointListArrowHead = " + String.valueOf(pointListArrowHead), 20, 880, paint_text);
             canvas.drawText("angleListArrowHead = " + String.valueOf(angleListArrowHead), 20, 940, paint_text);
             canvas.drawText("linkList = " + String.valueOf(linkList), 20, 1000, paint_text);
-            canvas.drawText("rectListButtons = " + String.valueOf(rectListButtons), 20, 1060, paint_text);
+//            canvas.drawText("rectListButtons = " + String.valueOf(rectListButtons), 20, 1060, paint_text);
 
             canvas.drawText("inside_button = " + String.valueOf(inside_button), 600, 100, paint_text);
             canvas.drawText("size of pointlist = " + String.valueOf(pointList.size()), 600, 160, paint_text);
@@ -561,6 +584,17 @@ public class DrawArrowsView extends ImageView {
             canvas.drawText("arrow_animated_fraction = " + String.valueOf(arrow_animated_fraction), 600, 520, paint_text);
             canvas.drawText("able_to_click = " + String.valueOf(able_to_click), 600, 580, paint_text);
             canvas.drawText("isMomentList = " + String.valueOf(isMomentList), 600, 640, paint_text);
+            canvas.drawText("isClockwiseList = " + String.valueOf(isClockwiseList), 600, 700, paint_text);
+            canvas.drawText("angle = " + String.valueOf(angle), 600, 760, paint_text);
+            canvas.drawText("startAngle = " + String.valueOf(startAngle), 600, 820, paint_text);
+            canvas.drawText("touchAngle = " + String.valueOf(touchAngle), 600, 880, paint_text);
+            canvas.drawText("deltaAngle = " + String.valueOf(deltaAngle), 600, 940, paint_text);
+            canvas.drawText("stepAngle = " + String.valueOf(stepAngle), 1100, 820, paint_text);
+            canvas.drawText("offset = " + String.valueOf(offset), 1100, 880, paint_text);
+            canvas.drawText("value = " + String.valueOf(value), 1100, 940, paint_text);
+
+            canvas.drawText("used_already2 = " + String.valueOf(used_already2), 600, 1120, paint_text);
+
 
             canvas.drawText("btn 1, checkMatrix first row = " + String.valueOf(checkMatrix.get(0).get(0)), 20, 1340, paint_text);
             canvas.drawText("btn 1, checkMatrix second row = " + String.valueOf(checkMatrix.get(0).get(1)), 20, 1400, paint_text);
@@ -583,6 +617,11 @@ public class DrawArrowsView extends ImageView {
     Runnable mLongPressed = new Runnable() {
         public void run() {
 
+            //sets clockwise to true
+            moving_clockwise = true;
+
+            // first loop in drawMoment has not occured yet for this particular moment
+            used_already2 = false;
 
             // forces minimum size of moment until touch is moved past mimimum
             moved_outside_radius_already = false;
@@ -596,6 +635,7 @@ public class DrawArrowsView extends ImageView {
             removeValuesFromArraylists();
 
             isMomentList.add(rectListArrowHead_indice, true);
+            isClockwiseList.add(rectListArrowHead_indice, true);
             null_path = new Path();
             pathListCorrect.add(null_path);
 
@@ -609,10 +649,12 @@ public class DrawArrowsView extends ImageView {
     };
 
     private void removeValuesFromArraylists() {
+        // removes values from Arraylists
         path_arrow.reset();
         pointListArrowHead.remove(rectListArrowHead_indice);
         angleListArrowHead.remove(rectListArrowHead_indice);
         isMomentList.remove(rectListArrowHead_indice);
+        isClockwiseList.remove(rectListArrowHead_indice);
         linkList.remove(rectListArrowHead_indice);
 
         linkList2.get(0).remove(rectListArrowHead_indice);
@@ -625,13 +667,16 @@ public class DrawArrowsView extends ImageView {
     }
 
     public boolean onTouchEvent(MotionEvent event) {
-        int eventaction = event.getAction();
+        eventaction = event.getAction();
         X = (int) event.getX();
         Y = (int) event.getY();
 
+//        final int historySize = event.getHistorySize();
+//        final int pointerCount = event.getPointerCount();
+//        event.getPointerId(eventaction);
+
         switch (eventaction) {
             case MotionEvent.ACTION_DOWN:
-                // add false to isMomentList. This is outside onActionDown
                 moved_outside_radius_already = true;
                 onActionDown();
                 break;
@@ -651,7 +696,6 @@ public class DrawArrowsView extends ImageView {
 
                     // break if released inside button
                     if (inside_button && moved_outside_radius_already) {
-
 
                         // cancel long press handler
                         handler.removeCallbacks(mLongPressed);
@@ -676,7 +720,6 @@ public class DrawArrowsView extends ImageView {
                     // calculates the angle of arrow at release
                     final double angle_start = Math.atan2(loc_arrow_point_y - btn_loc_y, loc_arrow_point_x - btn_loc_x);
 
-
                     // snaps arrow to pi/6 (30 degree) increments
                     double angle_dist = Math.abs(angles[0] - angle_start);
                     int idx = 0;
@@ -691,8 +734,7 @@ public class DrawArrowsView extends ImageView {
                     // calculates angle between released angle and the nearest 30 degree increment
                     angle_difference = angles[idx] - angle_start;
 
-
-                    //
+                    // Gets locations to check if arrows are stacked on another
                     if (isMomentList.size() > 0) {
                         if (isMomentList.get(rectListArrowHead_indice)) {
                             // gets coordinates of
@@ -705,18 +747,13 @@ public class DrawArrowsView extends ImageView {
                         }
                     }
 
-                    // breaks if arrows are being stacked
-//                    int p = 0;
-
+                    // checks if arrow is stacked on another
                     for (Point point5 : pointListArrowHead) {
-
                         if (point5.equals(x_tmp, y_tmp)) {
-
                             if (last_touch_x == x_tmp && last_touch_y == y_tmp) {
                                 // Tapped on arrow head (Released over same button that was touched)
+                                // This is not a reliable way to detect arrow head taps
                                 Toast.makeText(getContext(), "Tapped on Arrow Head", Toast.LENGTH_SHORT).show();
-                                // this is not a reliable way to detect arrow head taps
-//                                Snackbar.make(this, "Tapped on Arrow Head", Snackbar.LENGTH_SHORT).show();
                             } else {
                                 // Have not tapped on arrow head
                                 Snackbar.make(this, "You can't stack arrows", Snackbar.LENGTH_SHORT).show();
@@ -735,7 +772,6 @@ public class DrawArrowsView extends ImageView {
                                 return true; // breaks out of case switch loop
                             }
                         }
-//                        p++;
                     }
 
                     // sets different starting and ending values for moments and forces
@@ -914,7 +950,10 @@ public class DrawArrowsView extends ImageView {
                 pointListArrowHead.add(new Point(loc_arrow_point_x, loc_arrow_point_y));
                 angleListArrowHead.add(angle);
                 if (isMomentList.size() < angleListArrowHead.size()) {
+                    // is not a moment, so add false
                     isMomentList.add(false);
+                    // is not a moment, so add null
+                    isClockwiseList.add(null);
                 }
 
                 linkList.add(rectList_indice);
@@ -957,7 +996,6 @@ public class DrawArrowsView extends ImageView {
                 last_touch_x = rectListArrowHead.get(rectListArrowHead_indice).centerX();
                 last_touch_y = rectListArrowHead.get(rectListArrowHead_indice).centerY();
 
-
                 angle = Math.atan2(loc_arrow_point_y - btn_loc_y, loc_arrow_point_x - btn_loc_x);
 
                 if (isMomentList.size() > 0) {
@@ -978,17 +1016,6 @@ public class DrawArrowsView extends ImageView {
 
     private void checkArrowIsCorrect() {
         // checks if arrow placed is in a correct location
-
-//        if (isMomentList.size() > 0) {
-//            if (isMomentList.get(rectListArrowHead_indice)) {
-//                drawMoment();
-//                invalidate();
-//            } else {
-//                drawArrow();
-//                invalidate();
-//            }
-//        }
-
         // this if statement changes 2 pi to pi and -pi to pi respectively. This removed "duplicate" angles at the right and left side of the coordinate system while still allowing the arrow to snap to these points from both directions
         if (angle == 2 * pi) {
             angle = 0;
@@ -1065,7 +1092,6 @@ public class DrawArrowsView extends ImageView {
             snackbarText.setSpan(new ForegroundColorSpan(Color.WHITE), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             snackbarText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             snackbarText.append("");
-
             Snackbar.make(this, snackbarText, Snackbar.LENGTH_SHORT).show();
         } else {
             SpannableStringBuilder snackbarText = new SpannableStringBuilder();
@@ -1073,10 +1099,9 @@ public class DrawArrowsView extends ImageView {
             snackbarText.append("");
             int boldStart = snackbarText.length();
             snackbarText.append("Wrong Location");
-            snackbarText.setSpan(new ForegroundColorSpan(Color.LTGRAY), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            snackbarText.setSpan(new ForegroundColorSpan(Color.RED), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             snackbarText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             snackbarText.append(" - Try again");
-
             Snackbar.make(this, snackbarText, Snackbar.LENGTH_SHORT).show();
         }
     }
@@ -1085,8 +1110,8 @@ public class DrawArrowsView extends ImageView {
         // TODO make this modular - inputs = btn_loc_x, btn_loc_y, angle - outputs = path_arrow
 
         // sets angle of arrow head
-        double angle_arrow_head_left = 4 * pi / 3 - angle;
-        double angle_arrow_head_right = -pi / 3 - angle;
+        angle_arrow_head_left = 4 * pi / 3 - angle;
+        angle_arrow_head_right = -pi / 3 - angle;
 
         // calculates location of points for both sides of arrow head
         float loc_arrow_head_left_x = (float) ((float) len_arrow_head * Math.sin(angle_arrow_head_left) + loc_arrow_point_x);
@@ -1109,10 +1134,34 @@ public class DrawArrowsView extends ImageView {
         // get angle in degrees
         double angle_deg = Math.toDegrees(angle);
 
+        if (!used_already2) {
+            startAngle = 0;
+            i = 0;
+            stepAngle = 45;
+        }
+
+        touchAngle = (float) angle_deg;
+
+        deltaAngle = (float) ((360 + touchAngle - startAngle + 180) % 360 - 180);
+        if (Math.abs(deltaAngle) > stepAngle) {
+            offset = (int) deltaAngle / (int) stepAngle;
+            startAngle = touchAngle;
+            value += offset;
+        }
+
+        if (offset == 1) {
+            moving_clockwise = true;
+            isClockwiseList.set(rectListArrowHead_indice, true);
+        } else {
+            moving_clockwise = false;
+            isClockwiseList.set(rectListArrowHead_indice, false);
+        }
+        used_already2 = true;
+
         // calculates the length from the center of the button which was touched to the current touch location of your finger
         len_from_btn_to_touch = Math.hypot(loc_arrow_point_x - btn_loc_x, loc_arrow_point_y - btn_loc_y);
 
-        // checks if
+        // checks if moved outside radius yet
         if (!moved_outside_radius_already && len_from_btn_to_touch <= dim_moment_radius + len_arrow_shaft_spring) {
             len_from_btn_to_touch = dim_moment_radius + len_arrow_shaft_spring;
         } else {
@@ -1124,12 +1173,24 @@ public class DrawArrowsView extends ImageView {
             len_from_btn_to_touch = dim_moment_radius + len_arrow_shaft_spring;
         }
 
-        loc_arrow_point_x = (int) (btn_loc_x + len_from_btn_to_touch * Math.sin(pi / 2 + angle));
-        loc_arrow_point_y = (int) (btn_loc_y - len_from_btn_to_touch * Math.cos(pi / 2 + angle));
-
-        // pi/14 is used to twist the arrow head such that it looks better
-        double angle_arrow_head_right = -pi / 14 + -pi / 3 - (3 * pi / 2 + angle);
-        double angle_arrow_head_left = -pi / 14 + 4 * pi / 3 - (3 * pi / 2 + angle);
+        if (isClockwiseList.get(rectListArrowHead_indice)) {
+            //counter clockwise
+            sweep_angle = -180;
+//             this moves arrow head to other side. Once released, shift touch point to opposite side
+            loc_arrow_point_x = (int) (btn_loc_x + len_from_btn_to_touch * Math.sin(pi / 2 + angle));
+            loc_arrow_point_y = (int) (btn_loc_y - len_from_btn_to_touch * Math.cos(pi / 2 + angle));
+            // pi/14 is used to twist the arrow head such that it looks better
+            angle_arrow_head_right = +pi / 14 + -pi / 3 - (pi / 2 + angle);
+            angle_arrow_head_left = +pi / 14 + 4 * pi / 3 - (pi / 2 + angle);
+        } else {
+            // clockwise
+            sweep_angle = 180;
+            loc_arrow_point_x = (int) (btn_loc_x + len_from_btn_to_touch * Math.sin(pi / 2 + angle));
+            loc_arrow_point_y = (int) (btn_loc_y - len_from_btn_to_touch * Math.cos(pi / 2 + angle));
+            // pi/14 is used to twist the arrow head such that it looks better
+            angle_arrow_head_right = -pi / 14 + -pi / 3 - (3 * pi / 2 + angle);
+            angle_arrow_head_left = -pi / 14 + 4 * pi / 3 - (3 * pi / 2 + angle);
+        }
 
         // calculates location of points for both sides of arrow head
         float loc_arrow_head_left_x = (float) ((float) len_arrow_head * Math.sin(angle_arrow_head_left) + loc_arrow_point_x);
@@ -1144,7 +1205,7 @@ public class DrawArrowsView extends ImageView {
 
         // draws moment shaft
         oval_moment.set((float) (btn_loc_x - len_from_btn_to_touch), (float) (btn_loc_y - len_from_btn_to_touch), (float) (btn_loc_x + len_from_btn_to_touch), (float) (btn_loc_y + len_from_btn_to_touch));
-        path_arrow.arcTo(oval_moment, (float) angle_deg, (float) 184, true);
+        path_arrow.arcTo(oval_moment, (float) angle_deg, sweep_angle, true);
     }
 
     // converts dp to pixels
@@ -1185,5 +1246,11 @@ public class DrawArrowsView extends ImageView {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         varm.measure(widthMeasureSpec, heightMeasureSpec);
         setMeasuredDimension(varm.getMeasuredWidth(), varm.getMeasuredHeight());
+    }
+
+    private float touchAngle(float touchX, float touchY) {
+        float dX = touchX - btn_loc_x;
+        float dY = btn_loc_y - touchY;
+        return (float) (270 - Math.toDegrees(Math.atan2(dY, dX))) % 360 - 180;
     }
 }
