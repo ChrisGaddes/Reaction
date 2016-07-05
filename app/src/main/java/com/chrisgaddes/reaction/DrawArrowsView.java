@@ -105,7 +105,7 @@ public class DrawArrowsView extends ImageView {
     private ArrayList<Double> angleListArrowHead;
     private ArrayList<Integer> linkList;
     private ArrayList<Boolean> isMomentList;
-    private ArrayList<Boolean> isClockwiseList;
+    private ArrayList<Double> isClockwiseList;
     List<ArrayList<Integer>> linkList2;
 
     private RectF oval_moment;
@@ -307,13 +307,13 @@ public class DrawArrowsView extends ImageView {
         checkMatrix.get(btn).get(type_num).add(0.0);
         checkMatrix.get(btn).get(type_num).add(0.0);
 
-        // [btn#, 4] - Link data
+        // [btn#, 4] - Clockwise row
         btn = 0;
         type_num = 4;
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(1.0);
+        checkMatrix.get(btn).get(type_num).add(100.0);
+        checkMatrix.get(btn).get(type_num).add(100.0);
+        checkMatrix.get(btn).get(type_num).add(100.0);
 
         // 2nd button
 
@@ -350,13 +350,13 @@ public class DrawArrowsView extends ImageView {
         checkMatrix.get(btn).get(type_num).add(0.0);
         checkMatrix.get(btn).get(type_num).add(0.0);
 
-        // [btn#, 4] - Link data
+        // [btn#, 4] - Clockwise row
         btn = 1;
         type_num = 4;
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(100.0);
+        checkMatrix.get(btn).get(type_num).add(100.0);
+        checkMatrix.get(btn).get(type_num).add(100.0);
+        checkMatrix.get(btn).get(type_num).add(100.0);
 
         // 3rd button
 
@@ -394,13 +394,13 @@ public class DrawArrowsView extends ImageView {
         checkMatrix.get(btn).get(type_num).add(0.0);
         checkMatrix.get(btn).get(type_num).add(0.0);
 
-        // [btn#, 4] - Link data
+        // [btn#, 4] - Clockwise row
         btn = 2;
         type_num = 4;
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(100.0);
+        checkMatrix.get(btn).get(type_num).add(100.0);
+        checkMatrix.get(btn).get(type_num).add(100.0);
+        checkMatrix.get(btn).get(type_num).add(100.0);
     }
 
     /**
@@ -635,7 +635,7 @@ public class DrawArrowsView extends ImageView {
             removeValuesFromArraylists();
 
             isMomentList.add(rectListArrowHead_indice, true);
-            isClockwiseList.add(rectListArrowHead_indice, true);
+            isClockwiseList.add(rectListArrowHead_indice, 1.0);
             null_path = new Path();
             pathListCorrect.add(null_path);
 
@@ -1035,23 +1035,47 @@ public class DrawArrowsView extends ImageView {
             Double used_row = checkMatrix.get(btn_chosen).get(1).get(u);
             Double force_ang_row = checkMatrix.get(btn_chosen).get(2).get(u);
             Double oppos_allowed_row = checkMatrix.get(btn_chosen).get(3).get(u);
+            Double clockwise_row = checkMatrix.get(btn_chosen).get(4).get(u);
 
-            // run if opposite angle is chosen
-            if (oppos_allowed_row == 1.0 || used_row == 0.0) {
-                // calculate opposite angle
-                double opp_ang;
-                if (angle_row < 0.0) {
-                    opp_ang = angle_row + pi;
-                } else {
-                    opp_ang = angle_row - pi;
+            if (isMomentList.get(rectListArrowHead_indice)) {
+                if (isClockwiseList.get(rectListArrowHead_indice).equals(clockwise_row)) {
+                    match = true;
+                    // check if moment is clockwise
                 }
 
-                // run if opposite angle is chosen
-                if (opp_ang == angle) {
+            } else {
+
+
+                if (oppos_allowed_row == 1.0 || used_row == 0.0) {
+                    // calculate opposite angle
+                    double opp_ang;
+                    if (angle_row < 0.0) {
+                        opp_ang = angle_row + pi;
+                    } else {
+                        opp_ang = angle_row - pi;
+                    }
+
+                    // run if opposite angle is chosen
+                    if (opp_ang == angle) {
+                        if (used_row.equals(1.0)) {
+                            Snackbar.make(this, "Opposite Already Used", Snackbar.LENGTH_SHORT).show();
+                        } else if (used_row.equals(0.0)) {
+                            if (opp_ang == angle) {
+                                match = true;
+                                checkMatrix.get(btn_chosen).get(1).set(u, 1.0); // mark as used
+                                linkList2.get(0).set(rectListArrowHead_indice, linkList.get(rectListArrowHead_indice));
+                                linkList2.get(1).set(rectListArrowHead_indice, 1);
+                                linkList2.get(2).set(rectListArrowHead_indice, u);
+                            }
+                        }
+                    }
+                }
+
+                if (angle_row.equals(angle)) {
                     if (used_row.equals(1.0)) {
                         Snackbar.make(this, "Opposite Already Used", Snackbar.LENGTH_SHORT).show();
                     } else if (used_row.equals(0.0)) {
-                        if (opp_ang == angle) {
+                        if (angle_row.equals(angle)) {
                             match = true;
                             checkMatrix.get(btn_chosen).get(1).set(u, 1.0); // mark as used
                             linkList2.get(0).set(rectListArrowHead_indice, linkList.get(rectListArrowHead_indice));
@@ -1060,22 +1084,9 @@ public class DrawArrowsView extends ImageView {
                         }
                     }
                 }
-            }
+                u++;
 
-            if (angle_row.equals(angle)) {
-                if (used_row.equals(1.0)) {
-                    Snackbar.make(this, "Opposite Already Used", Snackbar.LENGTH_SHORT).show();
-                } else if (used_row.equals(0.0)) {
-                    if (angle_row.equals(angle)) {
-                        match = true;
-                        checkMatrix.get(btn_chosen).get(1).set(u, 1.0); // mark as used
-                        linkList2.get(0).set(rectListArrowHead_indice, linkList.get(rectListArrowHead_indice));
-                        linkList2.get(1).set(rectListArrowHead_indice, 1);
-                        linkList2.get(2).set(rectListArrowHead_indice, u);
-                    }
-                }
             }
-            u++;
         }
         showSnackBarArrowPlaced();
     }
@@ -1088,7 +1099,7 @@ public class DrawArrowsView extends ImageView {
 //            snackbarText.append("" + convertRadToDegreeAndInvert(angle) + "\u00B0" + " is a ");
             snackbarText.append("");
             int boldStart = snackbarText.length();
-            snackbarText.append("Correct Location");
+            snackbarText.append("Correct Direction");
             snackbarText.setSpan(new ForegroundColorSpan(Color.WHITE), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             snackbarText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             snackbarText.append("");
@@ -1098,7 +1109,7 @@ public class DrawArrowsView extends ImageView {
 //            snackbarText.append("" + convertRadToDegreeAndInvert(angle) + "\u00B0" + " is a ");
             snackbarText.append("");
             int boldStart = snackbarText.length();
-            snackbarText.append("Wrong Location");
+            snackbarText.append("Wrong Direction");
             snackbarText.setSpan(new ForegroundColorSpan(Color.RED), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             snackbarText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             snackbarText.append(" - Try again");
@@ -1137,7 +1148,8 @@ public class DrawArrowsView extends ImageView {
         if (!used_already2) {
             startAngle = 0;
             i = 0;
-            stepAngle = 45;
+            // specifies the increment the moment flips on
+            stepAngle = 30;
         }
 
         touchAngle = (float) angle_deg;
@@ -1147,15 +1159,15 @@ public class DrawArrowsView extends ImageView {
             offset = (int) deltaAngle / (int) stepAngle;
             startAngle = touchAngle;
             value += offset;
+            if (offset == 1) {
+                moving_clockwise = true;
+                isClockwiseList.set(rectListArrowHead_indice, 1.0);
+            } else {
+                moving_clockwise = false;
+                isClockwiseList.set(rectListArrowHead_indice, 0.0);
+            }
         }
 
-        if (offset == 1) {
-            moving_clockwise = true;
-            isClockwiseList.set(rectListArrowHead_indice, true);
-        } else {
-            moving_clockwise = false;
-            isClockwiseList.set(rectListArrowHead_indice, false);
-        }
         used_already2 = true;
 
         // calculates the length from the center of the button which was touched to the current touch location of your finger
@@ -1173,7 +1185,7 @@ public class DrawArrowsView extends ImageView {
             len_from_btn_to_touch = dim_moment_radius + len_arrow_shaft_spring;
         }
 
-        if (isClockwiseList.get(rectListArrowHead_indice)) {
+        if (isClockwiseList.get(rectListArrowHead_indice).equals(1.0)) {
             //counter clockwise
             sweep_angle = -180;
 //             this moves arrow head to other side. Once released, shift touch point to opposite side
