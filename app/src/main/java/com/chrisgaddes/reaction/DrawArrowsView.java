@@ -1028,7 +1028,7 @@ public class DrawArrowsView extends ImageView {
 
         invalidate();
 
-        for (Double val_ang_mat : checkMatrix.get(btn_chosen).get(0)) {
+        for (Double r : checkMatrix.get(btn_chosen).get(0)) {
 
             // if not used already
             Double angle_row = checkMatrix.get(btn_chosen).get(0).get(u);
@@ -1038,11 +1038,8 @@ public class DrawArrowsView extends ImageView {
             Double clockwise_row = checkMatrix.get(btn_chosen).get(4).get(u);
 
             if (isMomentList.get(rectListArrowHead_indice)) {
-                if (isClockwiseList.get(rectListArrowHead_indice).equals(clockwise_row)) {
-                    match = true;
-                    // check if moment is clockwise
-                }
-
+                // sets match to true if
+                match = isClockwiseList.get(rectListArrowHead_indice).equals(clockwise_row);
             } else {
 
 
@@ -1085,7 +1082,6 @@ public class DrawArrowsView extends ImageView {
                     }
                 }
                 u++;
-
             }
         }
         showSnackBarArrowPlaced();
@@ -1147,9 +1143,8 @@ public class DrawArrowsView extends ImageView {
 
         if (!used_already2) {
             startAngle = 0;
-            i = 0;
             // specifies the increment the moment flips on
-            stepAngle = 30;
+            stepAngle = 150;
         }
 
         touchAngle = (float) angle_deg;
@@ -1159,14 +1154,24 @@ public class DrawArrowsView extends ImageView {
             offset = (int) deltaAngle / (int) stepAngle;
             startAngle = touchAngle;
             value += offset;
+
+
             if (offset == 1) {
                 moving_clockwise = true;
                 isClockwiseList.set(rectListArrowHead_indice, 1.0);
+                if (i != offset) {
+                    Snackbar.make(this, "Flipped to Clockwise", Snackbar.LENGTH_SHORT).show();
+                }
             } else {
                 moving_clockwise = false;
                 isClockwiseList.set(rectListArrowHead_indice, 0.0);
+                if (i != offset) {
+                    Snackbar.make(this, "Flipped to Counterclockwise", Snackbar.LENGTH_SHORT).show();
+                }
             }
         }
+
+        i = offset;
 
         used_already2 = true;
 
