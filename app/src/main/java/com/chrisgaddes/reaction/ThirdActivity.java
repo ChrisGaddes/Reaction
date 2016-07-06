@@ -23,8 +23,9 @@ public class ThirdActivity extends AppCompatActivity {
             Log.d(TAG, "Button Clicked");
                 // TODO JAMES SENTELL: I need this button to trigger a method in DrawArrowsView.java.
                 // Perform action on click
+
+
             }
         });
-
     }
 }

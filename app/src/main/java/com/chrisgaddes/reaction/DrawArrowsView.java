@@ -83,8 +83,6 @@ public class DrawArrowsView extends ImageView {
     private boolean moved_outside_radius_already;
 
     int eventaction;
-    int historySize;
-    int pointerCount;
     int i;
     int offset;
     private float stepAngle;
@@ -96,7 +94,7 @@ public class DrawArrowsView extends ImageView {
 
     // initialize ArrayLists for paths and points
     private ArrayList<Point> pointList = new ArrayList<>();
-    List<List<List<Double>>> checkMatrix = new ArrayList<>();
+    private List<List<List<Double>>> checkMatrix = new ArrayList<>();
     private ArrayList<Rect> rectListButtons;
     private ArrayList<Rect> rectListArrowHead;
     private ArrayList<Path> pathList;
@@ -106,7 +104,7 @@ public class DrawArrowsView extends ImageView {
     private ArrayList<Integer> linkList;
     private ArrayList<Boolean> isMomentList;
     private ArrayList<Double> isClockwiseList;
-    List<ArrayList<Integer>> linkList2;
+    private List<ArrayList<Integer>> linkList2;
 
     private RectF oval_moment;
 
@@ -130,8 +128,6 @@ public class DrawArrowsView extends ImageView {
     private double angle_difference;
     private float sweep_angle;
     private double startAngle;
-    private double angle_moved;
-    private double angle_incre;
     private boolean used_already2;
 
     private double arrow_animated_fraction;
@@ -142,7 +138,7 @@ public class DrawArrowsView extends ImageView {
     private boolean clicked_on_button;
     private boolean inside_button;
     private boolean able_to_click;
-    private boolean hasSetButtonPointsBeenRunAlready;
+    private boolean SetButtonPoints_RunAlready;
     private boolean match;
 
     private boolean debuggingTextToggle;
@@ -204,7 +200,7 @@ public class DrawArrowsView extends ImageView {
         inside_button = false;
         clicked_on_arrow_head = false;
         able_to_click = true;
-        hasSetButtonPointsBeenRunAlready = false;
+        SetButtonPoints_RunAlready = false;
 
         // sets dimensions of arrow, nodes, and touch areas
         len_arrow_shaft = dpToPx(62);
@@ -226,7 +222,7 @@ public class DrawArrowsView extends ImageView {
         // this method sets the location of the points
         // TODO: import these from database
 
-        hasSetButtonPointsBeenRunAlready = true;
+        SetButtonPoints_RunAlready = true;
         match = false;
 
         // set node locations - touch "button" zones will be placed in boxes around these nodes
@@ -501,7 +497,7 @@ public class DrawArrowsView extends ImageView {
 
         // I needed the size of the canvas in order to calculate the percentage the points were accross the screen, but it won't properly get the size until the view is drawn. So, I trigger setButtonPoints from here once the view is drawn and use the if statement below to only allow it to run once. This seems like a terrible was to do it but it works. I'd love advice on how to improve this if you think it matters"
 
-        if (!hasSetButtonPointsBeenRunAlready) {
+        if (!SetButtonPoints_RunAlready) {
             setButtonPoints(getContext());
         }
     }
@@ -627,7 +623,7 @@ public class DrawArrowsView extends ImageView {
             moved_outside_radius_already = false;
 
 //            Snackbar.make(getContext(), "Moment Added", Snackbar.LENGTH_SHORT).show();
-            Toast.makeText(getContext(), "Moment Added", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getContext(), "Moment Added", Toast.LENGTH_SHORT).show();
 
             // remove arrow on long press
             len_from_btn_to_touch = len_arrow_shaft;
@@ -1160,13 +1156,13 @@ public class DrawArrowsView extends ImageView {
                 moving_clockwise = true;
                 isClockwiseList.set(rectListArrowHead_indice, 1.0);
                 if (i != offset) {
-                    Snackbar.make(this, "Flipped to Clockwise", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(this, "Moment was flipped", Snackbar.LENGTH_SHORT).show();
                 }
             } else {
                 moving_clockwise = false;
                 isClockwiseList.set(rectListArrowHead_indice, 0.0);
                 if (i != offset) {
-                    Snackbar.make(this, "Flipped to Counterclockwise", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(this, "Moment was flipped", Snackbar.LENGTH_SHORT).show();
                 }
             }
         }
