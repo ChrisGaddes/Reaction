@@ -83,8 +83,10 @@ public class DrawArrowsView extends ImageView {
     private boolean moved_outside_radius_already;
 
     int eventaction;
-    int i;
-    int offset;
+    private int i;
+    private int k;
+    private double opp_ang;
+    private int offset;
     private float stepAngle;
     private float touchAngle;
     private float deltaAngle;
@@ -110,6 +112,11 @@ public class DrawArrowsView extends ImageView {
 
     private Path path_arrow;
     private Path null_path;
+
+    private int x_b;
+    private int y_b;
+
+    private Rect rectDone;
 
     private int X;
     private int Y;
@@ -531,6 +538,14 @@ public class DrawArrowsView extends ImageView {
             canvas.drawRect(rect1, paint_arrow_head_box);
         }
 
+        x_b = 1300;
+        y_b = 140;
+
+        rectDone = new Rect(x_b - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), y_b - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), x_b + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), y_b + ((int) dim_btn_radius + (int) dim_btn_radius_buffer));
+
+
+        canvas.drawRect(rectDone, paint_arrow_head_box);
+
         // draws rectangles around points
         for (Rect rect7 : rectListButtons) {
             canvas.drawRect(rect7, paint_box);
@@ -837,7 +852,7 @@ public class DrawArrowsView extends ImageView {
                             able_to_click = true;
 
                             // checks if force arrow is correct
-                            checkArrowIsCorrect();
+//                            checkArrowIsCorrect(rectListArrowHead_indice);
                         }
                     });
 
@@ -899,10 +914,14 @@ public class DrawArrowsView extends ImageView {
     private void onActionDown() {
         invalidate();
 
+        if (rectDone.contains(X, Y)) {
+            checkAllArrows();
+            Toast.makeText(getContext(), "Clicked on Check", Toast.LENGTH_SHORT).show();
+        }
+
         // able_to_click is used to eliminate rapid clicks which can cause problems
         if (able_to_click) {
-
-            int k = 0;
+            k = 0;
             for (Rect rect_tmp1 : rectListButtons) {
                 if (rect_tmp1.contains(X, Y)) {
                     // touch is inside button
@@ -1010,7 +1029,21 @@ public class DrawArrowsView extends ImageView {
         }
     }
 
-    private void checkArrowIsCorrect() {
+    private void checkAllArrows() {
+//        if (linkList.size() > 1) {
+//                                k = 0;
+        for (int k = 0; k < linkList.size(); k++) {
+            checkAll(k);
+//                                    k++;
+        }
+//        }
+    }
+
+
+    private void checkArrowIsCorrect(int mrectListArrowHead_indice) {
+
+        match = false;
+
         // checks if arrow placed is in a correct location
         // this if statement changes 2 pi to pi and -pi to pi respectively. This removed "duplicate" angles at the right and left side of the coordinate system while still allowing the arrow to snap to these points from both directions
         if (angle == 2 * pi) {
@@ -1020,12 +1053,11 @@ public class DrawArrowsView extends ImageView {
         }
 
         int u = 0;
-        int btn_chosen = linkList.get(rectListArrowHead_indice);
+        int btn_chosen = linkList.get(mrectListArrowHead_indice);
 
         invalidate();
 
         for (Double r : checkMatrix.get(btn_chosen).get(0)) {
-
             // if not used already
             Double angle_row = checkMatrix.get(btn_chosen).get(0).get(u);
             Double used_row = checkMatrix.get(btn_chosen).get(1).get(u);
@@ -1033,13 +1065,13 @@ public class DrawArrowsView extends ImageView {
             Double oppos_allowed_row = checkMatrix.get(btn_chosen).get(3).get(u);
             Double clockwise_row = checkMatrix.get(btn_chosen).get(4).get(u);
 
-            if (isMomentList.get(rectListArrowHead_indice)) {
+            if (isMomentList.get(mrectListArrowHead_indice)) {
                 // sets match to true if
-                match = isClockwiseList.get(rectListArrowHead_indice).equals(clockwise_row);
+                match = isClockwiseList.get(mrectListArrowHead_indice).equals(clockwise_row);
             } else {
 
 
-                if (oppos_allowed_row == 1.0 || used_row == 0.0) {
+                if (oppos_allowed_row == 1.0 && used_row == 0.0) {
                     // calculate opposite angle
                     double opp_ang;
                     if (angle_row < 0.0) {
@@ -1056,9 +1088,9 @@ public class DrawArrowsView extends ImageView {
                             if (opp_ang == angle) {
                                 match = true;
                                 checkMatrix.get(btn_chosen).get(1).set(u, 1.0); // mark as used
-                                linkList2.get(0).set(rectListArrowHead_indice, linkList.get(rectListArrowHead_indice));
-                                linkList2.get(1).set(rectListArrowHead_indice, 1);
-                                linkList2.get(2).set(rectListArrowHead_indice, u);
+                                linkList2.get(0).set(mrectListArrowHead_indice, linkList.get(mrectListArrowHead_indice));
+                                linkList2.get(1).set(mrectListArrowHead_indice, 1);
+                                linkList2.get(2).set(mrectListArrowHead_indice, u);
                             }
                         }
                     }
@@ -1071,22 +1103,22 @@ public class DrawArrowsView extends ImageView {
                         if (angle_row.equals(angle)) {
                             match = true;
                             checkMatrix.get(btn_chosen).get(1).set(u, 1.0); // mark as used
-                            linkList2.get(0).set(rectListArrowHead_indice, linkList.get(rectListArrowHead_indice));
-                            linkList2.get(1).set(rectListArrowHead_indice, 1);
-                            linkList2.get(2).set(rectListArrowHead_indice, u);
+                            linkList2.get(0).set(mrectListArrowHead_indice, linkList.get(mrectListArrowHead_indice));
+                            linkList2.get(1).set(mrectListArrowHead_indice, 1);
+                            linkList2.get(2).set(mrectListArrowHead_indice, u);
                         }
                     }
                 }
                 u++;
             }
         }
-        showSnackBarArrowPlaced();
+        showSnackBarArrowPlaced(mrectListArrowHead_indice);
     }
 
-    private void showSnackBarArrowPlaced() {
+    private void showSnackBarArrowPlaced(int mrectListArrowHead_indice) {
         // overlays gray arrow over red arrow if in correct location
         if (match) {
-            pathListCorrect.set(rectListArrowHead_indice, path_arrow);
+            pathListCorrect.set(mrectListArrowHead_indice, pathList.get(mrectListArrowHead_indice));
             SpannableStringBuilder snackbarText = new SpannableStringBuilder();
 //            snackbarText.append("" + convertRadToDegreeAndInvert(angle) + "\u00B0" + " is a ");
             snackbarText.append("");
@@ -1097,6 +1129,7 @@ public class DrawArrowsView extends ImageView {
             snackbarText.append("");
             Snackbar.make(this, snackbarText, Snackbar.LENGTH_SHORT).show();
         } else {
+            pathListCorrect.set(mrectListArrowHead_indice, null_path);
             SpannableStringBuilder snackbarText = new SpannableStringBuilder();
 //            snackbarText.append("" + convertRadToDegreeAndInvert(angle) + "\u00B0" + " is a ");
             snackbarText.append("");
@@ -1266,4 +1299,87 @@ public class DrawArrowsView extends ImageView {
         float dY = btn_loc_y - touchY;
         return (float) (270 - Math.toDegrees(Math.atan2(dY, dX))) % 360 - 180;
     }
+
+    private void checkAll(int mrectListArrowHead_indice) {
+
+        angle = angleListArrowHead.get(mrectListArrowHead_indice);
+
+        match = false;
+
+        // checks if arrow placed is in a correct location
+        // this if statement changes 2 pi to pi and -pi to pi respectively. This removed "duplicate" angles at the right and left side of the coordinate system while still allowing the arrow to snap to these points from both directions
+        if (angle == 2 * pi) {
+            angle = 0;
+        } else if (angle == -pi) {
+            angle = pi;
+        }
+
+        int btn_chosen = linkList.get(mrectListArrowHead_indice);
+
+        invalidate();
+
+        // TODO add it such that if checkAll is run it resets used_row
+
+        int u = 0;
+        // iterates through the list of correct angles at the button btn_chosen
+        for (Double r : checkMatrix.get(btn_chosen).get(0)) {
+            // if not used already
+            Double angle_row = checkMatrix.get(btn_chosen).get(0).get(u);
+            Double used_row = checkMatrix.get(btn_chosen).get(1).get(u);
+            Double force_ang_row = checkMatrix.get(btn_chosen).get(2).get(u);
+            Double oppos_allowed_row = checkMatrix.get(btn_chosen).get(3).get(u);
+            Double clockwise_row = checkMatrix.get(btn_chosen).get(4).get(u);
+
+            if (isMomentList.get(mrectListArrowHead_indice)) {
+                // sets match to true if
+                match = isClockwiseList.get(mrectListArrowHead_indice).equals(clockwise_row);
+            } else {
+
+                //resets opp_angle
+                opp_ang = 100.0;
+
+                if (oppos_allowed_row == 1.0 && used_row == 0.0) {
+                    // calculate opposite angle
+                    if (angle_row < 0.0) {
+                        opp_ang = angle_row + pi;
+                    } else {
+                        opp_ang = angle_row - pi;
+                    }
+                }
+
+                if (angle_row.equals(angle)) {
+                    if (used_row.equals(1.0)) {
+                        Snackbar.make(this, "Opposite Already Used", Snackbar.LENGTH_SHORT).show();
+                    } else if (used_row.equals(0.0)) {
+                        if (angle_row.equals(angle)) {
+                            match = true;
+                            checkMatrix.get(btn_chosen).get(1).set(u, 1.0); // mark as used
+                            linkList2.get(0).set(mrectListArrowHead_indice, linkList.get(mrectListArrowHead_indice));
+                            linkList2.get(1).set(mrectListArrowHead_indice, 1);
+                            linkList2.get(2).set(mrectListArrowHead_indice, u);
+                        }
+                    }
+                } else if (opp_ang == angle) {
+                    // run if opposite angle is chosen
+
+                    if (used_row.equals(1.0)) {
+                        Snackbar.make(this, "Opposite Already Used", Snackbar.LENGTH_SHORT).show();
+                    } else if (used_row.equals(0.0)) {
+                        if (opp_ang == angle) {
+                            match = true;
+                            checkMatrix.get(btn_chosen).get(1).set(u, 1.0); // mark as used
+                            linkList2.get(0).set(mrectListArrowHead_indice, linkList.get(mrectListArrowHead_indice));
+                            linkList2.get(1).set(mrectListArrowHead_indice, 1);
+                            linkList2.get(2).set(mrectListArrowHead_indice, u);
+                        }
+                    }
+                }
+                u++;
+            }
+        }
+        showSnackBarArrowPlaced(mrectListArrowHead_indice);
+    }
+
+
+
 }
