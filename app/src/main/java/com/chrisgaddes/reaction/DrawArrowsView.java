@@ -568,7 +568,7 @@ public class DrawArrowsView extends ImageView {
         }
 
         x_b = 1300;
-        y_b = 140;
+        y_b = 130;
 
         rectDone = new Rect(x_b - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), y_b - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), x_b + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), y_b + ((int) dim_btn_radius + (int) dim_btn_radius_buffer));
 
@@ -673,7 +673,7 @@ public class DrawArrowsView extends ImageView {
             // remove arrow on long press
             len_from_btn_to_touch = len_arrow_shaft;
 
-            removeValuesFromArraylists();
+            removeValuesFromArraylists(rectListArrowHead_indice);
 
             isMomentList.add(rectListArrowHead_indice, true);
             isClockwiseList.add(rectListArrowHead_indice, 200.0);
@@ -689,22 +689,22 @@ public class DrawArrowsView extends ImageView {
         }
     };
 
-    private void removeValuesFromArraylists() {
+    void removeValuesFromArraylists(int mRectListArrowHead_indice) {
         // removes values from Arraylists
         path_arrow.reset();
-        pointListArrowHead.remove(rectListArrowHead_indice);
-        angleListArrowHead.remove(rectListArrowHead_indice);
-        isMomentList.remove(rectListArrowHead_indice);
-        isClockwiseList.remove(rectListArrowHead_indice);
-        linkList.remove(rectListArrowHead_indice);
+        angleListArrowHead.remove(mRectListArrowHead_indice);
+        pointListArrowHead.remove(mRectListArrowHead_indice);
+        isMomentList.remove(mRectListArrowHead_indice);
+        isClockwiseList.remove(mRectListArrowHead_indice);
+        linkList.remove(mRectListArrowHead_indice);
 
-        linkList2.get(0).remove(rectListArrowHead_indice);
-        linkList2.get(1).remove(rectListArrowHead_indice);
-        linkList2.get(2).remove(rectListArrowHead_indice);
+        linkList2.get(0).remove(mRectListArrowHead_indice);
+        linkList2.get(1).remove(mRectListArrowHead_indice);
+        linkList2.get(2).remove(mRectListArrowHead_indice);
 
-        rectListArrowHead.remove(rectListArrowHead_indice);
-        pathList.remove(rectListArrowHead_indice);
-        pathListCorrect.remove(rectListArrowHead_indice);
+        rectListArrowHead.remove(mRectListArrowHead_indice);
+        pathList.remove(mRectListArrowHead_indice);
+        pathListCorrect.remove(mRectListArrowHead_indice);
     }
 
     public boolean onTouchEvent(MotionEvent event) {
@@ -741,7 +741,7 @@ public class DrawArrowsView extends ImageView {
                         // cancel long press handler
                         handler.removeCallbacks(mLongPressed);
 
-                        removeValuesFromArraylists();
+                        removeValuesFromArraylists(rectListArrowHead_indice);
 
                         // reset booleans to false state
                         clicked_on_button = false;
@@ -803,7 +803,7 @@ public class DrawArrowsView extends ImageView {
                                 handler.removeCallbacks(mLongPressed);
 
                                 // removes values from ArrayLists
-                                removeValuesFromArraylists();
+                                removeValuesFromArraylists(rectListArrowHead_indice);
 
                                 // reset booleans to false state
                                 clicked_on_button = false;
@@ -936,6 +936,7 @@ public class DrawArrowsView extends ImageView {
 
             rectListArrowHead.set(rectListArrowHead_indice, new Rect(loc_arrow_point_x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), loc_arrow_point_y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
 
+
             if (isMomentList.size() > 0) {
                 if (isMomentList.get(rectListArrowHead_indice)) {
                     drawMoment();
@@ -947,6 +948,19 @@ public class DrawArrowsView extends ImageView {
             }
         }
     }
+
+    public void runCheckIfFinished() {
+        checkAllArrows();
+
+//        if (pointListArrowHead.size() > 0) {
+        if (allArrowsCorrect = checkIfFinished()) {
+            Snackbar.make(this, "Finished!", Snackbar.LENGTH_SHORT).show();
+        } else {
+            Snackbar.make(this, "Not Finished Yet...", Snackbar.LENGTH_SHORT).show();
+        }
+    }
+
+//    }
 
     public boolean checkIfFinished() {
         // checks if all arrows have been placed in the correct locations
@@ -973,18 +987,22 @@ public class DrawArrowsView extends ImageView {
         return allArrowsCorrect;
     }
 
+    public void message() {
+        System.out.println("Test");
+    }
+
 
     private void onActionDown() {
         invalidate();
 
         if (rectDone.contains(X, Y)) {
             // Checks all arrows that are currently placed
-            checkAllArrows();
-            if (allArrowsCorrect = checkIfFinished()) {
-                Snackbar.make(this, "Finished!", Snackbar.LENGTH_SHORT).show();
-            } else {
-                Snackbar.make(this, "Not Finished Yet...", Snackbar.LENGTH_SHORT).show();
-            }
+//            checkAllArrows();
+//            if (allArrowsCorrect = checkIfFinished()) {
+//                Snackbar.make(this, "Finished!", Snackbar.LENGTH_SHORT).show();
+//            } else {
+//                Snackbar.make(this, "Not Finished Yet...", Snackbar.LENGTH_SHORT).show();
+//            }
         }
 
         // able_to_click is used to eliminate rapid clicks which can cause problems
@@ -1165,6 +1183,8 @@ public class DrawArrowsView extends ImageView {
             startAngle = 0;
             // specifies the increment the moment flips on
             stepAngle = 150;
+            value = 0;
+            offset = 0;
         }
 
         touchAngle = (float) angle_deg;
@@ -1174,7 +1194,6 @@ public class DrawArrowsView extends ImageView {
             offset = (int) deltaAngle / (int) stepAngle;
             startAngle = touchAngle;
             value += offset;
-
 
             if (offset == 1) {
                 moving_clockwise = true;
@@ -1301,7 +1320,7 @@ public class DrawArrowsView extends ImageView {
         // this if statement changes 2 pi to pi and -pi to pi respectively. This removed "duplicate" angles at the right and left side of the coordinate system while still allowing the arrow to snap to these points from both directions
         if (mAngle == 2 * pi) {
             mAngle = 0;
-        } else if (angle == -pi) {
+        } else if (mAngle == -pi) {
             mAngle = pi;
         }
 
@@ -1411,9 +1430,8 @@ public class DrawArrowsView extends ImageView {
     }
 
     private void setAllToUnused() {
-        for (int btn = 0; btn < rectListButtons.size(); btn++) {
-            for (int ang = 0; ang < rectListButtons.size(); ang++) {
-
+        for (int btn = 0; btn < checkMatrix.size(); btn++) {
+            for (int ang = 0; ang < checkMatrix.get(btn).get(0).size(); ang++) {
                 // resets used_row to all zeros
                 checkMatrix.get(btn).get(1).set(ang, 0.0);
 
@@ -1421,6 +1439,26 @@ public class DrawArrowsView extends ImageView {
                 checkMatrix.get(btn).get(5).set(ang, 0.0);
             }
         }
+    }
+
+
+    public void resetAllValues() {
+        setAllToUnused();
+
+        // resets variables to zero (this may not be necessary)
+        value = 0;
+        offset = 0;
+        deltaAngle = 0;
+        touchAngle = 0;
+
+        int size = pointListArrowHead.size();
+
+        for (int loop_indice = 0; loop_indice < size; loop_indice++) {
+            if (pointListArrowHead.size() > 0) {
+                removeValuesFromArraylists(pointListArrowHead.size() - 1);
+            }
+        }
+        invalidate();
     }
 
 

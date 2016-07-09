@@ -11,7 +11,7 @@
         android:id="@+id/btn_refresh"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Refresh"
+        android:text="Restart"
         android:textAllCaps="false"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
@@ -39,7 +39,7 @@
         android:layout_marginRight="20dp" />
 
     <com.chrisgaddes.reaction.DrawArrowsView
-        android:id="@+id/my_view"
+        android:id="@+id/idDrawArrowsView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
@@ -49,11 +49,12 @@
         android:id="@+id/btn_done"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Done"
+        android:text="Check"
         android:textAllCaps="false"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="70dp" />
 
 
 </RelativeLayout>
