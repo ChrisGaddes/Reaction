@@ -24,11 +24,17 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
+import com.github.javiersantos.materialstyleddialogs.enums.Style;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -952,15 +958,33 @@ public class DrawArrowsView extends ImageView {
     public void runCheckIfFinished() {
         checkAllArrows();
 
-//        if (pointListArrowHead.size() > 0) {
+
         if (allArrowsCorrect = checkIfFinished()) {
-            Snackbar.make(this, "Finished!", Snackbar.LENGTH_SHORT).show();
+//            Snackbar.make(this, "Finished!", Snackbar.LENGTH_SHORT).show();
+            showDialogArrowsCorrect();
         } else {
             Snackbar.make(this, "Not Finished Yet...", Snackbar.LENGTH_SHORT).show();
         }
     }
 
-//    }
+    // dialog that says arrows were placed correctly
+    private void showDialogArrowsCorrect() {
+        new MaterialStyledDialog(getContext())
+                .setTitle("Correct!")
+                .setDescription(R.string.str_all_arrows_placed_correctly)
+                .setIcon(R.drawable.ic_check)
+                .setStyle(Style.HEADER_WITH_ICON)
+
+                .setPositive(getResources().getString(R.string.str_next_problem), new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(MaterialDialog dialog, DialogAction which) {
+                        Log.d("MaterialStyledDialogs", "Do something!");
+                    }
+                })
+
+                .show();
+    }
+
 
     public boolean checkIfFinished() {
         // checks if all arrows have been placed in the correct locations

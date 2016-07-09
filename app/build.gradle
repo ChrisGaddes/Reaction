@@ -27,4 +27,8 @@ dependencies {
     compile 'com.android.support:support-v4:24.0.0'
     compile 'com.android.support:design:24.0.0'
     compile 'com.dmitrymalkovich.android:material-design-dimens:1.2'
+    compile 'com.github.dmytrodanylyk:android-morphing-button:98a4986e56' // commit hash
+    compile 'com.github.ashqal:ChromeLikeSwipeLayout:0.4'
+    compile 'com.github.javiersantos:MaterialStyledDialogs:1.5.1'
+
 }

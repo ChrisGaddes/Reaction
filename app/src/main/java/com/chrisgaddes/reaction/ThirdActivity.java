@@ -1,6 +1,7 @@
 package com.chrisgaddes.reaction;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -20,8 +21,8 @@ public class ThirdActivity extends AppCompatActivity {
 
         mDrawArrowsView = (DrawArrowsView) findViewById(R.id.idDrawArrowsView);
 
-        final Button button = (Button) findViewById(R.id.btn_done);
-        button.setOnClickListener(new View.OnClickListener() {
+        final FloatingActionButton btn_check_done = (FloatingActionButton) findViewById(R.id.btn_check_done);
+        btn_check_done.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 mDrawArrowsView.runCheckIfFinished();
             }
