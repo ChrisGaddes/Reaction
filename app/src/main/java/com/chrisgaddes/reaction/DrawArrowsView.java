@@ -288,7 +288,7 @@ public class DrawArrowsView extends ImageView {
         int type_num = 0;
         checkMatrix.get(btn).get(type_num).add(pi / 2);
         checkMatrix.get(btn).get(type_num).add(pi);
-        checkMatrix.get(btn).get(type_num).add(200.0);
+        checkMatrix.get(btn).get(type_num).add(200.0); // 200.0 means clockwise moment, 300.0 means counterclockwise moment
         checkMatrix.get(btn).get(type_num).add(100.0);
 
         // [btn#, 1] - Used
@@ -947,13 +947,23 @@ public class DrawArrowsView extends ImageView {
 
         // resets AllArrowsCorrect boolean
         boolean allArrowsCorrect = true;
+
+        int number_arrows = 0;
         for (int btn = 0; btn < rectListButtons.size(); btn++) {
             for (int ang = 0; ang < rectListButtons.size(); ang++) {
+
                 if (checkMatrix.get(btn).get(5).get(ang).equals(0.0)) {
                     allArrowsCorrect = false;
                 }
+
+                if (checkMatrix.get(btn).get(1).get(ang).equals(1.0)) {
+                    number_arrows++;
+                }
             }
         }
+
+        allArrowsCorrect = allArrowsCorrect && number_arrows == pointListArrowHead.size();
+
         return allArrowsCorrect;
     }
 
@@ -1310,6 +1320,7 @@ public class DrawArrowsView extends ImageView {
                 if (isClockwiseList.get(mrectListArrowHead_indice).equals(checkMatrix.get(btn_chosen).get(0).get(u))) {
                     match = true;
                     checkMatrix.get(btn_chosen).get(5).set(u, 1.0);
+                    checkMatrix.get(btn_chosen).get(1).set(u, 1.0);
                 }
                 u++;
 
