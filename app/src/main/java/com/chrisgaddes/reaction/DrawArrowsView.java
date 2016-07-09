@@ -91,7 +91,7 @@ public class DrawArrowsView extends ImageView {
     private float touchAngle;
     private float deltaAngle;
 
-    private boolean still_wrong;
+    private boolean allArrowsCorrect;
 
 
     //TODO consider http://stackoverflow.com/questions/32324876/how-to-save-an-answer-in-a-riddle-game-without-creating-a-database
@@ -288,7 +288,7 @@ public class DrawArrowsView extends ImageView {
         int type_num = 0;
         checkMatrix.get(btn).get(type_num).add(pi / 2);
         checkMatrix.get(btn).get(type_num).add(pi);
-        checkMatrix.get(btn).get(type_num).add(100.0);
+        checkMatrix.get(btn).get(type_num).add(200.0);
         checkMatrix.get(btn).get(type_num).add(100.0);
 
         // [btn#, 1] - Used
@@ -318,7 +318,7 @@ public class DrawArrowsView extends ImageView {
         // [btn#, 4] - Clockwise row
         btn = 0;
         type_num = 4;
-        checkMatrix.get(btn).get(type_num).add(1.0);
+        checkMatrix.get(btn).get(type_num).add(100.0);
         checkMatrix.get(btn).get(type_num).add(100.0);
         checkMatrix.get(btn).get(type_num).add(100.0);
         checkMatrix.get(btn).get(type_num).add(100.0);
@@ -632,7 +632,7 @@ public class DrawArrowsView extends ImageView {
             canvas.drawText("stepAngle = " + String.valueOf(stepAngle), 1100, 820, paint_text);
             canvas.drawText("offset = " + String.valueOf(offset), 1100, 880, paint_text);
             canvas.drawText("value = " + String.valueOf(value), 1100, 940, paint_text);
-            canvas.drawText("still_wrong = " + String.valueOf(still_wrong), 1100, 1000, paint_text);
+            canvas.drawText("allArrowsCorrect = " + String.valueOf(allArrowsCorrect), 1100, 1000, paint_text);
 
             canvas.drawText("used_already2 = " + String.valueOf(used_already2), 600, 1120, paint_text);
 
@@ -676,7 +676,7 @@ public class DrawArrowsView extends ImageView {
             removeValuesFromArraylists();
 
             isMomentList.add(rectListArrowHead_indice, true);
-            isClockwiseList.add(rectListArrowHead_indice, 1.0);
+            isClockwiseList.add(rectListArrowHead_indice, 200.0);
             null_path = new Path();
             pathListCorrect.add(null_path);
 
@@ -727,7 +727,6 @@ public class DrawArrowsView extends ImageView {
                 if (clicked_on_button || clicked_on_arrow_head) {
 
                     // Checks all arrows that are currently placed
-//                    still_wrong = false;
                     checkAllArrows();
 
                     // TODO move this into loop right below. Seems redundant
@@ -883,7 +882,6 @@ public class DrawArrowsView extends ImageView {
                             able_to_click = true;
 
                             // checks if force arrow is correct
-//                            still_wrong = false;
                             checkArrowIsCorrect(rectListArrowHead_indice);
                             showSnackBarArrowPlaced(rectListArrowHead_indice);
                         }
@@ -944,14 +942,19 @@ public class DrawArrowsView extends ImageView {
         }
     }
 
-    private void checkIfFinished() {
+    public boolean checkIfFinished() {
+        // checks if all arrows have been placed in the correct locations
+
+        // resets AllArrowsCorrect boolean
+        boolean allArrowsCorrect = true;
         for (int btn = 0; btn < rectListButtons.size(); btn++) {
             for (int ang = 0; ang < rectListButtons.size(); ang++) {
                 if (checkMatrix.get(btn).get(5).get(ang).equals(0.0)) {
-                    still_wrong = true;
+                    allArrowsCorrect = false;
                 }
             }
         }
+        return allArrowsCorrect;
     }
 
 
@@ -961,9 +964,11 @@ public class DrawArrowsView extends ImageView {
         if (rectDone.contains(X, Y)) {
             // Checks all arrows that are currently placed
             checkAllArrows();
-            still_wrong = false;
-            checkIfFinished();
-            Toast.makeText(getContext(), "still_wrong" + still_wrong, Toast.LENGTH_SHORT).show();
+            if (allArrowsCorrect = checkIfFinished()) {
+                Snackbar.make(this, "Finished!", Snackbar.LENGTH_SHORT).show();
+            } else {
+                Snackbar.make(this, "Not Finished Yet...", Snackbar.LENGTH_SHORT).show();
+            }
         }
 
         // able_to_click is used to eliminate rapid clicks which can cause problems
@@ -1080,7 +1085,6 @@ public class DrawArrowsView extends ImageView {
     }
 
     private void checkAllArrows() {
-//        still_wrong = false;
         setAllToUnused();
         for (int k = 0; k < linkList.size(); k++) {
             checkArrowIsCorrect(k);
@@ -1158,13 +1162,13 @@ public class DrawArrowsView extends ImageView {
 
             if (offset == 1) {
                 moving_clockwise = true;
-                isClockwiseList.set(rectListArrowHead_indice, 1.0);
+                isClockwiseList.set(rectListArrowHead_indice, 200.0);
                 if (i != offset) {
                     Snackbar.make(this, "Moment was flipped", Snackbar.LENGTH_SHORT).show();
                 }
             } else {
                 moving_clockwise = false;
-                isClockwiseList.set(rectListArrowHead_indice, 0.0);
+                isClockwiseList.set(rectListArrowHead_indice, 300.0);
                 if (i != offset) {
                     Snackbar.make(this, "Moment was flipped", Snackbar.LENGTH_SHORT).show();
                 }
@@ -1190,7 +1194,7 @@ public class DrawArrowsView extends ImageView {
             len_from_btn_to_touch = dim_moment_radius + len_arrow_shaft_spring;
         }
 
-        if (isClockwiseList.get(rectListArrowHead_indice).equals(1.0)) {
+        if (isClockwiseList.get(rectListArrowHead_indice).equals(200.0)) {
             //counter clockwise
             sweep_angle = -180;
 //             this moves arrow head to other side. Once released, shift touch point to opposite side
@@ -1302,7 +1306,13 @@ public class DrawArrowsView extends ImageView {
 
             if (isMomentList.get(mrectListArrowHead_indice)) {
                 // sets match to true if
-                match = isClockwiseList.get(mrectListArrowHead_indice).equals(clockwise_row);
+
+                if (isClockwiseList.get(mrectListArrowHead_indice).equals(checkMatrix.get(btn_chosen).get(0).get(u))) {
+                    match = true;
+                    checkMatrix.get(btn_chosen).get(5).set(u, 1.0);
+                }
+                u++;
+
             } else {
 
                 //resets opp_angle
@@ -1362,7 +1372,6 @@ public class DrawArrowsView extends ImageView {
 
         } else {
             pathListCorrect.set(mrectListArrowHead_indice, null_path);
-//            still_wrong = true;
         }
     }
 
