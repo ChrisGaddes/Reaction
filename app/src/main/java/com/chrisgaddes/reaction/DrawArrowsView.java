@@ -312,7 +312,7 @@ public class DrawArrowsView extends ImageView {
         type_num = 3;
         checkMatrix.get(btn).get(type_num).add(1.0);
         checkMatrix.get(btn).get(type_num).add(1.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
+        checkMatrix.get(btn).get(type_num).add(1.0);
         checkMatrix.get(btn).get(type_num).add(0.0);
 
         // [btn#, 4] - Clockwise row
@@ -882,7 +882,13 @@ public class DrawArrowsView extends ImageView {
                             able_to_click = true;
 
                             // checks if force arrow is correct
-                            checkArrowIsCorrect(rectListArrowHead_indice);
+
+                            // TODO fix it so it can tell which arrow was just placed
+//                            setAllToUnused();
+//                            checkArrowIsCorrect(rectListArrowHead_indice);
+
+                            checkAllArrows();
+
                             showSnackBarArrowPlaced(rectListArrowHead_indice);
                         }
                     });
@@ -1314,10 +1320,28 @@ public class DrawArrowsView extends ImageView {
             Double clockwise_row = checkMatrix.get(btn_chosen).get(4).get(u);
             Double finished_row = checkMatrix.get(btn_chosen).get(5).get(u);
 
+
             if (isMomentList.get(mrectListArrowHead_indice)) {
                 // sets match to true if
 
+                //resets opp_angle
+                opp_ang = 100.0;
+
+                if (oppos_allowed_row == 1.0 && used_row == 0.0) {
+                    // calculate opposite angle
+                    if (angle_row == 200.0) {
+                        opp_ang = 300.0;
+                    } else if (angle_row == 300.0) {
+                        opp_ang = 200.0;
+                    }
+                }
+
+
                 if (isClockwiseList.get(mrectListArrowHead_indice).equals(checkMatrix.get(btn_chosen).get(0).get(u))) {
+                    match = true;
+                    checkMatrix.get(btn_chosen).get(5).set(u, 1.0);
+                    checkMatrix.get(btn_chosen).get(1).set(u, 1.0);
+                } else if (isClockwiseList.get(mrectListArrowHead_indice).equals(opp_ang)) {
                     match = true;
                     checkMatrix.get(btn_chosen).get(5).set(u, 1.0);
                     checkMatrix.get(btn_chosen).get(1).set(u, 1.0);
