@@ -1027,6 +1027,20 @@ public class DrawArrowsView extends ImageView {
 //            } else {
 //                Snackbar.make(this, "Not Finished Yet...", Snackbar.LENGTH_SHORT).show();
 //            }
+//
+//            new MaterialIntroView.Builder(this)
+//                    .enableDotAnimation(true)
+//                    .enableIcon(false)
+//                    .setFocusGravity(FocusGravity.CENTER)
+//                    .setFocusType(Focus.MINIMUM)
+//                    .setDelayMillis(500)
+//                    .enableFadeAnimation(true)
+//                    .performClick(true)
+//                    .setInfoText("Hi There! Click this card and see what happens.")
+//                    .setTarget(view)
+//                    .setUsageId("intro_card") //THIS SHOULD BE UNIQUE ID
+//                    .show();
+
         }
 
         // able_to_click is used to eliminate rapid clicks which can cause problems
@@ -1160,7 +1174,7 @@ public class DrawArrowsView extends ImageView {
             snackbarText.setSpan(new ForegroundColorSpan(Color.WHITE), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             snackbarText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             snackbarText.append("");
-            Snackbar.make(this, snackbarText, Snackbar.LENGTH_SHORT).show();
+//            Snackbar.make(this, snackbarText, Snackbar.LENGTH_SHORT).show();
         } else {
             SpannableStringBuilder snackbarText = new SpannableStringBuilder();
 //            snackbarText.append("" + convertRadToDegreeAndInvert(angle) + "\u00B0" + " is a ");
@@ -1170,7 +1184,7 @@ public class DrawArrowsView extends ImageView {
             snackbarText.setSpan(new ForegroundColorSpan(Color.RED), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             snackbarText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             snackbarText.append(" - Try again");
-            Snackbar.make(this, snackbarText, Snackbar.LENGTH_SHORT).show();
+//            Snackbar.make(this, snackbarText, Snackbar.LENGTH_SHORT).show();
         }
     }
 
@@ -1223,13 +1237,13 @@ public class DrawArrowsView extends ImageView {
                 moving_clockwise = true;
                 isClockwiseList.set(rectListArrowHead_indice, 200.0);
                 if (i != offset) {
-                    Snackbar.make(this, "Moment was flipped", Snackbar.LENGTH_SHORT).show();
+//                    Snackbar.make(this, "Moment was flipped", Snackbar.LENGTH_SHORT).show();
                 }
             } else {
                 moving_clockwise = false;
                 isClockwiseList.set(rectListArrowHead_indice, 300.0);
                 if (i != offset) {
-                    Snackbar.make(this, "Moment was flipped", Snackbar.LENGTH_SHORT).show();
+//                    Snackbar.make(this, "Moment was flipped", Snackbar.LENGTH_SHORT).show();
                 }
             }
         }

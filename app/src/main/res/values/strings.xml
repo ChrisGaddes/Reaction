@@ -1,9 +1,10 @@
 <resources>
     <string name="app_name">Reaction</string>
     <string name="str_btn_get_started">Get Started</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="str_next_problem">Next Problem</string>
     <string name="str_all_arrows_placed_correctly">All forces and moments placed correctly!</string>
+    <string name="str_get_started">Okay</string>
+    <string name="str_problem_statement">Draw the free-body diagram of the highlighted member</string>
+    <string name="str_problem_title">Problem #1</string>
 </resources>
