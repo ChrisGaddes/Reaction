@@ -1041,6 +1041,11 @@ public class DrawArrowsView extends ImageView {
 //                    .setUsageId("intro_card") //THIS SHOULD BE UNIQUE ID
 //                    .show();
 
+
+            ThirdActivity mThirdActivity = new ThirdActivity();
+
+//            mThirdActivity.test1();
+
         }
 
         // able_to_click is used to eliminate rapid clicks which can cause problems

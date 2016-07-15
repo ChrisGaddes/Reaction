@@ -1,9 +1,14 @@
 apply plugin: 'com.android.application'
 apply plugin: 'realm-android'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 24
     buildToolsVersion "24.0.0"
+
+    dataBinding {
+        enabled = true
+    }
 
     defaultConfig {
         applicationId "com.chrisgaddes.reaction"
@@ -41,6 +46,7 @@ dependencies {
     compile 'com.facebook.android:facebook-android-sdk:4.0.1'
     //Google Play Services
     compile 'com.google.android.gms:play-services:9.2.0'
+    compile 'com.google.android.gms:play-services-analytics:9.2.0'
     //GSON library
     compile 'com.google.code.gson:gson:2.4'
     compile 'com.jakewharton:butterknife:8.2.0'

@@ -5,6 +5,7 @@
     <string name="str_next_problem">Next Problem</string>
     <string name="str_all_arrows_placed_correctly">All forces and moments placed correctly!</string>
     <string name="str_get_started">Okay</string>
-    <string name="str_problem_statement">Draw the free-body diagram of the highlighted member</string>
+    <string name="str_problem_statement">Draw the free-body diagram of the highlighted member. The member has mass m and gravity is downward</string>
     <string name="str_problem_title">Problem #1</string>
+    <string name="str_help_dialog_description">Tap and drag from appropriate locations to add forces and long press to add moments\n\nChange direction of a moment by dragging the arrow head clockwise or counterclockwise in a circle\n\nBlue arrows are correct. Gray arrows are incorrect and should be moved \n\nPress the Restart button to remove all arrows and start over\n\nPress the "Check" button when finished</string>
 </resources>

@@ -7,9 +7,6 @@ import com.heinrichreimersoftware.materialintro.app.IntroActivity;
 import com.heinrichreimersoftware.materialintro.app.NavigationPolicy;
 import com.heinrichreimersoftware.materialintro.app.OnNavigationBlockedListener;
 
-/**
- * Created by cagad on 7/11/2016.
- */
 public class MainIntroActivity extends IntroActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -1,0 +1,38 @@
+{
+  "project_info": {
+    "project_number": "401477208237",
+    "project_id": "firebase-reaction"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:401477208237:android:612155395ff61580",
+        "android_client_info": {
+          "package_name": "com.chrisgaddes.reaction"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDRJyDsBfVpvMO1ofmWUT09sjz7cCQhHgc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 2,
+          "analytics_property": {
+            "tracking_id": "UA-80820287-1"
+          }
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
