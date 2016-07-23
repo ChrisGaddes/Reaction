@@ -6,15 +6,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 
 public class MainActivity extends AppCompatActivity { // implements View.OnTouchListener {
 
     private static final String TAG = "MainActivity";
+    private ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
         findViewById(R.id.btn_load_second_activity).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -25,6 +26,8 @@ public class ThirdActivity extends AppCompatActivity {
     private DrawArrowsView mDrawArrowsView;
     private ImageView mProblem;
     private Context mContext;
+    private ListView listView;
+
 //    private Data data = new Data();
 
     @Override
