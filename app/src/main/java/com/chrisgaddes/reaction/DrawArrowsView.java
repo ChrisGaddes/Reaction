@@ -35,7 +35,10 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
 import com.github.javiersantos.materialstyleddialogs.enums.Style;
+import com.udojava.evalex.Expression;
 
+import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -92,6 +95,7 @@ public class DrawArrowsView extends ImageView {
     private int i;
     private int k;
     private double opp_ang;
+    private double rounded_opp_ang;
     private int offset;
     private float stepAngle;
     private float touchAngle;
@@ -260,185 +264,61 @@ public class DrawArrowsView extends ImageView {
     }
 
     private void loadArrowCheckLocations() {
-        // add buttons layers
-        checkMatrix.add(new ArrayList<List<Double>>());
-        checkMatrix.add(new ArrayList<List<Double>>());
-        checkMatrix.add(new ArrayList<List<Double>>());
 
-        // add 2nd layer
-        int btn = 0;
-        checkMatrix.get(btn).add(new ArrayList<Double>());
-        checkMatrix.get(btn).add(new ArrayList<Double>());
-        checkMatrix.get(btn).add(new ArrayList<Double>());
-        checkMatrix.get(btn).add(new ArrayList<Double>());
-        checkMatrix.get(btn).add(new ArrayList<Double>());
-        checkMatrix.get(btn).add(new ArrayList<Double>());
-        btn = 1;
-        checkMatrix.get(btn).add(new ArrayList<Double>());
-        checkMatrix.get(btn).add(new ArrayList<Double>());
-        checkMatrix.get(btn).add(new ArrayList<Double>());
-        checkMatrix.get(btn).add(new ArrayList<Double>());
-        checkMatrix.get(btn).add(new ArrayList<Double>());
-        checkMatrix.get(btn).add(new ArrayList<Double>());
-        btn = 2;
-        checkMatrix.get(btn).add(new ArrayList<Double>());
-        checkMatrix.get(btn).add(new ArrayList<Double>());
-        checkMatrix.get(btn).add(new ArrayList<Double>());
-        checkMatrix.get(btn).add(new ArrayList<Double>());
-        checkMatrix.get(btn).add(new ArrayList<Double>());
-        checkMatrix.get(btn).add(new ArrayList<Double>());
+        int prob_number = 1;
 
-        // add third layer (contains angles)
-        // [btn#, 0] - "angle"
-        btn = 0;
-        int type_num = 0;
-        checkMatrix.get(btn).get(type_num).add(pi / 2);
-        checkMatrix.get(btn).get(type_num).add(pi);
-        checkMatrix.get(btn).get(type_num).add(200.0); // 200.0 means clockwise moment, 300.0 means counterclockwise moment
-        checkMatrix.get(btn).get(type_num).add(100.0);
 
-        // [btn#, 1] - Used
-        btn = 0;
-        type_num = 1;
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
+        for (int btn = 0; btn < 3; btn++) {
 
-        // [btn#, 1] - Force angle
-        btn = 0;
-        type_num = 2;
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
+            checkMatrix.add(new ArrayList<List<Double>>());
 
-        // [btn#, 3] - Opposite Allowed
-        btn = 0;
-        type_num = 3;
-        checkMatrix.get(btn).get(type_num).add(1.0);
-        checkMatrix.get(btn).get(type_num).add(1.0);
-        checkMatrix.get(btn).get(type_num).add(1.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
+            checkMatrix.get(btn).add(new ArrayList<Double>());
+            checkMatrix.get(btn).add(new ArrayList<Double>());
+            checkMatrix.get(btn).add(new ArrayList<Double>());
+            checkMatrix.get(btn).add(new ArrayList<Double>());
+            checkMatrix.get(btn).add(new ArrayList<Double>());
+            checkMatrix.get(btn).add(new ArrayList<Double>());
 
-        // [btn#, 4] - Clockwise row
-        btn = 0;
-        type_num = 4;
-        checkMatrix.get(btn).get(type_num).add(100.0);
-        checkMatrix.get(btn).get(type_num).add(100.0);
-        checkMatrix.get(btn).get(type_num).add(100.0);
-        checkMatrix.get(btn).get(type_num).add(100.0);
+            for (int c = 0; c < 4; c++) { // TODO remove hardcoded 5 here
 
-        // [btn#, 5] - finished row
-        btn = 0;
-        type_num = 5;
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
+                String str_angleRow = "angleRow_" + "prob" + prob_number + "_" + "btn" + btn;
+                String str_usedRow = "usedRow_" + "prob" + prob_number + "_" + "btn" + btn;
+                String str_forceAngleRow = "forceAngleRow_" + "prob" + prob_number + "_" + "btn" + btn;
+                String str_oppositeAllowedRow = "oppositeAllowedRow_" + "prob" + prob_number + "_" + "btn" + btn;
+                String str_clockwiseRow = "clockwiseRow_" + "prob" + prob_number + "_" + "btn" + btn;
+                String str_finishedRow = "finishedRow_" + "prob" + prob_number + "_" + "btn" + btn;
 
-        // 2nd button
+//        int resourceId = getResId(str, R.array.class);
 
-        // add third layer (contains angles)
-        // [btn#, 0] - "angle"
-        btn = 1;
-        type_num = 0;
-        checkMatrix.get(btn).get(type_num).add(pi / 2);
-        checkMatrix.get(btn).get(type_num).add(100.0);
-        checkMatrix.get(btn).get(type_num).add(100.0); // set to 100
-        checkMatrix.get(btn).get(type_num).add(100.0);
+                String[] mangleRow = getResources().getStringArray(getResId(str_angleRow, R.array.class));
+                String[] musedRow = getResources().getStringArray(getResId(str_usedRow, R.array.class));
+                String[] mforceAngleRow = getResources().getStringArray(getResId(str_forceAngleRow, R.array.class));
+                String[] moppositeAllowedRow = getResources().getStringArray(getResId(str_oppositeAllowedRow, R.array.class));
+                String[] mclockwiseRow = getResources().getStringArray(getResId(str_clockwiseRow, R.array.class));
+                String[] mfinishedRow = getResources().getStringArray(getResId(str_finishedRow, R.array.class));
 
-        // [btn#, 1] - Used
-        btn = 1;
-        type_num = 1;
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
+                BigDecimal tmp0 = new Expression(mangleRow[c]).eval();
+                BigDecimal tmp1 = new Expression(musedRow[c]).eval();
+                BigDecimal tmp2 = new Expression(mforceAngleRow[c]).eval();
+                BigDecimal tmp3 = new Expression(moppositeAllowedRow[c]).eval();
+                BigDecimal tmp4 = new Expression(mclockwiseRow[c]).eval();
+                BigDecimal tmp5 = new Expression(mfinishedRow[c]).eval();
 
-        // [btn#, 1] - Force angle
-        btn = 1;
-        type_num = 2;
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
+                Double val0 = Double.valueOf(String.valueOf(tmp0));
+                Double val1 = Double.valueOf(String.valueOf(tmp1));
+                Double val2 = Double.valueOf(String.valueOf(tmp2));
+                Double val3 = Double.valueOf(String.valueOf(tmp3));
+                Double val4 = Double.valueOf(String.valueOf(tmp4));
+                Double val5 = Double.valueOf(String.valueOf(tmp5));
 
-        // [btn#, 3] - Opposite Allowed
-        btn = 1;
-        type_num = 3;
-        checkMatrix.get(btn).get(type_num).add(1.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
-
-        // [btn#, 4] - Clockwise row
-        btn = 1;
-        type_num = 4;
-        checkMatrix.get(btn).get(type_num).add(100.0);
-        checkMatrix.get(btn).get(type_num).add(100.0);
-        checkMatrix.get(btn).get(type_num).add(100.0);
-        checkMatrix.get(btn).get(type_num).add(100.0);
-
-        // [btn#, 5] - finished row
-        btn = 1;
-        type_num = 5;
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
-
-        // 3rd button
-
-        // add third layer (contains angles)
-        // [btn#, 0] - "angle"
-        btn = 2;
-        type_num = 0;
-
-        checkMatrix.get(btn).get(type_num).add(-5 * pi / 6);
-        checkMatrix.get(btn).get(type_num).add(100.0);
-        checkMatrix.get(btn).get(type_num).add(100.0); // set to 100
-        checkMatrix.get(btn).get(type_num).add(100.0);
-
-        // [btn#, 1] - Used
-        btn = 2;
-        type_num = 1;
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
-
-        // [btn#, 1] - Force angle
-        btn = 2;
-        type_num = 2;
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
-
-        // [btn#, 3] - Opposite Allowed
-        btn = 2;
-        type_num = 3;
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
-
-        // [btn#, 4] - Clockwise row
-        btn = 2;
-        type_num = 4;
-        checkMatrix.get(btn).get(type_num).add(100.0);
-        checkMatrix.get(btn).get(type_num).add(100.0);
-        checkMatrix.get(btn).get(type_num).add(100.0);
-        checkMatrix.get(btn).get(type_num).add(100.0);
-
-        // [btn#, 5] - finished row
-        btn = 2;
-        type_num = 5;
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
-        checkMatrix.get(btn).get(type_num).add(0.0);
+                checkMatrix.get(btn).get(0).add(val0);
+                checkMatrix.get(btn).get(1).add(val1);
+                checkMatrix.get(btn).get(2).add(val2);
+                checkMatrix.get(btn).get(3).add(val3);
+                checkMatrix.get(btn).get(4).add(val4);
+                checkMatrix.get(btn).get(5).add(val5);
+            }
+        }
     }
 
     /**
@@ -733,7 +613,7 @@ public class DrawArrowsView extends ImageView {
                 if (clicked_on_button || clicked_on_arrow_head) {
 
                     // Checks all arrows that are currently placed
-                    checkAllArrows();
+//                    checkAllArrows();
 
                     // TODO move this into loop right below. Seems redundant
                     // checks if release is inside button
@@ -1042,7 +922,7 @@ public class DrawArrowsView extends ImageView {
 //                    .show();
 
 
-            ThirdActivity mThirdActivity = new ThirdActivity();
+//            ThirdActivity mThirdActivity = new ThirdActivity();
 
 //            mThirdActivity.test1();
 
@@ -1414,13 +1294,16 @@ public class DrawArrowsView extends ImageView {
 
                 //resets opp_angle
                 opp_ang = 100.0;
+                rounded_opp_ang = 100.0;
 
                 if (oppos_allowed_row == 1.0 && used_row == 0.0) {
                     // calculate opposite angle
                     if (angle_row < 0.0) {
                         opp_ang = angle_row + pi;
+                        rounded_opp_ang = ((double) (Math.round(opp_ang * 1000)) / 1000);
                     } else {
                         opp_ang = angle_row - pi;
+                        rounded_opp_ang = ((double) (Math.round(opp_ang * 1000)) / 1000);
                     }
                 }
 
@@ -1428,14 +1311,21 @@ public class DrawArrowsView extends ImageView {
                     // set finished row
                     checkMatrix.get(btn_chosen).get(5).set(u, 1.0);
                 }
-                if (angle_row.equals(mAngle)) {
+
+//                double rounded_angle_row = ((double) (Math.round(angle_row * 1000)) / 1000);
+//                double rounded_mAngle = ((double) (Math.round(mAngle * 1000)) / 1000);
+                if (((double) (Math.round(angle_row * 1000)) / 1000) == ((double) (Math.round(mAngle * 1000)) / 1000)) {
                     // set finished row
                     checkMatrix.get(btn_chosen).get(5).set(u, 1.0);
 
                     if (used_row.equals(1.0)) {
                         Snackbar.make(this, "Opposite Already Used", Snackbar.LENGTH_SHORT).show();
                     } else if (used_row.equals(0.0)) {
-                        if (angle_row.equals(mAngle)) {
+
+//                        rounded_angle_row = ((double) (Math.round(angle_row * 1000)) / 1000);
+//                        rounded_mAngle = ((double) (Math.round(mAngle * 1000)) / 1000);
+
+                        if (((double) (Math.round(angle_row * 1000)) / 1000) == ((double) (Math.round(mAngle * 1000)) / 1000)) {
                             match = true;
                             checkMatrix.get(btn_chosen).get(1).set(u, 1.0); // mark as used
                             linkList2.get(0).set(mrectListArrowHead_indice, linkList.get(mrectListArrowHead_indice));
@@ -1443,7 +1333,7 @@ public class DrawArrowsView extends ImageView {
                             linkList2.get(2).set(mrectListArrowHead_indice, u);
                         }
                     }
-                } else if (opp_ang == mAngle) {
+                } else if (rounded_opp_ang == ((double) (Math.round(mAngle * 1000)) / 1000)) {
                     // run if opposite angle is chosen
 
                     // set finished row
@@ -1451,7 +1341,7 @@ public class DrawArrowsView extends ImageView {
                     if (used_row.equals(1.0)) {
                         Snackbar.make(this, "Opposite Already Used", Snackbar.LENGTH_SHORT).show();
                     } else if (used_row.equals(0.0)) {
-                        if (opp_ang == mAngle) {
+                        if (((double) (Math.round(opp_ang * 1000)) / 1000) == ((double) (Math.round(mAngle * 1000)) / 1000)) {
                             match = true;
                             checkMatrix.get(btn_chosen).get(1).set(u, 1.0); // mark as used
                             linkList2.get(0).set(mrectListArrowHead_indice, linkList.get(mrectListArrowHead_indice));
@@ -1502,6 +1392,17 @@ public class DrawArrowsView extends ImageView {
             }
         }
         invalidate();
+    }
+
+    public static int getResId(String variableName, Class<?> c) {
+
+        try {
+            Field idField = c.getDeclaredField(variableName);
+            return idField.getInt(idField);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
     }
 
 

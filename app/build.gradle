@@ -27,7 +27,7 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
+//    testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:24.1.1'
     compile 'com.android.support:support-v4:24.1.1'
     compile 'com.android.support:design:24.1.1'
@@ -37,6 +37,8 @@ dependencies {
     compile 'com.gordonwong:material-sheet-fab:1.2.1'
     compile 'com.sothree.slidinguppanel:library:3.3.0'
     compile project(':smartloginlibrary-v0.5beta')
+
+    compile 'com.udojava:EvalEx:1.0'
 
     compile 'com.github.iammert:MaterialIntroView:1.5.2'
 
