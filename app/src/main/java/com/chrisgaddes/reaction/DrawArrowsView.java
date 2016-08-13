@@ -544,6 +544,15 @@ public class DrawArrowsView extends ImageView {
     Runnable mLongPressed = new Runnable() {
         public void run() {
 
+//            boolean moment_already_used = false;
+//            for (int v = 1; v < isMomentList; v++) {
+//                if (isMomentList.get(v)){
+//                    moment_already_used = true;
+//                }
+//            }
+
+            // breaks if moment has already been used
+//            if (!moment_already_used) {
             //sets clockwise to true
             moving_clockwise = true;
 
@@ -562,6 +571,8 @@ public class DrawArrowsView extends ImageView {
             removeValuesFromArraylists(rectListArrowHead_indice);
 
             isMomentList.add(rectListArrowHead_indice, true);
+
+
             isClockwiseList.add(rectListArrowHead_indice, 200.0);
             null_path = new Path();
             pathListCorrect.add(null_path);
@@ -572,6 +583,9 @@ public class DrawArrowsView extends ImageView {
 
             onActionDown();
             invalidate();
+//            } else {
+//
+//            }
         }
     };
 
@@ -1257,10 +1271,11 @@ public class DrawArrowsView extends ImageView {
             // if not used already
             Double angle_row = checkMatrix.get(btn_chosen).get(0).get(u);
             Double used_row = checkMatrix.get(btn_chosen).get(1).get(u);
-            Double force_ang_row = checkMatrix.get(btn_chosen).get(2).get(u);
+            Double force_ang_row = checkMatrix.get(btn_chosen).get(2).get(u); // forces opposite or not. If 0.0, no forcing. If 1.0, angle is forced. If 2.0, opoposite angle is forced
             Double oppos_allowed_row = checkMatrix.get(btn_chosen).get(3).get(u);
             Double clockwise_row = checkMatrix.get(btn_chosen).get(4).get(u);
             Double finished_row = checkMatrix.get(btn_chosen).get(5).get(u);
+//            Double moment_used_row = checkMatrix.get(btn_chosen).get(6).get(u);
 
 
             if (isMomentList.get(mrectListArrowHead_indice)) {
@@ -1277,7 +1292,6 @@ public class DrawArrowsView extends ImageView {
                         opp_ang = 200.0;
                     }
                 }
-
 
                 if (isClockwiseList.get(mrectListArrowHead_indice).equals(checkMatrix.get(btn_chosen).get(0).get(u))) {
                     match = true;
@@ -1314,43 +1328,57 @@ public class DrawArrowsView extends ImageView {
 
 //                double rounded_angle_row = ((double) (Math.round(angle_row * 1000)) / 1000);
 //                double rounded_mAngle = ((double) (Math.round(mAngle * 1000)) / 1000);
-                if (((double) (Math.round(angle_row * 1000)) / 1000) == ((double) (Math.round(mAngle * 1000)) / 1000)) {
-                    // set finished row
-                    checkMatrix.get(btn_chosen).get(5).set(u, 1.0);
 
-                    if (used_row.equals(1.0)) {
-                        Snackbar.make(this, "Opposite Already Used", Snackbar.LENGTH_SHORT).show();
-                    } else if (used_row.equals(0.0)) {
+
+                if (force_ang_row == 0.0 || force_ang_row == 1.0) {
+
+                    if (((double) (Math.round(angle_row * 1000)) / 1000) == ((double) (Math.round(mAngle * 1000)) / 1000)) {
+                        // set finished row
+                        checkMatrix.get(btn_chosen).get(5).set(u, 1.0);
+
+                        if (used_row.equals(1.0)) {
+                            Snackbar.make(this, "Opposite Already Used", Snackbar.LENGTH_SHORT).show();
+                        } else if (used_row.equals(0.0)) {
 
 //                        rounded_angle_row = ((double) (Math.round(angle_row * 1000)) / 1000);
 //                        rounded_mAngle = ((double) (Math.round(mAngle * 1000)) / 1000);
 
-                        if (((double) (Math.round(angle_row * 1000)) / 1000) == ((double) (Math.round(mAngle * 1000)) / 1000)) {
-                            match = true;
-                            checkMatrix.get(btn_chosen).get(1).set(u, 1.0); // mark as used
-                            linkList2.get(0).set(mrectListArrowHead_indice, linkList.get(mrectListArrowHead_indice));
-                            linkList2.get(1).set(mrectListArrowHead_indice, 1);
-                            linkList2.get(2).set(mrectListArrowHead_indice, u);
-                        }
-                    }
-                } else if (rounded_opp_ang == ((double) (Math.round(mAngle * 1000)) / 1000)) {
-                    // run if opposite angle is chosen
-
-                    // set finished row
-                    checkMatrix.get(btn_chosen).get(5).set(u, 1.0);
-                    if (used_row.equals(1.0)) {
-                        Snackbar.make(this, "Opposite Already Used", Snackbar.LENGTH_SHORT).show();
-                    } else if (used_row.equals(0.0)) {
-                        if (((double) (Math.round(opp_ang * 1000)) / 1000) == ((double) (Math.round(mAngle * 1000)) / 1000)) {
-                            match = true;
-                            checkMatrix.get(btn_chosen).get(1).set(u, 1.0); // mark as used
-                            linkList2.get(0).set(mrectListArrowHead_indice, linkList.get(mrectListArrowHead_indice));
-                            linkList2.get(1).set(mrectListArrowHead_indice, 1);
-                            linkList2.get(2).set(mrectListArrowHead_indice, u);
+                            if (((double) (Math.round(angle_row * 1000)) / 1000) == ((double) (Math.round(mAngle * 1000)) / 1000)) {
+                                match = true;
+                                checkMatrix.get(btn_chosen).get(1).set(u, 1.0); // mark as used
+                                linkList2.get(0).set(mrectListArrowHead_indice, linkList.get(mrectListArrowHead_indice));
+                                linkList2.get(1).set(mrectListArrowHead_indice, 1);
+                                linkList2.get(2).set(mrectListArrowHead_indice, u);
+                            }
                         }
                     }
                 }
+
+                if (force_ang_row == 0.0 || force_ang_row == 2.0) {
+
+                    if (rounded_opp_ang == ((double) (Math.round(mAngle * 1000)) / 1000)) {
+                        // run if opposite angle is chosen
+
+                        // set finished row
+                        checkMatrix.get(btn_chosen).get(5).set(u, 1.0);
+                        if (used_row.equals(1.0)) {
+                            Snackbar.make(this, "Opposite Already Used", Snackbar.LENGTH_SHORT).show();
+                        } else if (used_row.equals(0.0)) {
+                            if (((double) (Math.round(opp_ang * 1000)) / 1000) == ((double) (Math.round(mAngle * 1000)) / 1000)) {
+                                match = true;
+                                checkMatrix.get(btn_chosen).get(1).set(u, 1.0); // mark as used
+                                linkList2.get(0).set(mrectListArrowHead_indice, linkList.get(mrectListArrowHead_indice));
+                                linkList2.get(1).set(mrectListArrowHead_indice, 1);
+                                linkList2.get(2).set(mrectListArrowHead_indice, u);
+                            }
+                        }
+                    }
+
+                }
+
                 u++;
+
+
             }
         }
 
