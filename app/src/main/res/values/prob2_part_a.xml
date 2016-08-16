@@ -2,42 +2,42 @@
 <resources>
 
     <!--Problem Statement-->
-    <string-array name="problemStatement_prob1">
-        <item>Draw the free-body diagram of the highlighted member. The member has mass m and gravity is downward. Correctly placed arrows turn blue. Incorrectly placed arrows are greyed out and must be removed</item>
+    <string-array name="problemStatement_prob2">
+        <item>Draw the free-body diagram of the uniform bar, which has a mass of 100 kg and a center of mass at G . The supports A, B , and C are smooth.</item>
     </string-array>
 
     <!--Button 0-->
-    <string-array name="angleRow_prob1_btn0">
+    <string-array name="angleRow_prob2_btn0">
         <item>PI/2</item>
         <item>PI</item>
         <item>200.0</item>
         <item>100.0</item>
     </string-array>
-    <string-array name="usedRow_prob1_btn0">
+    <string-array name="usedRow_prob2_btn0">
         <item>0.0</item>
         <item>0.0</item>
         <item>0.0</item>
         <item>0.0</item>
     </string-array>
-    <string-array name="forceAngleRow_prob1_btn0">
+    <string-array name="forceAngleRow_prob2_btn0">
         <item>1.0</item>
         <item>0.0</item>
         <item>0.0</item>
         <item>0.0</item>
     </string-array>
-    <string-array name="oppositeAllowedRow_prob1_btn0">
+    <string-array name="oppositeAllowedRow_prob2_btn0">
         <item>1.0</item>
         <item>1.0</item>
         <item>1.0</item>
         <item>0.0</item>
     </string-array>
-    <string-array name="clockwiseRow_prob1_btn0">
+    <string-array name="clockwiseRow_prob2_btn0">
         <item>100.0</item>
         <item>100.0</item>
         <item>100.0</item>
         <item>100.0</item>
     </string-array>
-    <string-array name="finishedRow_prob1_btn0">
+    <string-array name="finishedRow_prob2_btn0">
         <item>0.0</item>
         <item>0.0</item>
         <item>0.0</item>
@@ -45,37 +45,37 @@
     </string-array>
 
     <!--Button 1-->
-    <string-array name="angleRow_prob1_btn1">
+    <string-array name="angleRow_prob2_btn1">
         <item>PI/2 </item>
         <item>100.0</item>
         <item>100.0</item>
         <item>100.0</item>
     </string-array>
-    <string-array name="usedRow_prob1_btn1">
+    <string-array name="usedRow_prob2_btn1">
         <item>0.0</item>
         <item>0.0</item>
         <item>0.0</item>
         <item>0.0</item>
     </string-array>
-    <string-array name="forceAngleRow_prob1_btn1">
+    <string-array name="forceAngleRow_prob2_btn1">
         <item>0.0</item>
         <item>0.0</item>
         <item>0.0</item>
         <item>0.0</item>
     </string-array>
-    <string-array name="oppositeAllowedRow_prob1_btn1">
+    <string-array name="oppositeAllowedRow_prob2_btn1">
         <item>0.0</item>
         <item>0.0</item>
         <item>0.0</item>
         <item>0.0</item>
     </string-array>
-    <string-array name="clockwiseRow_prob1_btn1">
+    <string-array name="clockwiseRow_prob2_btn1">
         <item>100.0</item>
         <item>100.0</item>
         <item>100.0</item>
         <item>100.0</item>
     </string-array>
-    <string-array name="finishedRow_prob1_btn1">
+    <string-array name="finishedRow_prob2_btn1">
         <item>0.0</item>
         <item>0.0</item>
         <item>0.0</item>
@@ -83,37 +83,37 @@
     </string-array>
 
     <!--Button 2-->
-    <string-array name="angleRow_prob1_btn2">
+    <string-array name="angleRow_prob2_btn2">
         <item>-5*PI/6</item>
         <item>100.0</item>
         <item>100.0</item>
         <item>100.0</item>
     </string-array>
-    <string-array name="usedRow_prob1_btn2">
+    <string-array name="usedRow_prob2_btn2">
         <item>0.0</item>
         <item>0.0</item>
         <item>0.0</item>
         <item>0.0</item>
     </string-array>
-    <string-array name="forceAngleRow_prob1_btn2">
+    <string-array name="forceAngleRow_prob2_btn2">
         <item>0.0</item>
         <item>0.0</item>
         <item>0.0</item>
         <item>0.0</item>
     </string-array>
-    <string-array name="oppositeAllowedRow_prob1_btn2">
+    <string-array name="oppositeAllowedRow_prob2_btn2">
         <item>0.0</item>
         <item>0.0</item>
         <item>0.0</item>
         <item>0.0</item>
     </string-array>
-    <string-array name="clockwiseRow_prob1_btn2">
+    <string-array name="clockwiseRow_prob2_btn2">
         <item>100.0</item>
         <item>100.0</item>
         <item>100.0</item>
         <item>100.0</item>
     </string-array>
-    <string-array name="finishedRow_prob1_btn2">
+    <string-array name="finishedRow_prob2_btn2">
         <item>0.0</item>
         <item>0.0</item>
         <item>0.0</item>

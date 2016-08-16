@@ -103,6 +103,7 @@ public class DrawArrowsView extends ImageView {
 
     private boolean allArrowsCorrect;
 
+    public TinyDB tinydb;
 
     //TODO consider http://stackoverflow.com/questions/32324876/how-to-save-an-answer-in-a-riddle-game-without-creating-a-database
 
@@ -127,6 +128,8 @@ public class DrawArrowsView extends ImageView {
 
     private int x_b;
     private int y_b;
+
+    public int hey;
 
     private Rect rectDone;
 
@@ -265,10 +268,9 @@ public class DrawArrowsView extends ImageView {
 
     private void loadArrowCheckLocations() {
 
-        int prob_number = 1;
+        int problem_number = tinydb.getInt("problem_number");
 
-
-        for (int btn = 0; btn < 3; btn++) {
+        for (int btn = 0; btn < 3; btn++) {  // TODO remove hardcoded 3 here
 
             checkMatrix.add(new ArrayList<List<Double>>());
 
@@ -281,12 +283,18 @@ public class DrawArrowsView extends ImageView {
 
             for (int c = 0; c < 4; c++) { // TODO remove hardcoded 5 here
 
-                String str_angleRow = "angleRow_" + "prob" + prob_number + "_" + "btn" + btn;
-                String str_usedRow = "usedRow_" + "prob" + prob_number + "_" + "btn" + btn;
-                String str_forceAngleRow = "forceAngleRow_" + "prob" + prob_number + "_" + "btn" + btn;
-                String str_oppositeAllowedRow = "oppositeAllowedRow_" + "prob" + prob_number + "_" + "btn" + btn;
-                String str_clockwiseRow = "clockwiseRow_" + "prob" + prob_number + "_" + "btn" + btn;
-                String str_finishedRow = "finishedRow_" + "prob" + prob_number + "_" + "btn" + btn;
+
+                //TODO: set so that sharedpreference rows only import once
+
+                String str_angleRow = "angleRow_" + "prob" + problem_number + "_" + "btn" + btn;
+
+//                TinyDB tinydb = new TinyDB(getContext());
+
+                String str_usedRow = "usedRow_" + "prob" + problem_number + "_" + "btn" + btn;
+                String str_forceAngleRow = "forceAngleRow_" + "prob" + problem_number + "_" + "btn" + btn;
+                String str_oppositeAllowedRow = "oppositeAllowedRow_" + "prob" + problem_number + "_" + "btn" + btn;
+                String str_clockwiseRow = "clockwiseRow_" + "prob" + problem_number + "_" + "btn" + btn;
+                String str_finishedRow = "finishedRow_" + "prob" + problem_number + "_" + "btn" + btn;
 
 //        int resourceId = getResId(str, R.array.class);
 
@@ -319,6 +327,11 @@ public class DrawArrowsView extends ImageView {
                 checkMatrix.get(btn).get(5).add(val5);
             }
         }
+
+
+//        tinydb.putListString("str_angleRow", );
+
+
     }
 
     /**
@@ -328,6 +341,9 @@ public class DrawArrowsView extends ImageView {
 
         // gets shared preferences
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        // loads tinydb database
+        tinydb = new TinyDB(getContext());
 
         // toggles debugging text - this value can be changed in menu in app
         debuggingTextToggle = SP.getBoolean("debuggingTextToggle", false);
@@ -481,8 +497,14 @@ public class DrawArrowsView extends ImageView {
             canvas.drawPath(pthLst_arrows, paint_arrow_correct_location);
         }
 
+
+        tinydb = new TinyDB(getContext());
+
+        hey = tinydb.getInt("problem_number");
+
         if (debuggingTextToggle) {
-            canvas.drawText("inside_button = " + String.valueOf(inside_button), 20, 100, paint_text);
+            canvas.drawText("problem # = " + String.valueOf(hey), 20, 100, paint_text);
+//            canvas.drawText("inside_button = " + String.valueOf(inside_button), 20, 100, paint_text);
             canvas.drawText("rectList_indice = " + String.valueOf(rectList_indice), 20, 160, paint_text);
             canvas.drawText("rectListArrowHead_indice = " + String.valueOf(rectListArrowHead_indice), 20, 220, paint_text);
             canvas.drawText("linkList = " + String.valueOf(linkList), 20, 280, paint_text);
@@ -858,6 +880,11 @@ public class DrawArrowsView extends ImageView {
             showDialogArrowsCorrect();
         } else {
             Snackbar.make(this, "Not Finished Yet...", Snackbar.LENGTH_SHORT).show();
+
+
+            tinydb.putInt("problem_number", hey + 1);
+            invalidate();
+
         }
     }
 
@@ -1355,7 +1382,6 @@ public class DrawArrowsView extends ImageView {
                 }
 
                 if (force_ang_row == 0.0 || force_ang_row == 2.0) {
-
                     if (rounded_opp_ang == ((double) (Math.round(mAngle * 1000)) / 1000)) {
                         // run if opposite angle is chosen
 
@@ -1373,12 +1399,8 @@ public class DrawArrowsView extends ImageView {
                             }
                         }
                     }
-
                 }
-
                 u++;
-
-
             }
         }
 

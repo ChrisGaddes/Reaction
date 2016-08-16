@@ -37,6 +37,8 @@ dependencies {
     compile 'com.gordonwong:material-sheet-fab:1.2.1'
     compile 'com.sothree.slidinguppanel:library:3.3.0'
     compile project(':smartloginlibrary-v0.5beta')
+    compile 'com.borjabravo:readmoretextview:2.0.1'
+    compile 'com.ms-square:expandableTextView:0.1.4'
 
     compile 'com.udojava:EvalEx:1.0'
 
@@ -44,8 +46,8 @@ dependencies {
 
     //Facebook SDK
     //Google Play Services
-    compile 'com.google.android.gms:play-services:9.2.1'
-    compile 'com.google.android.gms:play-services-analytics:9.2.1'
+    compile 'com.google.android.gms:play-services:9.4.0'
+    compile 'com.google.android.gms:play-services-analytics:9.4.0'
     //GSON library
     compile 'com.google.code.gson:gson:2.4'
     compile 'com.heinrichreimersoftware:material-intro:1.5.5'
