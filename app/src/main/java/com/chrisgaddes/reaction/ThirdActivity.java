@@ -32,12 +32,18 @@ public class ThirdActivity extends AppCompatActivity {
     private Context mContext;
     private ListView listView;
 
-    private TextView tv_problem_text;
+    private TextView tv_problem_statement;
     private TextView tv_problem_number;
+    private TextView tv_part_letter;
+    private TextView tv_part_statement;
 
     private int problem_number;
-    private String str_problem_statement;
+    private String part_letter;
+
     private String str_problem_number;
+    private String[] str_problem_statement;
+    private String str_part_letter;
+    private String[] str_part_statement;
 
     public TinyDB tinydb;
 
@@ -54,21 +60,28 @@ public class ThirdActivity extends AppCompatActivity {
 //        tinydb.putInt("problem_number", 9);
 
         problem_number = tinydb.getInt("problem_number");
+        part_letter = tinydb.getString("part_letter");
+        str_part_letter = "Part " + part_letter;
+
         str_problem_number = "Problem #" + problem_number;
 
 //        str_problem_statement = "problemStatement_" + "prob" + problem_number;
 
 
-        String[] str_problem_statement = getResources().getStringArray(getResId("problemStatement_" + "prob" + problem_number, R.array.class));
+        str_problem_statement = getResources().getStringArray(getResId("mainProblemStatement_" + "prob" + problem_number + "_part" + part_letter, R.array.class));
+        str_part_statement = getResources().getStringArray(getResId("problemStatement_" + "prob" + problem_number + "_part" + part_letter, R.array.class));
 
-//        String str_problem_text = tinydb.getString("problem_text");
+        tv_part_letter = (TextView) findViewById(R.id.tv_part_letter);
+        tv_part_letter.setText(str_part_letter);
+
+        tv_part_statement = (TextView) this.findViewById(R.id.tv_part_statement);
+        tv_part_statement.setText(str_part_statement[0]);
 
         tv_problem_number = (TextView) findViewById(R.id.tv_problem_number);
         tv_problem_number.setText(str_problem_number);
 
-        tv_problem_text = (TextView) this.findViewById(R.id.tv_problem_text);
-        tv_problem_text.setText(str_problem_statement[0]);
-
+        tv_problem_statement = (TextView) this.findViewById(R.id.tv_problem_statement);
+        tv_problem_statement.setText(str_problem_statement[0]);
 
 //        // sample code snippet to set the text content on the ExpandableTextView
 //        ExpandableTextView expTv1 = (ExpandableTextView) this.findViewById(R.id.expand_text_view);

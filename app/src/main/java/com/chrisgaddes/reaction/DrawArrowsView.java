@@ -269,6 +269,7 @@ public class DrawArrowsView extends ImageView {
     private void loadArrowCheckLocations() {
 
         int problem_number = tinydb.getInt("problem_number");
+        String part_letter = tinydb.getString("part_letter");
 
         for (int btn = 0; btn < 3; btn++) {  // TODO remove hardcoded 3 here
 
@@ -286,15 +287,15 @@ public class DrawArrowsView extends ImageView {
 
                 //TODO: set so that sharedpreference rows only import once
 
-                String str_angleRow = "angleRow_" + "prob" + problem_number + "_" + "btn" + btn;
+                String str_angleRow = "angleRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
 
 //                TinyDB tinydb = new TinyDB(getContext());
 
-                String str_usedRow = "usedRow_" + "prob" + problem_number + "_" + "btn" + btn;
-                String str_forceAngleRow = "forceAngleRow_" + "prob" + problem_number + "_" + "btn" + btn;
-                String str_oppositeAllowedRow = "oppositeAllowedRow_" + "prob" + problem_number + "_" + "btn" + btn;
-                String str_clockwiseRow = "clockwiseRow_" + "prob" + problem_number + "_" + "btn" + btn;
-                String str_finishedRow = "finishedRow_" + "prob" + problem_number + "_" + "btn" + btn;
+                String str_usedRow = "usedRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
+                String str_forceAngleRow = "forceAngleRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
+                String str_oppositeAllowedRow = "oppositeAllowedRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
+                String str_clockwiseRow = "clockwiseRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
+                String str_finishedRow = "finishedRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
 
 //        int resourceId = getResId(str, R.array.class);
 

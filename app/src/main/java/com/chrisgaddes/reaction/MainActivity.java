@@ -16,6 +16,7 @@ public class MainActivity extends AppCompatActivity { // implements View.OnTouch
     public TinyDB tinydb;
     private TextView str_problem_number;
     private int problem_number;
+    private String part_letter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +32,9 @@ public class MainActivity extends AppCompatActivity { // implements View.OnTouch
 //                str_problem_number = (TextView)findViewById(R.id.problem_number);
 //                str_problem_number.setText("1");
                 problem_number = 1;
+                part_letter = "A";
                 tinydb.putInt("problem_number", problem_number);
+                tinydb.putString("part_letter", part_letter);
 
                 Intent intent = new Intent(MainActivity.this, ThirdActivity.class);
                 startActivity(intent);
@@ -44,7 +47,9 @@ public class MainActivity extends AppCompatActivity { // implements View.OnTouch
 //                str_problem_number = (TextView)findViewById(R.id.problem_number);
 //                str_problem_number.setText("2");
                 problem_number = 2;
+                part_letter = "A";
                 tinydb.putInt("problem_number", problem_number);
+                tinydb.putString("part_letter", part_letter);
 
                 Intent intent = new Intent(MainActivity.this, ThirdActivity.class);
                 startActivity(intent);
@@ -57,7 +62,9 @@ public class MainActivity extends AppCompatActivity { // implements View.OnTouch
 //                str_problem_number = (TextView)findViewById(R.id.problem_number);
 //                str_problem_number.setText("3");
                 problem_number = 3;
+                part_letter = "A";
                 tinydb.putInt("problem_number", problem_number);
+                tinydb.putString("part_letter", part_letter);
 
                 Intent intent = new Intent(MainActivity.this, ThirdActivity.class);
                 startActivity(intent);
