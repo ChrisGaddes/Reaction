@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!--Problem Statement-->
+    <!--Main Problem Statement-->
+    <string-array name="mainProblemStatement_prob2_partA">
+        <item>Draw the free-body diagram of the highlighted member. The member has mass m and gravity is downward. Correctly placed arrows turn blue. Incorrectly placed arrows are greyed out and must be removed</item>
+    </string-array>
+
+    <!--Part Problem Statement-->
     <string-array name="problemStatement_prob2_partA">
-        <item>Draw the free-body diagram of the uniform bar, which has a mass of 100 kg and a center of mass at G . The supports A, B , and C are smooth.</item>
+        <item>Draw the free-body diagram of the highlighted member. The member has mass m and gravity is downward. Correctly placed arrows turn blue. Incorrectly placed arrows are greyed out and must be removed</item>
     </string-array>
 
     <!--Button 0-->

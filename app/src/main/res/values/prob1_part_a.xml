@@ -11,6 +11,31 @@
         <item>Draw the free-body diagram of the highlighted member. The member has mass m and gravity is downward. Correctly placed arrows turn blue. Incorrectly placed arrows are greyed out and must be removed</item>
     </string-array>
 
+    <!--Number of Buttons-->
+    <string-array name="number_of_buttons_prob1_partA">
+        <item>4</item>
+    </string-array>
+
+    <!--Button Locations-->
+    <string-array name="location_prob1_partA_btn0">
+        <item>18</item>
+        <item>62.1</item>
+    </string-array>
+
+    <string-array name="location_prob1_partA_btn1">
+        <item>53.5</item>
+        <item>62.1</item>
+    </string-array>
+
+    <string-array name="location_prob1_partA_btn2">
+        <item>87.55</item>
+        <item>62.1</item>
+    </string-array>
+
+    <string-array name="location_prob1_partA_btn3">
+        <item>18</item>
+        <item>32.1</item>
+    </string-array>
 
     <!--Button 0-->
     <string-array name="angleRow_prob1_partA_btn0">
@@ -120,6 +145,44 @@
         <item>100.0</item>
     </string-array>
     <string-array name="finishedRow_prob1_partA_btn2">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
+
+    <!--Button 3-->
+    <string-array name="angleRow_prob1_partA_btn3">
+        <item>-5*PI/6</item>
+        <item>100.0</item>
+        <item>100.0</item>
+        <item>100.0</item>
+    </string-array>
+    <string-array name="usedRow_prob1_partA_btn3">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
+    <string-array name="forceAngleRow_prob1_partA_btn3">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
+    <string-array name="oppositeAllowedRow_prob1_partA_btn3">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
+    <string-array name="clockwiseRow_prob1_partA_btn3">
+        <item>100.0</item>
+        <item>100.0</item>
+        <item>100.0</item>
+        <item>100.0</item>
+    </string-array>
+    <string-array name="finishedRow_prob1_partA_btn3">
         <item>0.0</item>
         <item>0.0</item>
         <item>0.0</item>

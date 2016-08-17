@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId "com.chrisgaddes.reaction"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
@@ -39,6 +39,8 @@ dependencies {
     compile project(':smartloginlibrary-v0.5beta')
     compile 'com.borjabravo:readmoretextview:2.0.1'
     compile 'com.ms-square:expandableTextView:0.1.4'
+    compile 'com.nikoyuwono:toolbar-panel:0.1.1'
+    compile 'com.github.dadouf:SubAppBarPanel:v0.3.0'
 
     compile 'com.udojava:EvalEx:1.0'
 

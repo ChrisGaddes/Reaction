@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
 <com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:sothree="http://schemas.android.com/tools"
@@ -10,10 +12,11 @@
     sothree:umanoShadowHeight="4dp">
 
     <RelativeLayout
-        android:id="@+id/third_activity_Relative_Layout"
+        android:id="@+id/content_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="top">
+
 
         <!--<Button-->
         <!--android:id="@+id/btn_change_color"-->
@@ -23,6 +26,15 @@
         <!--android:layout_alignParentTop="true"-->
         <!--android:text="Change Color"-->
         <!--android:textAllCaps="false" />-->
+
+        <com.chrisgaddes.reaction.DrawArrowsView
+            android:id="@+id/idDrawArrowsView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="130dp"
+            android:clipChildren="true"
+            android:background="@color/material_green_50" />
 
         <TextView
             android:id="@+id/tv_part_letter"
@@ -43,13 +55,7 @@
             android:layout_marginRight="20dp"
             android:layout_marginTop="10dp" />
 
-        <com.chrisgaddes.reaction.DrawArrowsView
-            android:id="@+id/idDrawArrowsView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
 
-            android:clipChildren="true" />
 
         <!--<ImageView-->
         <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
@@ -82,8 +88,14 @@
 
     </RelativeLayout>
 
+    <!--<android.support.v7.widget.Toolbar-->
+    <!--android:id="@+id/toolbar"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="@color/colorPrimary" />-->
+
     <RelativeLayout
-        android:id="@+id/lower_panel"
+        android:id="@+id/panel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/material_light_white"

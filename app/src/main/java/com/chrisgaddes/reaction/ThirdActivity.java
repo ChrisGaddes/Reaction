@@ -55,6 +55,9 @@ public class ThirdActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_third);
 
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+
         tinydb = new TinyDB(this);
 
 //        tinydb.putInt("problem_number", 9);

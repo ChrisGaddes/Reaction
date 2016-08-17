@@ -18,6 +18,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
@@ -288,9 +289,6 @@ public class DrawArrowsView extends ImageView {
                 //TODO: set so that sharedpreference rows only import once
 
                 String str_angleRow = "angleRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
-
-//                TinyDB tinydb = new TinyDB(getContext());
-
                 String str_usedRow = "usedRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
                 String str_forceAngleRow = "forceAngleRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
                 String str_oppositeAllowedRow = "oppositeAllowedRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
@@ -302,6 +300,7 @@ public class DrawArrowsView extends ImageView {
                 String[] mangleRow = getResources().getStringArray(getResId(str_angleRow, R.array.class));
                 String[] musedRow = getResources().getStringArray(getResId(str_usedRow, R.array.class));
                 String[] mforceAngleRow = getResources().getStringArray(getResId(str_forceAngleRow, R.array.class));
+
                 String[] moppositeAllowedRow = getResources().getStringArray(getResId(str_oppositeAllowedRow, R.array.class));
                 String[] mclockwiseRow = getResources().getStringArray(getResId(str_clockwiseRow, R.array.class));
                 String[] mfinishedRow = getResources().getStringArray(getResId(str_finishedRow, R.array.class));
@@ -358,7 +357,7 @@ public class DrawArrowsView extends ImageView {
         // sets style of angle check indicator
         paint_angle_check.setStyle(Paint.Style.FILL);
         paint_angle_check.setStrokeWidth(dpToPx(6));
-        paint_angle_check.setColor(Color.RED);
+        paint_angle_check.setColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
         paint_angle_check.setStyle(Paint.Style.STROKE);
         paint_angle_check.setStrokeCap(Paint.Cap.ROUND);
 
@@ -373,7 +372,7 @@ public class DrawArrowsView extends ImageView {
         // sets style of arrow if placed at correct location
         paint_arrow_correct_location.setStyle(Paint.Style.FILL);
         paint_arrow_correct_location.setStrokeWidth(dpToPx(6));
-        paint_arrow_correct_location.setColor(Color.BLUE);
+        paint_arrow_correct_location.setColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
         paint_arrow_correct_location.setStyle(Paint.Style.STROKE);
         paint_arrow_correct_location.setStrokeCap(Paint.Cap.ROUND);
 
@@ -396,7 +395,7 @@ public class DrawArrowsView extends ImageView {
         // toggles visibility of boxes around arrow heads - this value can be changed in menu in app
         boolean arrowBoxesToggle = SP.getBoolean("arrowBoxesToggle", false);
         if (arrowBoxesToggle) {
-            paint_arrow_head_box.setColor(Color.GREEN);
+            paint_arrow_head_box.setColor(ContextCompat.getColor(getContext(), R.color.colorPrimaryGreen));
         } else {
             paint_arrow_head_box.setColor(Color.TRANSPARENT);
         }
@@ -1108,7 +1107,7 @@ public class DrawArrowsView extends ImageView {
             snackbarText.append("");
             int boldStart = snackbarText.length();
             snackbarText.append("Wrong Direction");
-            snackbarText.setSpan(new ForegroundColorSpan(Color.RED), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            snackbarText.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getContext(), R.color.colorAccent)), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             snackbarText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             snackbarText.append(" - Try again");
 //            Snackbar.make(this, snackbarText, Snackbar.LENGTH_SHORT).show();
