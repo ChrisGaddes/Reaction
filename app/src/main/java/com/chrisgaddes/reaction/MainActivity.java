@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity { // implements View.OnTouch
                 tinydb.putInt("problem_number", problem_number);
                 tinydb.putString("part_letter", part_letter);
 
-                Intent intent = new Intent(MainActivity.this, ThirdActivity.class);
+                Intent intent = new Intent(MainActivity.this, SecondActivity.class);
                 startActivity(intent);
             }
         });
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity { // implements View.OnTouch
                 tinydb.putInt("problem_number", problem_number);
                 tinydb.putString("part_letter", part_letter);
 
-                Intent intent = new Intent(MainActivity.this, ThirdActivity.class);
+                Intent intent = new Intent(MainActivity.this, SecondActivity.class);
                 startActivity(intent);
             }
         });
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity { // implements View.OnTouch
                 tinydb.putInt("problem_number", problem_number);
                 tinydb.putString("part_letter", part_letter);
 
-                Intent intent = new Intent(MainActivity.this, ThirdActivity.class);
+                Intent intent = new Intent(MainActivity.this, SecondActivity.class);
                 startActivity(intent);
             }
         });

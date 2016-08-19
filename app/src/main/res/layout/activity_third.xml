@@ -1,164 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-
-<com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:sothree="http://schemas.android.com/tools"
-    android:id="@+id/sliding_layout"
+    android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="bottom"
-    sothree:umanoPanelHeight="68dp"
-    sothree:umanoShadowHeight="4dp">
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/btn_check_done"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="20dp"
+        android:src="@drawable/ic_check"
+        app:elevation="4dp"
+        app:fabSize="normal" />
+
+    <Button
+        android:id="@+id/btn_peek"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|bottom" />
+
+    <com.chrisgaddes.reaction.DrawArrowsView
+        android:id="@+id/idDrawArrowsView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="end|bottom"
+        android:background="@color/material_green_50"
+        android:clipChildren="false" />
+
 
     <RelativeLayout
-        android:id="@+id/content_container"
+        android:id="@+id/id_third_activity"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="top">
 
 
-        <!--<Button-->
-        <!--android:id="@+id/btn_change_color"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:layout_alignParentTop="true"-->
-        <!--android:text="Change Color"-->
-        <!--android:textAllCaps="false" />-->
-
-        <com.chrisgaddes.reaction.DrawArrowsView
-            android:id="@+id/idDrawArrowsView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="130dp"
-            android:clipChildren="true"
-            android:background="@color/material_green_50" />
-
-        <TextView
-            android:id="@+id/tv_part_letter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="20dp"
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/tv_part_statement"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_part_letter"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="10dp" />
-
-
-
-        <!--<ImageView-->
-        <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
-        <!--android:id="@+id/problem7"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:adjustViewBounds="true"-->
-        <!--app:srcCompat="@drawable/fbd_2"-->
-        />
-
-
-        <android.support.design.widget.CoordinatorLayout
-            android:id="@+id/coordinatorLayout"
+        <ScrollView
+            android:id="@+id/scrollView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="100dp"
+            android:layout_alignParentTop="true">
 
-
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/btn_check_done"
+            <TextView
+                android:id="@+id/tv_problem_statement"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end|bottom"
-                android:layout_margin="16dp"
-                android:src="@drawable/ic_check"
-                app:elevation="4dp"
-                app:fabSize="normal" />
-
-        </android.support.design.widget.CoordinatorLayout>
+                android:layout_margin="20dp" />
+        </ScrollView>
 
 
     </RelativeLayout>
 
-    <!--<android.support.v7.widget.Toolbar-->
-    <!--android:id="@+id/toolbar"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:background="@color/colorPrimary" />-->
-
-    <RelativeLayout
-        android:id="@+id/panel"
+    <ImageView
+        android:id="@+id/IV_peek"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/material_light_white"
-        android:clipToPadding="false">
+        android:src="@color/white"
+        android:alpha="0.0" />
 
-        <ImageView
-            android:id="@+id/rectangle"
-            android:layout_width="match_parent"
-            android:layout_height="158dp"
-            android:elevation="6dp"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/shadow_rect"
-            android:src="@color/material_light_white"
-            android:clipToPadding="false" />
+</android.support.design.widget.CoordinatorLayout>
 
-        <TextView
-            android:id="@+id/text_swipe_down"
-            android:layout_width="match_parent"
-            android:layout_height="68dp"
-            android:textSize="20sp"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentTop="true"
-            android:gravity="center"
-            android:elevation="6dp" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_keyboard_arrow_up"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentTop="true"
-            android:elevation="6dp" />
 
-        <TextView
-            android:id="@+id/tv_problem_number"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="20dp"
-            android:textSize="20sp"
-            android:elevation="6dp" />
-
-        <TextView
-            android:id="@+id/tv_problem_statement"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_problem_number"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="20dp"
-            android:elevation="6dp" />
-
-        <ImageView
-            android:id="@+id/problem"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            app:srcCompat="@drawable/fbd_2"
-            android:layout_below="@id/rectangle" />
-
-        <!--android:tint="@color/colorAccent"-->
-
-    </RelativeLayout>
-
-</com.sothree.slidinguppanel.SlidingUpPanelLayout>

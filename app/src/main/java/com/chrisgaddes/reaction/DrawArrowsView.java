@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
@@ -17,6 +18,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
@@ -25,17 +27,12 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
-import com.github.javiersantos.materialstyleddialogs.enums.Style;
 import com.udojava.evalex.Expression;
 
 import java.lang.reflect.Field;
@@ -46,6 +43,8 @@ import java.util.List;
 public class DrawArrowsView extends ImageView {
 
     private static final String TAG = "ThirdActivity";
+
+    final FloatingActionButton btn_check_done;
 
     final double pi = Math.PI;
 
@@ -183,6 +182,8 @@ public class DrawArrowsView extends ImageView {
     public DrawArrowsView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
+        btn_check_done = (FloatingActionButton) findViewById(R.id.btn_check_done);
+
         // TODO replace depreciated "getDrawable" with something else
         mFocusedImage = context.getResources().getDrawable(R.drawable.fbd_2_bar);
         mGrayedImage = context.getResources().getDrawable(R.drawable.fbd_2_greyed);
@@ -231,7 +232,7 @@ public class DrawArrowsView extends ImageView {
         // set dimensions of moments
         dim_moment_radius = dpToPx(30);
         len_arrow_shaft_spring = dpToPx(7);
-        len_arrow_head = dpToPx(19);
+        len_arrow_head = dpToPx(19); //TODO: Consider not using dp on arrows to prevent them from getting stuck if they overlap
         dim_btn_radius = dpToPx(4);
         dim_btn_radius_buffer = dpToPx(19);
 
@@ -245,24 +246,19 @@ public class DrawArrowsView extends ImageView {
         // this method sets the location of the points
         // TODO: import these from database
 
-        SetButtonPoints_RunAlready = true;
-        match = false;
-
-        // set node locations - touch "button" zones will be placed in boxes around these nodes
-        PointF pointOne = new PointF((float) 18, (float) 31.5);
-        PointF pointTwo = new PointF((float) 18, (float) 62.1);
-        PointF pointThree = new PointF((float) 53.5, (float) 62.1);
-        PointF pointFour = new PointF((float) 87.55, (float) 62.1);
-
-        // pointList.add(percentToPx(pointOne));
-        pointList.add(percentToPx(pointTwo));
-        pointList.add(percentToPx(pointThree));
-        pointList.add(percentToPx(pointFour));
+//
+//        // set node locations - touch "button" zones will be placed in boxes around these nodes
+//        PointF pointOne = new PointF((float) 18, (float) 31.5);
+//        PointF pointTwo = new PointF((float) 18, (float) 62.1);
+//        PointF pointThree = new PointF((float) 53.5, (float) 62.1);
+//        PointF pointFour = new PointF((float) 87.55, (float) 62.1);
+//
+//        // pointList.add(percentToPx(pointOne));
+//        pointList.add(percentToPx(pointTwo));
+//        pointList.add(percentToPx(pointThree));
+//        pointList.add(percentToPx(pointFour));
 
         // create Rects from pointList to create buttons at nodes
-        for (Point g : pointList) {
-            rectListButtons.add(new Rect(g.x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), g.y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), g.x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), g.y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
-        }
 
         loadArrowCheckLocations();
     }
@@ -272,7 +268,11 @@ public class DrawArrowsView extends ImageView {
         int problem_number = tinydb.getInt("problem_number");
         String part_letter = tinydb.getString("part_letter");
 
-        for (int btn = 0; btn < 3; btn++) {  // TODO remove hardcoded 3 here
+        String str_number_of_buttons = "number_of_buttons_" + "prob" + problem_number + "_part" + part_letter;
+        String[] mnumberOfButtons = getResources().getStringArray(getResId(str_number_of_buttons, R.array.class));
+        int number_of_buttons = Integer.parseInt(mnumberOfButtons[0]);
+
+        for (int btn = 0; btn < number_of_buttons; btn++) {
 
             checkMatrix.add(new ArrayList<List<Double>>());
 
@@ -283,11 +283,20 @@ public class DrawArrowsView extends ImageView {
             checkMatrix.get(btn).add(new ArrayList<Double>());
             checkMatrix.get(btn).add(new ArrayList<Double>());
 
-            for (int c = 0; c < 4; c++) { // TODO remove hardcoded 5 here
 
+            String str_locationButton = "location_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
+            String[] mlocationButton = getResources().getStringArray(getResId(str_locationButton, R.array.class));
+
+
+            PointF pointToAdd = new PointF(Float.parseFloat(mlocationButton[0]), Float.parseFloat(mlocationButton[1]));
+            pointList.add(percentToPx(pointToAdd));
+
+            for (int c = 0; c < 4; c++) { // TODO remove hardcoded 5 here
 
                 //TODO: set so that sharedpreference rows only import once
 
+
+                String str_mangleRow = "mangleRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
                 String str_angleRow = "angleRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
                 String str_usedRow = "usedRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
                 String str_forceAngleRow = "forceAngleRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
@@ -328,10 +337,12 @@ public class DrawArrowsView extends ImageView {
             }
         }
 
+        SetButtonPoints_RunAlready = true;
+        match = false;
 
-//        tinydb.putListString("str_angleRow", );
-
-
+        for (Point g : pointList) {
+            rectListButtons.add(new Rect(g.x - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), g.y - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), g.x + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), g.y + ((int) dim_btn_radius + (int) dim_btn_radius_buffer)));
+        }
     }
 
     /**
@@ -871,40 +882,59 @@ public class DrawArrowsView extends ImageView {
         }
     }
 
-    public void runCheckIfFinished() {
+    public boolean runCheckIfFinished() {
         checkAllArrows();
 
+        int[][] states = new int[][]{
+                new int[]{android.R.attr.state_enabled}, // enabled
+                new int[]{-android.R.attr.state_enabled}, // disabled
+                new int[]{-android.R.attr.state_checked}, // unchecked
+                new int[]{android.R.attr.state_pressed}  // pressed
+        };
+
+        int[] colors = new int[]{
+                Color.GREEN,
+                Color.GREEN,
+                Color.GREEN,
+                Color.BLUE
+        };
+
+        ColorStateList myList = new ColorStateList(states, colors);
 
         if (allArrowsCorrect = checkIfFinished()) {
 //            Snackbar.make(this, "Finished!", Snackbar.LENGTH_SHORT).show();
-            showDialogArrowsCorrect();
+//            btn_check_done.setBackgroundTintList(myList);
+//            showDialogArrowsCorrect();
+            return true;
         } else {
             Snackbar.make(this, "Not Finished Yet...", Snackbar.LENGTH_SHORT).show();
-
-
-            tinydb.putInt("problem_number", hey + 1);
-            invalidate();
+            return false;
+//            invalidate();
 
         }
     }
 
-    // dialog that says arrows were placed correctly
-    private void showDialogArrowsCorrect() {
-        new MaterialStyledDialog(getContext())
-                .setTitle("Correct!")
-                .setDescription(R.string.str_all_arrows_placed_correctly)
-                .setIcon(R.drawable.ic_check)
-                .setStyle(Style.HEADER_WITH_ICON)
-
-                .setPositive(getResources().getString(R.string.str_next_problem), new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(MaterialDialog dialog, DialogAction which) {
-                        Log.d("MaterialStyledDialogs", "Do something!");
-                    }
-                })
-
-                .show();
-    }
+//    // dialog that says arrows were placed correctly
+//    private boolean showDialogArrowsCorrect() {
+//        new MaterialStyledDialog(getContext())
+//                .setTitle("Correct!")
+//                .setDescription(R.string.str_all_arrows_placed_correctly)
+//                .setIcon(R.drawable.ic_check)
+//                .setStyle(Style.HEADER_WITH_ICON)
+//
+//                .setPositive(getResources().getString(R.string.str_next_problem), new MaterialDialog.SingleButtonCallback() {
+//                    @Override
+//                    public void onClick(MaterialDialog dialog, DialogAction which) {
+//                        Log.d("MaterialStyledDialogs", "Do something!");
+//                        tinydb.putString("part_letter", "B");
+//                        Context context = getContext();
+//                        Intent i = new Intent(context, ThirdActivity.class);
+//                        context.startActivity(i);
+//                    }
+//                })
+//
+//                .show();
+//    }
 
 
     public boolean checkIfFinished() {
@@ -915,9 +945,9 @@ public class DrawArrowsView extends ImageView {
 
         int number_arrows = 0;
         for (int btn = 0; btn < rectListButtons.size(); btn++) {
-            for (int ang = 0; ang < rectListButtons.size(); ang++) {
+            for (int ang = 0; ang < 4; ang++) { // 4 is the number of correct arrows or moments allowed on a point
 
-                if (checkMatrix.get(btn).get(5).get(ang).equals(0.0)) {
+                if (checkMatrix.get(btn).get(5).get(ang).equals(0.0) && !checkMatrix.get(btn).get(0).get(ang).equals(100.0)) {
                     allArrowsCorrect = false;
                 }
 
@@ -963,9 +993,7 @@ public class DrawArrowsView extends ImageView {
 //                    .show();
 
 
-//            ThirdActivity mThirdActivity = new ThirdActivity();
 
-//            mThirdActivity.test1();
 
         }
 
