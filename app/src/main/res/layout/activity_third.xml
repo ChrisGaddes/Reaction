@@ -1,68 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/coordinatorLayout"
+    android:id="@+id/relativeLayout_Main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:clipToPadding="false"
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/btn_check_done"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:layout_margin="20dp"
-        android:src="@drawable/ic_check"
-        app:elevation="4dp"
-        app:fabSize="normal" />
+    android:outlineProvider="bounds">
 
-    <Button
-        android:id="@+id/btn_peek"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center|bottom" />
-
-    <com.chrisgaddes.reaction.DrawArrowsView
-        android:id="@+id/idDrawArrowsView"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="end|bottom"
-        android:background="@color/material_green_50"
-        android:clipChildren="false" />
+        android:elevation="8dp"
+        android:transitionGroup="false">
 
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            app:theme="@style/ToolBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:transitionGroup="false"
+            android:elevation="8dp" />
+    </android.support.design.widget.AppBarLayout>
 
-    <RelativeLayout
-        android:id="@+id/id_third_activity"
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/coordinatorLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="top">
+        android:layout_below="@id/appBarLayout"
+        android:background="@color/white"
+        android:clipToPadding="false"
 
+        android:outlineProvider="bounds">
 
-        <ScrollView
-            android:id="@+id/scrollView"
+        <ImageButton
+            android:id="@+id/btn_peek"
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:layout_alignParentTop="true">
+            android:layout_gravity="center|bottom"
+            android:src="@drawable/ic_visibility"
+            android:elevation="8dp"
+            android:background="@color/white" />
 
-            <TextView
-                android:id="@+id/tv_problem_statement"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="20dp" />
-        </ScrollView>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/btn_check_done"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="20dp"
+            android:src="@drawable/ic_check"
+            app:elevation="12dp"
+            app:fabSize="normal"
+            android:transitionGroup="false"
+            app:borderWidth="0dp" />
+
+        <com.chrisgaddes.reaction.DrawArrowsView
+            android:id="@+id/idDrawArrowsView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="end|bottom"
+            android:clipChildren="false" />
 
 
-    </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/id_third_activity"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="top"
+            android:clipToPadding="false"
 
-    <ImageView
-        android:id="@+id/IV_peek"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@color/white"
-        android:alpha="0.0" />
+            android:outlineProvider="bounds">
 
-</android.support.design.widget.CoordinatorLayout>
+            <ScrollView
+                android:id="@+id/scrollView"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_alignParentTop="true"
+                android:elevation="8dp">
+
+                <TextView
+                    android:id="@+id/tv_problem_statement"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dp" />
+            </ScrollView>
 
 
+        </RelativeLayout>
 
+        <ImageView
+            android:id="@+id/IV_peek"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.0"
+            android:src="@color/white"
+            android:elevation="20dp" />
+
+    </android.support.design.widget.CoordinatorLayout>
+
+
+</RelativeLayout>

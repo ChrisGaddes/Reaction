@@ -185,8 +185,8 @@ public class DrawArrowsView extends ImageView {
         btn_check_done = (FloatingActionButton) findViewById(R.id.btn_check_done);
 
         // TODO replace depreciated "getDrawable" with something else
-        mFocusedImage = context.getResources().getDrawable(R.drawable.fbd_2_bar);
-        mGrayedImage = context.getResources().getDrawable(R.drawable.fbd_2_greyed);
+        mFocusedImage = context.getResources().getDrawable(R.mipmap.beam_l_shape);
+        mGrayedImage = context.getResources().getDrawable(R.mipmap.beam_l_shape);
 
         pointList = new ArrayList<>();
         checkMatrix = new ArrayList<>();
@@ -1277,7 +1277,7 @@ public class DrawArrowsView extends ImageView {
     // This method keeps the aspect ration of the view constant. This is necessary since I am placing points on the canvas by percentage of the way across the view
     // code from https://github.com/jesperborgstrup/buzzingandroid/blob/master/src/com/buzzingandroid/ui/ViewAspectRatioMeasurer.java
     // The aspect ratio to be respected by the measurer
-    private static final double VIEW_ASPECT_RATIO = .75; // Do not change this or you will have to re place all the points at the corect location!!
+    private static final double VIEW_ASPECT_RATIO = 1; // Do not change this or you will have to re place all the points at the corect location!!
     private ViewAspectRatioMeasurer varm = new ViewAspectRatioMeasurer(VIEW_ASPECT_RATIO);
 
     public double convertRadToDegreeAndInvert(Double angle) {

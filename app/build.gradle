@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId "com.chrisgaddes.reaction"
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
@@ -42,6 +42,7 @@ dependencies {
     compile 'com.nikoyuwono:toolbar-panel:0.1.1'
     compile 'com.github.dadouf:SubAppBarPanel:v0.3.0'
     compile 'com.github.clans:fab:1.6.4'
+    compile 'com.pixplicity.sharp:library:1.0.2@aar'
 
 
     compile 'com.udojava:EvalEx:1.0'

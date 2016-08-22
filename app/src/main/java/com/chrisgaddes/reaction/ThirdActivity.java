@@ -1,22 +1,29 @@
 package com.chrisgaddes.reaction;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.ActionBar;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.transition.Explode;
+import android.transition.Fade;
+import android.transition.Slide;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -59,26 +66,35 @@ public class ThirdActivity extends AppCompatActivity {
     private String str_combined_title;
 
     public static FloatingActionButton btn_check_done;
-    private Button btn_peek;
+    private ImageButton btn_peek;
 
     public TinyDB tinydb;
     private int eventaction;
     private int X;
     private int Y;
-    private ActionBar actionBar;
-
+    private Toolbar toolbar;
+    private int mtoolbar;
+    private View decor;
 
 //    private Data data = new Data();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setupWindowAnimations();
         setContentView(R.layout.activity_third);
 
         context = getApplicationContext();
 
+        decor = getWindow().getDecorView();
+
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        setSupportActionBar(toolbar);
+
         btn_check_done = (FloatingActionButton) findViewById(R.id.btn_check_done);
-        btn_peek = (Button) findViewById(R.id.btn_peek);
+        btn_peek = (ImageButton) findViewById(R.id.btn_peek);
 
         IV_peek = (ImageView) findViewById(R.id.IV_peek);
 
@@ -110,9 +126,9 @@ public class ThirdActivity extends AppCompatActivity {
         tv_problem_statement = (TextView) this.findViewById(R.id.tv_problem_statement);
         tv_problem_statement.setText(str_problem_statement[0]);
 
-        actionBar = getSupportActionBar();
-        assert actionBar != null;
-        actionBar.setTitle(str_combined_title);
+//        toolbar = getSupportActionBar();
+//        assert toolbar != null;
+        getSupportActionBar().setTitle(str_combined_title);
 
         mDrawArrowsView = (DrawArrowsView) findViewById(R.id.idDrawArrowsView);
 
@@ -145,7 +161,7 @@ public class ThirdActivity extends AppCompatActivity {
 
                 switch (eventaction) {
                     case MotionEvent.ACTION_DOWN:
-                        actionBar.setTitle(str_problem_number);
+                        getSupportActionBar().setTitle(str_problem_number);
                         IV_peek.setAlpha((float) 1.0);
                         break;
 
@@ -154,7 +170,7 @@ public class ThirdActivity extends AppCompatActivity {
                         break;
 
                     case MotionEvent.ACTION_UP:
-                        actionBar.setTitle(str_combined_title);
+                        getSupportActionBar().setTitle(str_combined_title);
                         IV_peek.setAlpha((float) 0.0);
                         break;
                 }
@@ -180,6 +196,35 @@ public class ThirdActivity extends AppCompatActivity {
 //            }
 //        });
 
+    }
+
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void setupWindowAnimations() {
+        Slide slide = new Slide();
+        slide.setDuration(250);
+        slide.setSlideEdge(Gravity.RIGHT);
+
+        Fade fade = new Fade();
+        fade.setDuration(250);
+
+        Explode explode = new Explode();
+        explode.setDuration(250);
+
+////exclude toolbar
+//        explode.excludeTarget(R.id.toolbar, true);
+//exclude status bar
+        explode.excludeTarget(android.R.id.statusBarBackground, true);
+//exclude navigation bar
+        explode.excludeTarget(android.R.id.navigationBarBackground, true);
+//
+////        explode.excludeTarget(MainActivity), true);
+
+        getWindow();
+        getWindow().setEnterTransition(slide);
+        getWindow().setReturnTransition(explode);
+        getWindow().setAllowEnterTransitionOverlap(false);
+        getWindow().setAllowReturnTransitionOverlap(false);
     }
 
 //    public boolean onTouch(, MotionEvent event) {
@@ -220,18 +265,18 @@ public class ThirdActivity extends AppCompatActivity {
 
                         Intent intent = getIntent();
 
+                        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(ThirdActivity.this);
+
                         switch (part_letter) {
                             case "A":
                                 tinydb.putString("part_letter", "B");
-//                                part_letter = "B";
                                 finish();
-                                startActivity(intent);
+                                startActivity(intent, options.toBundle());
                                 break;
                             case "B":
                                 tinydb.putString("part_letter", "C");
-//                                part_letter = "C";
                                 finish();
-                                startActivity(intent);
+                                startActivity(intent, options.toBundle());
                                 break;
                             case "C":
                                 tinydb.putString("part_letter", "A");
@@ -239,8 +284,7 @@ public class ThirdActivity extends AppCompatActivity {
 //                                problem_number++;
                                 // TODO put logic in here so it knows how many problems there are
                                 tinydb.putInt("problem_number", problem_number++);
-                                Intent i = new Intent(getApplicationContext(), MainActivity.class);
-                                startActivity(i);
+                                startActivity(intent, options.toBundle());
                                 break;
                         }
 

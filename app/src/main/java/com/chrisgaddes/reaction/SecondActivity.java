@@ -1,18 +1,26 @@
 package com.chrisgaddes.reaction;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.transition.Explode;
+import android.transition.Fade;
+import android.transition.Slide;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -53,24 +61,41 @@ public class SecondActivity extends AppCompatActivity {
     private String str_part_letter;
     private String[] str_part_statement;
 
-    private Button btn_start_part;
+    private FloatingActionButton btn_start_part;
 
     public TinyDB tinydb;
+    public Context context;
+    private View decor;
 
+    private int mtoolbar;
+
+    private Toolbar toolbar;
+    private ImageView problem;
 
 //    private Data data = new Data();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+        setupWindowAnimations();
         setContentView(R.layout.activity_second);
 
-        btn_start_part = (Button) findViewById(R.id.btn_start_part);
 
+//        mtoolbar = getActionBar(getWindow().getDecorView());
+
+        decor = getWindow().getDecorView();
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        context = getApplicationContext();
+
+
+        btn_start_part = (FloatingActionButton) findViewById(R.id.btn_start_part);
 
         tinydb = new TinyDB(this);
-
-//        tinydb.putInt("problem_number", 9);
 
         problem_number = tinydb.getInt("problem_number");
         part_letter = tinydb.getString("part_letter");
@@ -83,6 +108,7 @@ public class SecondActivity extends AppCompatActivity {
 
 //        tv_part_letter = (TextView) findViewById(R.id.tv_part_letter);
 //        tv_part_letter.setText(str_part_letter);
+//        tv_part_letter.setText(str_part_letter);
 //
 //        tv_part_statement = (TextView) this.findViewById(R.id.tv_part_statement);
 //        tv_part_statement.setText(str_part_statement[0]);
@@ -93,9 +119,10 @@ public class SecondActivity extends AppCompatActivity {
         tv_problem_statement = (TextView) this.findViewById(R.id.tv_problem_statement2);
         tv_problem_statement.setText(str_problem_statement[0]);
 
-        ActionBar actionBar = getSupportActionBar();
-        assert actionBar != null;
-        actionBar.setTitle(str_problem_number);
+//        ActionBar actionBar = getSupportToolBar();
+//        assert actionBar != null;
+
+        getSupportActionBar().setTitle(str_problem_number);
 
         mDrawArrowsView = (DrawArrowsView) findViewById(R.id.idDrawArrowsView);
         view = (RelativeLayout) findViewById(R.id.id_2ndRelativeLayout);
@@ -115,10 +142,41 @@ public class SecondActivity extends AppCompatActivity {
 //                tinydb.putString("PeekImage", strPeekImage);
 
                 Intent intent = new Intent(getApplicationContext(), ThirdActivity.class);
-                startActivity(intent);
+
+                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(SecondActivity.this);
+                startActivity(intent, options.toBundle());
             }
         });
     }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void setupWindowAnimations() {
+        Slide slide = new Slide();
+        slide.setDuration(250);
+        slide.setSlideEdge(Gravity.RIGHT);
+
+        Fade fade = new Fade();
+        fade.setDuration(250);
+
+        Explode explode = new Explode();
+        explode.setDuration(250);
+
+////exclude toolbar
+//        explode.excludeTarget(R.id.toolbar, true);
+//exclude status bar
+        explode.excludeTarget(android.R.id.statusBarBackground, true);
+//exclude navigation bar
+        explode.excludeTarget(android.R.id.navigationBarBackground, true);
+//
+////        explode.excludeTarget(MainActivity), true);
+
+        getWindow();
+        getWindow().setEnterTransition(explode);
+        getWindow().setReturnTransition(explode);
+        getWindow().setAllowEnterTransitionOverlap(false);
+        getWindow().setAllowReturnTransitionOverlap(false);
+    }
+
 
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
@@ -128,11 +186,11 @@ public class SecondActivity extends AppCompatActivity {
 
             view.setDrawingCacheEnabled(true);
         view.buildDrawingCache();
-        Bitmap peekImage = view.getDrawingCache();
-
-
-        String strPeekImage = BitMapToString(peekImage);
-        tinydb.putString("PeekImage", strPeekImage);
+//        Bitmap peekImage = view.getDrawingCache();
+//
+//
+//        String strPeekImage = BitMapToString(peekImage);
+//        tinydb.putString("PeekImage", strPeekImage);
 
     }
 
@@ -216,6 +274,30 @@ public class SecondActivity extends AppCompatActivity {
             return null;
         }
     }
+
+    public ViewGroup getActionBar(View view) {
+        try {
+            if (view instanceof ViewGroup) {
+                ViewGroup viewGroup = (ViewGroup) view;
+
+                if (viewGroup instanceof android.support.v7.widget.Toolbar) {
+                    return viewGroup;
+                }
+
+                for (int i = 0; i < viewGroup.getChildCount(); i++) {
+                    ViewGroup actionBar = getActionBar(viewGroup.getChildAt(i));
+
+                    if (actionBar != null) {
+                        return actionBar;
+                    }
+                }
+            }
+        } catch (Exception e) {
+        }
+
+        return null;
+    }
+
 }
 
 

@@ -3,21 +3,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/material_red_50"
-    tools:context="com.chrisgaddes.reaction.SecondActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.chrisgaddes.reaction.SecondActivity"
+    android:id="@+id/id_2ndRelativeLayout">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        >
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            app:theme="@style/ToolBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize" />
+    </android.support.design.widget.AppBarLayout>
 
     <RelativeLayout
-        android:id="@+id/id_2ndRelativeLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/appBarLayout"
         android:layout_alignParentBottom="true"
+
         android:background="@color/white">
 
         <ImageView
+            android:id="@+id/problem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/material_green_50"
-            android:src="@drawable/fbd_2" />
+            android:src="@mipmap/lever_whole_problem"
+            android:layout_centerInParent="true" />
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -40,13 +57,27 @@
 
     </RelativeLayout>
 
-    <Button
+
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/btn_start_part"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
+        android:layout_alignParentBottom="true"
+
         android:layout_margin="20dp"
         android:layout_marginBottom="20dp"
-        android:src="@drawable/ic_check" />
+        android:layout_alignParentRight="true"
+        android:src="@drawable/ic_forward"
+        android:textAllCaps="false"
+        app:fab_colorNormal="@color/colorPrimaryGreen"
+        app:fab_colorRipple="@color/colorPrimaryDarkGreen"
+        android:transitionGroup="false" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        />
 
 </RelativeLayout>
