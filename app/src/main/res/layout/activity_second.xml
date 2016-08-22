@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.chrisgaddes.reaction.SecondActivity"
-    android:id="@+id/id_2ndRelativeLayout">
+    tools:context="com.chrisgaddes.reaction.SecondActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBarLayout"
@@ -27,13 +26,13 @@
         android:layout_below="@id/appBarLayout"
         android:layout_alignParentBottom="true"
 
-        android:background="@color/white">
+        android:background="@color/white"
+        android:id="@+id/id_2ndRelativeLayout">
 
         <ImageView
             android:id="@+id/problem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@mipmap/lever_whole_problem"
             android:layout_centerInParent="true" />
 
         <RelativeLayout

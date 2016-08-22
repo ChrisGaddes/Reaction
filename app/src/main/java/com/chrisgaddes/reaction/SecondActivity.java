@@ -70,7 +70,7 @@ public class SecondActivity extends AppCompatActivity {
     private int mtoolbar;
 
     private Toolbar toolbar;
-    private ImageView problem;
+    private ImageView IV_problem;
 
 //    private Data data = new Data();
 
@@ -95,6 +95,15 @@ public class SecondActivity extends AppCompatActivity {
 
         btn_start_part = (FloatingActionButton) findViewById(R.id.btn_start_part);
 
+        IV_problem = (ImageView) findViewById(R.id.problem);
+
+        String imageName = "picture";
+        int resID = getResources().getIdentifier("XXX", "drawable", getPackageName());
+        IV_problem.setImageResource(resID);
+
+        IV_problem.setImageResource(R.mipmap.lever_whole_problem);
+
+
         tinydb = new TinyDB(this);
 
         problem_number = tinydb.getInt("problem_number");
@@ -102,6 +111,7 @@ public class SecondActivity extends AppCompatActivity {
         str_part_letter = "Part " + part_letter;
 
         str_problem_number = "Problem #" + problem_number;
+
 
         str_problem_statement = getResources().getStringArray(getResId("mainProblemStatement_" + "prob" + problem_number + "_part" + part_letter, R.array.class));
         str_part_statement = getResources().getStringArray(getResId("problemStatement_" + "prob" + problem_number + "_part" + part_letter, R.array.class));
@@ -183,14 +193,13 @@ public class SecondActivity extends AppCompatActivity {
 
         if (hasFocus)
             // Saves layout to bitmap
-
             view.setDrawingCacheEnabled(true);
         view.buildDrawingCache();
-//        Bitmap peekImage = view.getDrawingCache();
+        Bitmap peekImage = view.getDrawingCache();
 //
 //
-//        String strPeekImage = BitMapToString(peekImage);
-//        tinydb.putString("PeekImage", strPeekImage);
+        String strPeekImage = BitMapToString(peekImage);
+        tinydb.putString("PeekImage", strPeekImage);
 
     }
 

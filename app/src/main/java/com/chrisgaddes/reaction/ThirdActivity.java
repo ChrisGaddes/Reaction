@@ -96,6 +96,8 @@ public class ThirdActivity extends AppCompatActivity {
         btn_check_done = (FloatingActionButton) findViewById(R.id.btn_check_done);
         btn_peek = (ImageButton) findViewById(R.id.btn_peek);
 
+//        IV_peek = context.getResources().getDrawable(R.mipmap.beam_l_shape);
+
         IV_peek = (ImageView) findViewById(R.id.IV_peek);
 
 
