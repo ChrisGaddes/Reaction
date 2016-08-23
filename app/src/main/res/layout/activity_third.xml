@@ -77,7 +77,7 @@
             <ImageButton
                 android:id="@+id/btn_peek"
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
+                android:layout_height="70dp"
                 android:src="@drawable/ic_visibility"
                 android:elevation="8dp"
                 android:background="@color/white"
@@ -105,7 +105,7 @@
             android:layout_height="match_parent"
             android:alpha="0.0"
             android:src="@color/white"
-            android:elevation="20dp" />
+            android:elevation="40dp" />
 
     </android.support.design.widget.CoordinatorLayout>
 

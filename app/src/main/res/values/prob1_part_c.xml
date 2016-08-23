@@ -18,46 +18,55 @@
 
     <!--Button Locations-->
     <string-array name="location_prob1_partC_btn0">
-        <item>18.0</item>
-        <item>62.1</item>
+        <item>50.744</item>
+        <item>69.934</item>
     </string-array>
-
     <string-array name="location_prob1_partC_btn1">
-        <item>53.5</item>
-        <item>62.1</item>
+        <item>253.72</item>
+        <item>54.106</item>
     </string-array>
-
     <string-array name="location_prob1_partC_btn2">
-        <item>87.55</item>
-        <item>62.1</item>
+        <item>27.55</item>
+        <item>3.086</item>
     </string-array>
-
     <string-array name="location_prob1_partC_btn3">
-        <item>18.0</item>
-        <item>32.1</item>
+        <item>23.286</item>
+        <item>28.596</item>
     </string-array>
-
     <string-array name="location_prob1_partC_btn4">
-        <item>36.0</item>
-        <item>62.1</item>
+        <item>3.086</item>
+        <item>54.106</item>
     </string-array>
-
     <string-array name="location_prob1_partC_btn5">
-        <item>70.5</item>
-        <item>62.1</item>
+        <item>37.05</item>
+        <item>62.34</item>
     </string-array>
-
     <string-array name="location_prob1_partC_btn6">
-        <item>53.5</item>
-        <item>47.0</item>
+        <item>3.086</item>
+        <item>28.596</item>
+    </string-array>
+    <string-array name="location_prob1_partC_btn7">
+        <item>0</item>
+        <item>0</item>
+    </string-array>
+    <string-array name="location_prob1_partC_btn8">
+        <item>0</item>
+        <item>0</item>
+    </string-array>
+    <string-array name="location_prob1_partC_btn9">
+        <item>0</item>
+        <item>0</item>
+    </string-array>
+    <string-array name="location_prob1_partC_btn10">
+        <item>0</item>
+        <item>0</item>
     </string-array>
 
-    <!--Correct angles-->
 
     <!--Button 0-->
     <string-array name="angleRow_prob1_partC_btn0">
-        <item>PI/2</item>
-        <item>PI</item>
+        <item>100.0</item>
+        <item>100.0</item>
         <item>100.0</item>
         <item>100.0</item>
     </string-array>
@@ -74,9 +83,9 @@
         <item>0.0</item>
     </string-array>
     <string-array name="oppositeAllowedRow_prob1_partC_btn0">
-        <item>1.0</item>
-        <item>1.0</item>
-        <item>1.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
         <item>0.0</item>
     </string-array>
     <string-array name="clockwiseRow_prob1_partC_btn0">
@@ -94,7 +103,7 @@
 
     <!--Button 1-->
     <string-array name="angleRow_prob1_partC_btn1">
-        <item>PI/2 </item>
+        <item>100.0</item>
         <item>100.0</item>
         <item>100.0</item>
         <item>100.0</item>
@@ -132,7 +141,7 @@
 
     <!--Button 2-->
     <string-array name="angleRow_prob1_partC_btn2">
-        <item>-5*PI/6</item>
+        <item>100.0</item>
         <item>100.0</item>
         <item>100.0</item>
         <item>100.0</item>
@@ -319,4 +328,157 @@
         <item>0.0</item>
         <item>0.0</item>
     </string-array>
+
+    <!--Button 7-->
+    <string-array name="angleRow_prob1_partC_btn7">
+        <item>100.0</item>
+        <item>100.0</item>
+        <item>100.0</item>
+        <item>100.0</item>
+    </string-array>
+    <string-array name="usedRow_prob1_partC_btn7">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
+    <string-array name="forceAngleRow_prob1_partC_btn7">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
+    <string-array name="oppositeAllowedRow_prob1_partC_btn7">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
+    <string-array name="clockwiseRow_prob1_partC_btn7">
+        <item>100.0</item>
+        <item>100.0</item>
+        <item>100.0</item>
+        <item>100.0</item>
+    </string-array>
+    <string-array name="finishedRow_prob1_partC_btn7">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
+
+    <!--Button 8-->
+    <string-array name="angleRow_prob1_partC_btn8">
+        <item>100.0</item>
+        <item>100.0</item>
+        <item>100.0</item>
+        <item>100.0</item>
+    </string-array>
+    <string-array name="usedRow_prob1_partC_btn8">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
+    <string-array name="forceAngleRow_prob1_partC_btn8">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
+    <string-array name="oppositeAllowedRow_prob1_partC_btn8">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
+    <string-array name="clockwiseRow_prob1_partC_btn8">
+        <item>100.0</item>
+        <item>100.0</item>
+        <item>100.0</item>
+        <item>100.0</item>
+    </string-array>
+    <string-array name="finishedRow_prob1_partC_btn8">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
+
+    <!--Button 9-->
+    <string-array name="angleRow_prob1_partC_btn9">
+        <item>100.0</item>
+        <item>100.0</item>
+        <item>100.0</item>
+        <item>100.0</item>
+    </string-array>
+    <string-array name="usedRow_prob1_partC_btn9">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
+    <string-array name="forceAngleRow_prob1_partC_btn9">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
+    <string-array name="oppositeAllowedRow_prob1_partC_btn9">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
+    <string-array name="clockwiseRow_prob1_partC_btn9">
+        <item>100.0</item>
+        <item>100.0</item>
+        <item>100.0</item>
+        <item>100.0</item>
+    </string-array>
+    <string-array name="finishedRow_prob1_partC_btn9">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
+
+    <!--Button 10-->
+    <string-array name="angleRow_prob1_partC_btn10">
+        <item>100.0</item>
+        <item>100.0</item>
+        <item>100.0</item>
+        <item>100.0</item>
+    </string-array>
+    <string-array name="usedRow_prob1_partC_btn10">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
+    <string-array name="forceAngleRow_prob1_partC_btn10">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
+    <string-array name="oppositeAllowedRow_prob1_partC_btn10">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
+    <string-array name="clockwiseRow_prob1_partC_btn10">
+        <item>100.0</item>
+        <item>100.0</item>
+        <item>100.0</item>
+        <item>100.0</item>
+    </string-array>
+    <string-array name="finishedRow_prob1_partC_btn10">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
+
 </resources>

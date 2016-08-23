@@ -104,7 +104,7 @@ public class ThirdActivity extends AppCompatActivity {
         part_letter = tinydb.getString("part_letter");
         str_part_letter = "Part " + part_letter;
 
-
+        str_part_statement = getResources().getStringArray(getResId("problemStatement_" + "prob" + problem_number + "_part" + part_letter, R.array.class));
         part_letter = part_letter.toLowerCase();
         // Generates strings from problem information
         str_problem_number = "Problem #" + problem_number;
@@ -115,11 +115,11 @@ public class ThirdActivity extends AppCompatActivity {
 
 //        // load problem statement and part statement TODO: Remove loading part statement from this activity
 //        str_problem_statement = getResources().getStringArray(getResId("mainProblemStatement_" + "prob" + problem_number + "_part" + part_letter, R.array.class));
-//        str_part_statement = getResources().getStringArray(getResId("problemStatement_" + "prob" + problem_number + "_part" + part_letter, R.array.class));
+
 
         // Sets text for problem statement
-//        tv_problem_statement = (TextView) this.findViewById(R.id.tv_problem_statement);
-//        tv_problem_statement.setText(str_problem_statement[0]);
+        tv_problem_statement = (TextView) this.findViewById(R.id.tv_problem_statement);
+        tv_problem_statement.setText(str_part_statement[0]);
 
         // Sets image for problem
         problem_part = (ImageView) findViewById(R.id.problem_part);
