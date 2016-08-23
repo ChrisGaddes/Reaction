@@ -81,6 +81,7 @@ public class SecondActivity extends AppCompatActivity {
         setupWindowAnimations();
         setContentView(R.layout.activity_second);
 
+
         context = getApplicationContext();
 
         // Sets database
@@ -104,12 +105,7 @@ public class SecondActivity extends AppCompatActivity {
         tv_problem_statement.setText(str_problem_statement[0]);
 
         // Sets image for problem
-
-
         IV_problem = (ImageView) findViewById(R.id.problem);
-//        IV_problem.setImageResource(resID);
-
-//        resID = getResources().getIdentifier(str_prob_file_name, "drawable", getPackageName());
         Glide.with(this)
                 .load(getResources().getIdentifier(str_prob_file_name, "drawable", getPackageName()))
                 .into(IV_problem);

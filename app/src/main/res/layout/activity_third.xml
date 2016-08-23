@@ -26,6 +26,7 @@
             android:elevation="8dp" />
     </android.support.design.widget.AppBarLayout>
 
+
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/coordinatorLayout"
         android:layout_width="match_parent"
@@ -36,14 +37,6 @@
 
         android:outlineProvider="bounds">
 
-        <ImageButton
-            android:id="@+id/btn_peek"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_gravity="center|bottom"
-            android:src="@drawable/ic_visibility"
-            android:elevation="8dp"
-            android:background="@color/white" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/btn_check_done"
@@ -56,14 +49,6 @@
             app:fabSize="normal"
             android:transitionGroup="false"
             app:borderWidth="0dp" />
-
-        <com.chrisgaddes.reaction.DrawArrowsView
-            android:id="@+id/idDrawArrowsView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_gravity="end|bottom"
-            android:clipChildren="false" />
 
 
         <RelativeLayout
@@ -89,6 +74,28 @@
                     android:layout_margin="20dp" />
             </ScrollView>
 
+            <ImageButton
+                android:id="@+id/btn_peek"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_visibility"
+                android:elevation="8dp"
+                android:background="@color/white"
+                android:layout_alignParentBottom="true" />
+
+            <com.chrisgaddes.reaction.SquareImageView
+                android:id="@+id/problem_part"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/scrollView"
+                android:clipChildren="false" />
+
+            <com.chrisgaddes.reaction.DrawArrowsView
+                android:id="@+id/idDrawArrowsView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/scrollView"
+                android:clipChildren="false" />
 
         </RelativeLayout>
 

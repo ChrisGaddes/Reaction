@@ -184,9 +184,16 @@ public class DrawArrowsView extends ImageView {
 
         btn_check_done = (FloatingActionButton) findViewById(R.id.btn_check_done);
 
+
+        // Sets image for problem
+//        IV_problem = (ImageView) findViewById(R.id.problem);
+//        Glide.with(this)
+//                .load(getResources().getIdentifier(str_prob_file_name, "drawable", getPackageName()))
+//                .into(mGrayedImage);
+
         // TODO replace depreciated "getDrawable" with something else
-        mFocusedImage = context.getResources().getDrawable(R.drawable.prob1);
-        mGrayedImage = context.getResources().getDrawable(R.drawable.prob1);
+//        mFocusedImage = context.getResources().getDrawable(R.drawable.prob1_parta);
+//        mGrayedImage = context.getResources().getDrawable(R.drawable.prob1_parta);
 
         pointList = new ArrayList<>();
         checkMatrix = new ArrayList<>();
@@ -469,11 +476,11 @@ public class DrawArrowsView extends ImageView {
          * Rect imageBounds = drawable.getBounds();
          */
         Rect imageBounds = canvas.getClipBounds();  // Adjust this for where you want it
-        mGrayedImage.setBounds(imageBounds);
-        mFocusedImage.setBounds(imageBounds);
+//        mGrayedImage.setBounds(imageBounds);
+//        mFocusedImage.setBounds(imageBounds);
 
-        mGrayedImage.draw(canvas);
-        mFocusedImage.draw(canvas);
+//        mGrayedImage.draw(canvas);
+//        mFocusedImage.draw(canvas);
 
         // draws rectangles around arrowheads
         for (Rect rect1 : rectListArrowHead) {

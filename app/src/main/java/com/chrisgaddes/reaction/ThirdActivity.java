@@ -30,6 +30,7 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.bumptech.glide.Glide;
 import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
 import com.github.javiersantos.materialstyleddialogs.enums.Style;
 
@@ -70,11 +71,11 @@ public class ThirdActivity extends AppCompatActivity {
 
     public TinyDB tinydb;
     private int eventaction;
-    private int X;
-    private int Y;
+
     private Toolbar toolbar;
-    private int mtoolbar;
-    private View decor;
+    private ImageView problem_part;
+    private String str_part_file_name;
+    private String str_prob_file_name;
 
 //    private Data data = new Data();
 
@@ -86,9 +87,6 @@ public class ThirdActivity extends AppCompatActivity {
 
         context = getApplicationContext();
 
-        decor = getWindow().getDecorView();
-
-
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
@@ -96,59 +94,54 @@ public class ThirdActivity extends AppCompatActivity {
         btn_check_done = (FloatingActionButton) findViewById(R.id.btn_check_done);
         btn_peek = (ImageButton) findViewById(R.id.btn_peek);
 
-//        IV_peek = context.getResources().getDrawable(R.mipmap.beam_l_shape);
-
         IV_peek = (ImageView) findViewById(R.id.IV_peek);
 
-
+        // Sets database
         tinydb = new TinyDB(this);
 
-//        tinydb.putInt("problem_number", 9);
-
+        // Loads problem information
         problem_number = tinydb.getInt("problem_number");
         part_letter = tinydb.getString("part_letter");
         str_part_letter = "Part " + part_letter;
 
+
+        part_letter = part_letter.toLowerCase();
+        // Generates strings from problem information
         str_problem_number = "Problem #" + problem_number;
+        str_part_file_name = "prob" + problem_number + "_part" + part_letter;
+        str_prob_file_name = "prob" + problem_number;
 
-        str_combined_title = str_problem_number + " - " + str_part_letter;
+//        str_combined_title = str_problem_number + " - " + str_part_letter;
 
-        str_problem_statement = getResources().getStringArray(getResId("mainProblemStatement_" + "prob" + problem_number + "_part" + part_letter, R.array.class));
-        str_part_statement = getResources().getStringArray(getResId("problemStatement_" + "prob" + problem_number + "_part" + part_letter, R.array.class));
+//        // load problem statement and part statement TODO: Remove loading part statement from this activity
+//        str_problem_statement = getResources().getStringArray(getResId("mainProblemStatement_" + "prob" + problem_number + "_part" + part_letter, R.array.class));
+//        str_part_statement = getResources().getStringArray(getResId("problemStatement_" + "prob" + problem_number + "_part" + part_letter, R.array.class));
 
-//        tv_part_letter = (TextView) findViewById(R.id.tv_part_letter);
-//        tv_part_letter.setText(str_part_letter);
-//
-//        tv_part_statement = (TextView) this.findViewById(R.id.tv_part_statement);
-//        tv_part_statement.setText(str_part_statement[0]);
+        // Sets text for problem statement
+//        tv_problem_statement = (TextView) this.findViewById(R.id.tv_problem_statement);
+//        tv_problem_statement.setText(str_problem_statement[0]);
 
-//        tv_problem_number = (TextView) findViewById(R.id.tv_problem_number);
-//        tv_problem_number.setText(str_problem_number);
+        // Sets image for problem
+        problem_part = (ImageView) findViewById(R.id.problem_part);
+        Glide.with(this)
+                .load(getResources().getIdentifier(str_part_file_name, "drawable", getPackageName()))
+                .into(problem_part);
 
-        tv_problem_statement = (TextView) this.findViewById(R.id.tv_problem_statement);
-        tv_problem_statement.setText(str_problem_statement[0]);
-
-//        toolbar = getSupportActionBar();
-//        assert toolbar != null;
         getSupportActionBar().setTitle(str_combined_title);
+
 
         mDrawArrowsView = (DrawArrowsView) findViewById(R.id.idDrawArrowsView);
 
-
         btn_check_done.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
-
                 boolean mrunCheckIfFinished = mDrawArrowsView.runCheckIfFinished();
                 if (mrunCheckIfFinished) {
                     showDialogArrowsCorrect();
                 } else {
 //                    Snackbar.make(this, "Not Finished Yet...", Snackbar.LENGTH_SHORT).show();
                 }
-
             }
         });
-
 
         String strPeekImage = tinydb.getString("PeekImage");
         Bitmap peekImage = StringToBitMap(strPeekImage);
