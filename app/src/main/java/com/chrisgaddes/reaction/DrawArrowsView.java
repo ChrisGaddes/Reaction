@@ -185,8 +185,8 @@ public class DrawArrowsView extends ImageView {
         btn_check_done = (FloatingActionButton) findViewById(R.id.btn_check_done);
 
         // TODO replace depreciated "getDrawable" with something else
-        mFocusedImage = context.getResources().getDrawable(R.mipmap.beam_l_shape);
-        mGrayedImage = context.getResources().getDrawable(R.mipmap.beam_l_shape);
+        mFocusedImage = context.getResources().getDrawable(R.drawable.prob1);
+        mGrayedImage = context.getResources().getDrawable(R.drawable.prob1);
 
         pointList = new ArrayList<>();
         checkMatrix = new ArrayList<>();

@@ -43,6 +43,7 @@ dependencies {
     compile 'com.github.dadouf:SubAppBarPanel:v0.3.0'
     compile 'com.github.clans:fab:1.6.4'
     compile 'com.pixplicity.sharp:library:1.0.2@aar'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
 
 
     compile 'com.udojava:EvalEx:1.0'

@@ -28,6 +28,7 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.bumptech.glide.Glide;
 import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
 import com.github.javiersantos.materialstyleddialogs.enums.Style;
 
@@ -54,6 +55,7 @@ public class SecondActivity extends AppCompatActivity {
     private TextView tv_part_statement;
 
     private int problem_number;
+    private String str_prob_file_name;
     private String part_letter;
 
     private String str_problem_number;
@@ -65,12 +67,10 @@ public class SecondActivity extends AppCompatActivity {
 
     public TinyDB tinydb;
     public Context context;
-    private View decor;
-
-    private int mtoolbar;
 
     private Toolbar toolbar;
     private ImageView IV_problem;
+    private int resID;
 
 //    private Data data = new Data();
 
@@ -78,79 +78,56 @@ public class SecondActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         setupWindowAnimations();
         setContentView(R.layout.activity_second);
 
-
-//        mtoolbar = getActionBar(getWindow().getDecorView());
-
-        decor = getWindow().getDecorView();
-
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
         context = getApplicationContext();
 
-
-        btn_start_part = (FloatingActionButton) findViewById(R.id.btn_start_part);
-
-        IV_problem = (ImageView) findViewById(R.id.problem);
-
-        String imageName = "picture";
-        int resID = getResources().getIdentifier("XXX", "drawable", getPackageName());
-        IV_problem.setImageResource(resID);
-
-        IV_problem.setImageResource(R.mipmap.lever_whole_problem);
-
-
+        // Sets database
         tinydb = new TinyDB(this);
 
+        // Loads problem information
         problem_number = tinydb.getInt("problem_number");
         part_letter = tinydb.getString("part_letter");
         str_part_letter = "Part " + part_letter;
 
+        // Generates strings from problem information
         str_problem_number = "Problem #" + problem_number;
+        str_prob_file_name = "prob" + problem_number;
 
-
+        // load problem statement and part statement TODO: Remove loading part statement from this activity
         str_problem_statement = getResources().getStringArray(getResId("mainProblemStatement_" + "prob" + problem_number + "_part" + part_letter, R.array.class));
         str_part_statement = getResources().getStringArray(getResId("problemStatement_" + "prob" + problem_number + "_part" + part_letter, R.array.class));
 
-//        tv_part_letter = (TextView) findViewById(R.id.tv_part_letter);
-//        tv_part_letter.setText(str_part_letter);
-//        tv_part_letter.setText(str_part_letter);
-//
-//        tv_part_statement = (TextView) this.findViewById(R.id.tv_part_statement);
-//        tv_part_statement.setText(str_part_statement[0]);
-
-//        tv_problem_number = (TextView) findViewById(R.id.tv_problem_number);
-//        tv_problem_number.setText(str_problem_number);
-
+        // Sets text for problem statement
         tv_problem_statement = (TextView) this.findViewById(R.id.tv_problem_statement2);
         tv_problem_statement.setText(str_problem_statement[0]);
 
-//        ActionBar actionBar = getSupportToolBar();
-//        assert actionBar != null;
+        // Sets image for problem
 
-        getSupportActionBar().setTitle(str_problem_number);
 
+        IV_problem = (ImageView) findViewById(R.id.problem);
+//        IV_problem.setImageResource(resID);
+
+//        resID = getResources().getIdentifier(str_prob_file_name, "drawable", getPackageName());
+        Glide.with(this)
+                .load(getResources().getIdentifier(str_prob_file_name, "drawable", getPackageName()))
+                .into(IV_problem);
+
+
+        // Loads views
         mDrawArrowsView = (DrawArrowsView) findViewById(R.id.idDrawArrowsView);
         view = (RelativeLayout) findViewById(R.id.id_2ndRelativeLayout);
 
+        // Sets toolbar title
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(str_problem_number);
 
+        // Sets listener on start button
+        btn_start_part = (FloatingActionButton) findViewById(R.id.btn_start_part);
         btn_start_part.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
-//                // Saves layout to bitmap
-//                RelativeLayout view = (RelativeLayout)findViewById(R.id.id_2ndRelativeLayout);
-//                view.setDrawingCacheEnabled(true);
-//                view.buildDrawingCache();
-//                Bitmap peekImage = view.getDrawingCache();
-//
-//
-//                String strPeekImage = BitMapToString(peekImage);
-//                tinydb.putString("PeekImage", strPeekImage);
-
                 Intent intent = new Intent(getApplicationContext(), ThirdActivity.class);
 
                 ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(SecondActivity.this);
@@ -171,6 +148,8 @@ public class SecondActivity extends AppCompatActivity {
         Explode explode = new Explode();
         explode.setDuration(250);
 
+
+        // TODO remove this stuff if it doesn't do anything
 ////exclude toolbar
 //        explode.excludeTarget(R.id.toolbar, true);
 //exclude status bar

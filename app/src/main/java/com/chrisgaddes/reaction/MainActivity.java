@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                 ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this);
-                Intent intent = new Intent(MainActivity.this, ThirdActivity.class);
+                Intent intent = new Intent(MainActivity.this, SecondActivity.class);
                 startActivity(intent, options.toBundle());
             }
         });
