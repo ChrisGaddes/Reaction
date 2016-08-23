@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -71,6 +72,7 @@ public class SecondActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private ImageView IV_problem;
     private int resID;
+    private ProgressBar progressBar;
 
 //    private Data data = new Data();
 

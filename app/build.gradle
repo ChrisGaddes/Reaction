@@ -1,14 +1,10 @@
 apply plugin: 'com.android.application'
-apply plugin: 'realm-android'
+//apply plugin: 'realm-android'
 
 
 android {
     compileSdkVersion 24
     buildToolsVersion "24.0.0"
-
-    dataBinding {
-        enabled = true
-    }
 
     defaultConfig {
         applicationId "com.chrisgaddes.reaction"
@@ -52,13 +48,13 @@ dependencies {
 
     //Facebook SDK
     //Google Play Services
-    compile 'com.google.android.gms:play-services:9.4.0'
-    compile 'com.google.android.gms:play-services-analytics:9.4.0'
+//    compile 'com.google.android.gms:play-services:9.4.0'
+//    compile 'com.google.android.gms:play-services-analytics:9.4.0'
     //GSON library
-    compile 'com.google.code.gson:gson:2.4'
+//    compile 'com.google.code.gson:gson:2.4'
     compile 'com.heinrichreimersoftware:material-intro:1.5.5'
-    compile 'com.strongloop:loopback-sdk-android:1.5.2'
-    compile 'com.readystatesoftware.sqliteasset:sqliteassethelper:2.0.1'
+//    compile 'com.strongloop:loopback-sdk-android:1.5.2'
+//    compile 'com.readystatesoftware.sqliteasset:sqliteassethelper:2.0.1'
 }
 
-apply plugin: 'com.google.gms.google-services'
+//apply plugin: 'com.google.gms.google-services'

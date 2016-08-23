@@ -34,6 +34,13 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true" />
 
+        <!--<ProgressBar-->
+        <!--android:id="@+id/progress"-->
+        <!--android:visibility="visible"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="100dp"-->
+        <!--android:layout_centerInParent="true"/>-->
+
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
@@ -55,14 +62,11 @@
 
     </RelativeLayout>
 
-
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/btn_start_part"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
         android:layout_alignParentBottom="true"
-
         android:layout_margin="20dp"
         android:layout_marginBottom="20dp"
         android:layout_alignParentRight="true"
@@ -70,11 +74,10 @@
         android:textAllCaps="false"
         app:fab_colorNormal="@color/colorPrimaryGreen"
         app:fab_colorRipple="@color/colorPrimaryDarkGreen"
-        android:transitionGroup="false" />
+        android:transitionGroup="false"
+        app:fab_hideAnimation="@anim/fab_slide_in_from_left"
+        app:fab_showAnimation="@anim/fab_slide_out_to_right"
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
 
         />
 

@@ -41,18 +41,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DrawArrowsView extends ImageView {
-
     private static final String TAG = "ThirdActivity";
 
     final FloatingActionButton btn_check_done;
-
     final double pi = Math.PI;
 
     //double angles[] = {-pi, -3 * pi / 4, -pi / 2, -pi / 4, 0, pi / 4, pi / 2, 3 * pi / 4, pi};
     final double[] angles = {-pi, -5 * pi / 6, -2 * pi / 3, -pi / 2, -pi / 3, -pi / 6, 0, pi / 6, pi / 3, pi / 2, 2 * pi / 3, 5 * pi / 6, pi, 2 * pi};
 
     // Declare variables
-
     // TODO: Add descriptions of what each member variable is used for
     /**
      * Description for what paint_points does...

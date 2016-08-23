@@ -143,7 +143,7 @@
 
     <!--Button 2-->
     <string-array name="angleRow_prob1_partB_btn2">
-        <item>100.0</item>
+        <item>5*PI/6</item>
         <item>100.0</item>
         <item>100.0</item>
         <item>100.0</item>
@@ -161,7 +161,7 @@
         <item>0.0</item>
     </string-array>
     <string-array name="oppositeAllowedRow_prob1_partB_btn2">
-        <item>0.0</item>
+        <item>1.0</item>
         <item>0.0</item>
         <item>0.0</item>
         <item>0.0</item>
@@ -295,7 +295,7 @@
 
     <!--Button 6-->
     <string-array name="angleRow_prob1_partB_btn6">
-        <item>100.0</item>
+        <item>5*PI/6</item>
         <item>100.0</item>
         <item>100.0</item>
         <item>100.0</item>
@@ -313,7 +313,7 @@
         <item>0.0</item>
     </string-array>
     <string-array name="oppositeAllowedRow_prob1_partB_btn6">
-        <item>0.0</item>
+        <item>1.0</item>
         <item>0.0</item>
         <item>0.0</item>
         <item>0.0</item>

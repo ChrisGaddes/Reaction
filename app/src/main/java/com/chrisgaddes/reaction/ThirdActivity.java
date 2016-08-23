@@ -92,7 +92,7 @@ public class ThirdActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         btn_check_done = (FloatingActionButton) findViewById(R.id.btn_check_done);
-        btn_peek = (ImageButton) findViewById(R.id.btn_peek);
+        btn_peek = (ImageButton) findViewById(R.id.btn_peek_main_prob);
 
         IV_peek = (ImageView) findViewById(R.id.IV_peek);
 
@@ -143,8 +143,9 @@ public class ThirdActivity extends AppCompatActivity {
             }
         });
 
+
         String strPeekImage = tinydb.getString("PeekImage");
-        Bitmap peekImage = StringToBitMap(strPeekImage);
+        peekImage = StringToBitMap(strPeekImage);
         IV_peek.setImageBitmap(peekImage);
 
         btn_peek.setOnTouchListener(new View.OnTouchListener() {
@@ -262,7 +263,7 @@ public class ThirdActivity extends AppCompatActivity {
 
                         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(ThirdActivity.this);
 
-                        switch (part_letter) {
+                        switch (part_letter.toUpperCase()) {
                             case "A":
                                 tinydb.putString("part_letter", "B");
                                 finish();
