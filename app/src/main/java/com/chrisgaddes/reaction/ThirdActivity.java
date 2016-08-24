@@ -18,16 +18,11 @@ import android.transition.Fade;
 import android.transition.Slide;
 import android.util.Base64;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
+import android.view.*;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
@@ -223,29 +218,6 @@ public class ThirdActivity extends AppCompatActivity {
         getWindow().setAllowReturnTransitionOverlap(false);
     }
 
-//    public boolean onTouch(, MotionEvent event) {
-//        eventaction = event.getAction();
-//
-//        switch (eventaction) {
-//            case MotionEvent.ACTION_DOWN:
-//                String strPeekImage = tinydb.getString("PeekImage");
-//
-//                Bitmap peekImage = StringToBitMap(strPeekImage);
-//                IV_peek.setAlpha((float) 1.0);
-//                IV_peek.setImageBitmap(peekImage);
-//                break;
-//
-//            case MotionEvent.ACTION_MOVE:
-////                onActionMove();
-//                break;
-//
-//            case MotionEvent.ACTION_UP:
-//                IV_peek.setAlpha((float) 0.0);
-//                break;
-//        }
-//        return true;
-//    }
-
 
     private void showDialogArrowsCorrect() {
         new MaterialStyledDialog(this)
@@ -283,33 +255,6 @@ public class ThirdActivity extends AppCompatActivity {
                                 startActivity(intent, options.toBundle());
                                 break;
                         }
-
-//                        switch (part_letter) {
-//
-//                            case "A":
-//                                tinydb.putString("part_letter", "B");
-//                                finish();
-//                                startActivity(intent);
-//                            case "B":
-//                                tinydb.putString("part_letter", "C");
-//                                finish();
-//                                startActivity(intent);
-//                            case "C":
-//                                tinydb.putString("part_letter", "A");
-////                                problem_number++;
-//                                // TODO put logic in here so it knows how many problems there are
-//                                tinydb.putInt("problem_number", problem_number++);
-//                                Intent i = new Intent(getApplicationContext(), SecondActivity.class);
-//                                startActivity(i);
-//                        }
-
-
-//                        Context context = getApplicationContext();
-//                        Intent l = new Intent(context, ThirdActivity.class);
-//                        startActivity(l);
-
-//                        Intent i = new Intent(getApplicationContext(), ThirdActivity.class);
-//                        startActivity(i);
 
                     }
                 })
