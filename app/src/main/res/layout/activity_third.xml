@@ -5,7 +5,7 @@
     android:id="@+id/relativeLayout_Main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/material_light_white"
     android:clipToPadding="false"
 
     android:outlineProvider="bounds">
@@ -32,7 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/appBarLayout"
-        android:background="@color/white"
+        android:background="@color/material_light_white"
         android:clipToPadding="false"
 
         android:outlineProvider="bounds">
@@ -86,7 +86,7 @@
                     android:layout_height="70dp"
                     android:src="@drawable/ic_visibility"
                     android:elevation="8dp"
-                    android:background="@color/white"
+                    android:background="@color/material_light_white"
                     android:layout_alignParentBottom="true"
                     android:layout_weight=".3" />
 
@@ -96,7 +96,7 @@
                     android:layout_height="70dp"
                     android:src="@drawable/ic_visibility"
                     android:elevation="8dp"
-                    android:background="@color/white"
+                    android:background="@color/material_light_white"
                     android:layout_alignParentBottom="true"
                     android:layout_weight=".3" />/>
 
@@ -106,7 +106,7 @@
                     android:layout_height="70dp"
                     android:src="@drawable/ic_visibility"
                     android:elevation="8dp"
-                    android:background="@color/white"
+                    android:background="@color/material_light_white"
                     android:layout_alignParentBottom="true"
                     android:layout_weight=".3" />/>
 
@@ -115,7 +115,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="70dp"
                     android:elevation="8dp"
-                    android:background="@color/white"
                     android:layout_alignParentBottom="true"
                     android:layout_weight=".3" />/>
 
@@ -143,7 +142,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:alpha="0.0"
-            android:src="@color/white"
             android:elevation="40dp" />
 
     </android.support.design.widget.CoordinatorLayout>

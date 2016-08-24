@@ -25,7 +25,7 @@
         android:layout_below="@id/appBarLayout"
         android:layout_alignParentBottom="true"
 
-        android:background="@color/white"
+        android:background="@color/material_light_white"
         android:id="@+id/id_2ndRelativeLayout">
 
         <ImageView

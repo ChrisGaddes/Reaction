@@ -6,7 +6,15 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.DashPathEffect;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.Point;
+import android.graphics.PointF;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -24,6 +32,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.Toast;
+
 import com.udojava.evalex.Expression;
 
 import java.lang.reflect.Field;
@@ -511,9 +520,11 @@ public class DrawArrowsView extends ImageView {
             canvas.drawRect(rect1, paint_arrow_head_box);
         }
 
-        x_b = 1300;
-        y_b = 130;
+        x_b = (int) dim_btn_radius * 2;
+        y_b = (int) dim_btn_radius * 2;
 
+
+        // TODO remove in final build
         rectDone = new Rect(x_b - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), y_b - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), x_b + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), y_b + ((int) dim_btn_radius + (int) dim_btn_radius_buffer));
 
 
@@ -1010,7 +1021,7 @@ public class DrawArrowsView extends ImageView {
 //            if (allArrowsCorrect = checkIfFinished()) {
 //                Snackbar.make(this, "Finished!", Snackbar.LENGTH_SHORT).show();
 //            } else {
-//                Snackbar.make(this, "Not Finished Yet...", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(this, "Not Finished Yet...", Snackbar.LENGTH_SHORT).show();
 //            }
 //
 //            new MaterialIntroView.Builder(this)
@@ -1153,6 +1164,8 @@ public class DrawArrowsView extends ImageView {
         for (int btn_chosen = 0; btn_chosen < pointList.size(); btn_chosen++) {
             for (int k = 0; k < checkMatrix.get(btn_chosen).get(7).size(); k++)
                 if (String.valueOf(checkMatrix.get(btn_chosen).get(7).get(k)).equals("0.0")) {
+
+                } else {
                     str_usedSameOrOpRow = "usedSameOrOpRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn_chosen + ":" + k;
                     tinydb.putString(str_usedSameOrOpRow, String.valueOf(checkMatrix.get(btn_chosen).get(7).get(k)));
                 }
