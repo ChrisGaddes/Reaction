@@ -315,10 +315,10 @@
 
     <!--Button 5-->
     <string-array name="angleRow_prob1_partA_btn5">
-        <item>PI/6</item>
+        <item>5*PI/6</item>
         <item>100.0</item>
         <item>100.0</item>
-        <item>PI/2</item>
+        <item>100.0</item>
     </string-array>
     <string-array name="usedRow_prob1_partA_btn5">
         <item>0.0</item>

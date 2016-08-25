@@ -365,7 +365,7 @@
 
     <!--Button 6-->
     <string-array name="angleRow_prob1_partB_btn6">
-        <item>0.0</item>
+        <item>5*PI/6</item>
         <item>100.0</item>
         <item>100.0</item>
         <item>100.0</item>
@@ -401,7 +401,7 @@
         <item>0.0</item>
     </string-array>
     <string-array name="dependencyRow_prob1_partB_btn6">
-        <item>0.0</item>
+        <item>prob1_partA_btn5_row0</item>
         <item>0.0</item>
         <item>0.0</item>
         <item>0.0</item>

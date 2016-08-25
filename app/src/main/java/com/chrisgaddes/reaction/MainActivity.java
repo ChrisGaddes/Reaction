@@ -11,7 +11,12 @@ import android.support.v7.widget.Toolbar;
 import android.transition.Explode;
 import android.transition.Fade;
 import android.transition.Slide;
-import android.view.*;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -44,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
         // loads tinydb database
         tinydb = new TinyDB(this);
-        tinydb.clear(); //TODO: remove this
+//        tinydb.clear(); //TODO: remove this
 
 //        mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
 //

@@ -18,11 +18,16 @@ import android.transition.Fade;
 import android.transition.Slide;
 import android.util.Base64;
 import android.util.Log;
-import android.view.*;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
@@ -82,10 +87,6 @@ public class ThirdActivity extends AppCompatActivity {
 
         context = getApplicationContext();
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-
-        setSupportActionBar(toolbar);
-
         btn_check_done = (FloatingActionButton) findViewById(R.id.btn_check_done);
         btn_peek = (ImageButton) findViewById(R.id.btn_peek_main_prob);
 
@@ -102,7 +103,7 @@ public class ThirdActivity extends AppCompatActivity {
         str_part_statement = getResources().getStringArray(getResId("problemStatement_" + "prob" + problem_number + "_part" + part_letter, R.array.class));
         part_letter = part_letter.toLowerCase();
         // Generates strings from problem information
-        str_problem_number = "Problem #" + problem_number;
+        str_problem_number = "Problem #" + problem_number + " - Part" + part_letter;
         str_part_file_name = "prob" + problem_number + "_part" + part_letter;
         str_prob_file_name = "prob" + problem_number;
 
@@ -122,7 +123,10 @@ public class ThirdActivity extends AppCompatActivity {
                 .load(getResources().getIdentifier(str_part_file_name, "drawable", getPackageName()))
                 .into(problem_part);
 
-        getSupportActionBar().setTitle(str_combined_title);
+        // Sets toolbar title
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(str_problem_number);
 
 
         mDrawArrowsView = (DrawArrowsView) findViewById(R.id.idDrawArrowsView);

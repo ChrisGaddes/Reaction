@@ -173,7 +173,42 @@ public class DrawArrowsView extends ImageView {
 
     private int problem_number;
     private String part_letter;
+
+    private String str_angleRow;
+    private String str_usedRow;
+    private String str_forceAngleRow;
+    private String str_oppositeAllowedRow;
+    private String str_clockwiseRow;
+    private String str_finishedRow;
+    private String str_dependencyRow;
     private String str_usedSameOrOpRow;
+
+    private String[] mangleRow;
+    private String[] musedRow;
+    private String[] mforceAngleRow;
+    private String[] moppositeAllowedRow;
+    private String[] mclockwiseRow;
+    private String[] mfinishedRow;
+    private String[] mdependencyRow;
+    private String[] musedSameOrOpRow;
+
+    private BigDecimal tmp0;
+    private BigDecimal tmp1;
+    private BigDecimal tmp2;
+    private BigDecimal tmp3;
+    private BigDecimal tmp4;
+    private BigDecimal tmp5;
+    private BigDecimal tmp6;
+    private BigDecimal tmp7;
+
+    private Double val0;
+    private Double val1;
+    private Double val2;
+    private Double val3;
+    private Double val4;
+    private Double val5;
+    private Double val6;
+    private Double val7;
 
     /**
      * Description of what this Constructor does/is used for...
@@ -272,6 +307,8 @@ public class DrawArrowsView extends ImageView {
         loadArrowCheckLocations();
     }
 
+
+    // TODO put this on a runnable so it doesn't slow down UI thread
     private void loadArrowCheckLocations() {
 
         // Load problem number and part letter
@@ -311,68 +348,82 @@ public class DrawArrowsView extends ImageView {
 
             for (int c = 0; c < 4; c++) { // TODO remove hardcoded 5 here
 
-                tinydb.getString("part_letter");
+                str_angleRow = "angleRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
+                str_usedRow = "usedRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
+                str_forceAngleRow = "forceAngleRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
+                str_oppositeAllowedRow = "oppositeAllowedRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
+                str_clockwiseRow = "clockwiseRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
+                str_finishedRow = "finishedRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
+                str_dependencyRow = "dependencyRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
+                str_usedSameOrOpRow = "usedSameOrOpRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
 
-                String str_angleRow = "angleRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
-                String str_usedRow = "usedRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
-                String str_forceAngleRow = "forceAngleRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
-                String str_oppositeAllowedRow = "oppositeAllowedRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
-                String str_clockwiseRow = "clockwiseRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
-                String str_finishedRow = "finishedRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
-                String str_dependencyRow = "dependencyRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
-                String str_usedSameOrOpRow = "usedSameOrOpRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
+                mangleRow = getResources().getStringArray(getResId(str_angleRow, R.array.class));
+                musedRow = getResources().getStringArray(getResId(str_usedRow, R.array.class));
+                // mforceAngleRow is defined below
+                moppositeAllowedRow = getResources().getStringArray(getResId(str_oppositeAllowedRow, R.array.class));
+                mclockwiseRow = getResources().getStringArray(getResId(str_clockwiseRow, R.array.class));
+                mfinishedRow = getResources().getStringArray(getResId(str_finishedRow, R.array.class));
+                mdependencyRow = getResources().getStringArray(getResId(str_dependencyRow, R.array.class));
+                musedSameOrOpRow = getResources().getStringArray(getResId(str_usedSameOrOpRow, R.array.class));
 
-                String[] mangleRow = getResources().getStringArray(getResId(str_angleRow, R.array.class));
-                String[] musedRow = getResources().getStringArray(getResId(str_usedRow, R.array.class));
-                String[] mforceAngleRow = getResources().getStringArray(getResId(str_forceAngleRow, R.array.class));
-                String[] moppositeAllowedRow = getResources().getStringArray(getResId(str_oppositeAllowedRow, R.array.class));
-                String[] mclockwiseRow = getResources().getStringArray(getResId(str_clockwiseRow, R.array.class));
-                String[] mfinishedRow = getResources().getStringArray(getResId(str_finishedRow, R.array.class));
-                String[] mdependencyRow = getResources().getStringArray(getResId(str_dependencyRow, R.array.class));
-                String[] musedSameOrOpRow = getResources().getStringArray(getResId(str_dependencyRow, R.array.class));
+                tmp0 = new Expression(mangleRow[c]).eval();
+                tmp1 = new Expression(musedRow[c]).eval();
+                // tmp2 is defined below
+                tmp3 = new Expression(moppositeAllowedRow[c]).eval();
+                tmp4 = new Expression(mclockwiseRow[c]).eval();
+                tmp5 = new Expression(mfinishedRow[c]).eval();
+                // tmp6 is defined below
+                tmp7 = new Expression(musedSameOrOpRow[c]).eval();
 
-                BigDecimal tmp0 = new Expression(mangleRow[c]).eval();
-                BigDecimal tmp1 = new Expression(musedRow[c]).eval();
-                BigDecimal tmp2 = new Expression(mforceAngleRow[c]).eval();
-                BigDecimal tmp3 = new Expression(moppositeAllowedRow[c]).eval();
-                BigDecimal tmp4 = new Expression(mclockwiseRow[c]).eval();
-                BigDecimal tmp5 = new Expression(mfinishedRow[c]).eval();
-                BigDecimal tmp6 = new Expression(mdependencyRow[c]).eval();
-                BigDecimal tmp7 = new Expression(musedSameOrOpRow[c]).eval();
+                val0 = Double.valueOf(String.valueOf(tmp0));
+                val1 = Double.valueOf(String.valueOf(tmp1));
+                // val2 is defined below
+                val3 = Double.valueOf(String.valueOf(tmp3));
+                val4 = Double.valueOf(String.valueOf(tmp4));
+                val5 = Double.valueOf(String.valueOf(tmp5));
 
-                Double val0 = Double.valueOf(String.valueOf(tmp0));
-                Double val1 = Double.valueOf(String.valueOf(tmp1));
-                Double val2 = Double.valueOf(String.valueOf(tmp2));
-                Double val3 = Double.valueOf(String.valueOf(tmp3));
-                Double val4 = Double.valueOf(String.valueOf(tmp4));
-                Double val5 = Double.valueOf(String.valueOf(tmp5));
-                Double val6 = Double.valueOf(String.valueOf(tmp6));
-                Double val7 = Double.valueOf(String.valueOf(tmp7));
+                val7 = Double.valueOf(String.valueOf(tmp7));
+
+                // Sets forceAngleRow from previous problem
+                if (mdependencyRow[c].equals("0.0")) {
+
+                    mforceAngleRow = getResources().getStringArray(getResId(str_forceAngleRow, R.array.class));
+                    tmp2 = new Expression(mforceAngleRow[c]).eval();
+                    tmp6 = new Expression(mdependencyRow[c]).eval();
+
+                    val2 = Double.valueOf(String.valueOf(tmp2));
+                    val6 = Double.valueOf(String.valueOf(tmp6));
+
+                    checkMatrix.get(btn).get(2).add(val2);
+                    checkMatrix.get(btn).get(6).add(val6);
+                } else {
+                    mforceAngleRow[c] = tinydb.getString("usedSameOrOpRow_" + String.valueOf(mdependencyRow[c]));
+                    tmp2 = new Expression(mforceAngleRow[c]).eval();
+                    val2 = Double.valueOf(String.valueOf(tmp2));
+
+                    // Flips value
+                    if (val2.equals(1.0)) {
+                        val2 = 2.0;
+                    } else if (val2.equals(2.0)) {
+                        val2 = 1.0;
+                    }
+
+
+                    val6 = 0.0;
+                    checkMatrix.get(btn).get(2).add(val2);
+                    checkMatrix.get(btn).get(6).add(val6);
+                }
+
 
                 checkMatrix.get(btn).get(0).add(val0);
                 checkMatrix.get(btn).get(1).add(val1);
-                checkMatrix.get(btn).get(2).add(val2);
-//                checkMatrix.get(btn).get(3).add(val3);
+
+                checkMatrix.get(btn).get(3).add(val3);
                 checkMatrix.get(btn).get(4).add(val4);
                 checkMatrix.get(btn).get(5).add(val5);
-                checkMatrix.get(btn).get(6).add(val6);
+
                 checkMatrix.get(btn).get(7).add(val7);
 
-                if (mdependencyRow[c].equals("0.0")) {
-                    checkMatrix.get(btn).get(3).add(val3);
-                } else {
-
-                    String[] tmp = mdependencyRow[c].split(":");
-                    String str_blah = mdependencyRow[c];
-//
-//                    String blah = tinydb.getString(str_blah);
-//
-//
-//                    Double.valueOf(tinydb.getString(mdependencyRow[c])));
-//
-//                    Double val7 = Double.valueOf(String.valueOf(tmp7));
-//                    checkMatrix.get(btn).get(3).add()
-                }
             }
         }
 
@@ -486,6 +537,7 @@ public class DrawArrowsView extends ImageView {
 
         // I needed the size of the canvas in order to calculate the percentage the points were accross the screen, but it won't properly get the size until the view is drawn. So, I trigger setButtonPoints from here once the view is drawn and use the if statement below to only allow it to run once. This seems like a terrible was to do it but it works. I'd love advice on how to improve this if you think it matters"
 
+        // TODO run this off main thread IMPORTANT
         if (!SetButtonPoints_RunAlready) {
             setButtonPoints(getContext());
         }
@@ -494,8 +546,6 @@ public class DrawArrowsView extends ImageView {
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
-        // TODO look into clippath. May be able to use it to isolate the members
 
         // TODO move some of this outside of onDraw for efficiency
         // JAMES SENTELL: "I don't have a deep understanding on getClipBounds(). DO you? If so, do you have any advice on how to set the bounds of the image to the full size of the view? I have a func"
@@ -523,10 +573,8 @@ public class DrawArrowsView extends ImageView {
         x_b = (int) dim_btn_radius * 2;
         y_b = (int) dim_btn_radius * 2;
 
-
         // TODO remove in final build
         rectDone = new Rect(x_b - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), y_b - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), x_b + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), y_b + ((int) dim_btn_radius + (int) dim_btn_radius_buffer));
-
 
         canvas.drawRect(rectDone, paint_arrow_head_box);
 
@@ -549,11 +597,6 @@ public class DrawArrowsView extends ImageView {
         for (Path pthLst_arrows : pathListCorrect) {
             canvas.drawPath(pthLst_arrows, paint_arrow_correct_location);
         }
-
-
-//        tinydb = new TinyDB(getContext());
-
-//        hey = tinydb.getInt("problem_number");
 
         if (debuggingTextToggle) {
 //            canvas.drawText("problem # = " + String.valueOf(hey), 20, 100, paint_text);
@@ -945,6 +988,7 @@ public class DrawArrowsView extends ImageView {
 
         if (allArrowsCorrect = checkIfFinished()) {
 
+            // Writes SameOrOpRow non-zero values to a tinyDB database
             writeSameOrOpRowToDatabase();
 
 //            Snackbar.make(this, "Finished!", Snackbar.LENGTH_SHORT).show();
@@ -1166,7 +1210,7 @@ public class DrawArrowsView extends ImageView {
                 if (String.valueOf(checkMatrix.get(btn_chosen).get(7).get(k)).equals("0.0")) {
 
                 } else {
-                    str_usedSameOrOpRow = "usedSameOrOpRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn_chosen + ":" + k;
+                    str_usedSameOrOpRow = "usedSameOrOpRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn_chosen + "_row" + k;
                     tinydb.putString(str_usedSameOrOpRow, String.valueOf(checkMatrix.get(btn_chosen).get(7).get(k)));
                 }
         }
@@ -1412,19 +1456,16 @@ public class DrawArrowsView extends ImageView {
                     checkMatrix.get(btn_chosen).get(5).set(u, 1.0);
                     checkMatrix.get(btn_chosen).get(1).set(u, 1.0);
 
-                    //sets usedSameOrOp to same and loads into tinyDB database
+                    //sets usedSameOrOp to same
                     checkMatrix.get(btn_chosen).get(7).set(u, 1.0);
-//                    writeSameOrOpRowToDatabase();
-
 
                 } else if (isClockwiseList.get(mrectListArrowHead_indice).equals(opp_ang)) {
                     match = true;
                     checkMatrix.get(btn_chosen).get(5).set(u, 1.0);
                     checkMatrix.get(btn_chosen).get(1).set(u, 1.0);
 
-                    //sets usedSameOrOp to Op and loads into tinyDB database
+                    //sets usedSameOrOp to Op
                     checkMatrix.get(btn_chosen).get(7).set(u, 2.0);
-//                    writeSameOrOpRowToDatabase();
                 }
                 u++;
 
@@ -1476,10 +1517,8 @@ public class DrawArrowsView extends ImageView {
                                 match = true;
                                 checkMatrix.get(btn_chosen).get(1).set(u, 1.0); // mark as used
 
-                                //sets usedSameOrOp to same and loads into tinyDB database
+                                //sets usedSameOrOp to same
                                 checkMatrix.get(btn_chosen).get(7).set(u, 1.0);
-//                                writeSameOrOpRowToDatabase();
-
                                 linkList2.get(0).set(mrectListArrowHead_indice, linkList.get(mrectListArrowHead_indice));
                                 linkList2.get(1).set(mrectListArrowHead_indice, 1);
                                 linkList2.get(2).set(mrectListArrowHead_indice, u);
@@ -1502,9 +1541,8 @@ public class DrawArrowsView extends ImageView {
                                 match = true;
                                 checkMatrix.get(btn_chosen).get(1).set(u, 1.0); // mark as used
 
-                                //sets usedSameOrOp to Op and loads into tinyDB database
+                                //sets usedSameOrOp to Op
                                 checkMatrix.get(btn_chosen).get(7).set(u, 2.0);
-//                                writeSameOrOpRowToDatabase();
 
                                 linkList2.get(0).set(mrectListArrowHead_indice, linkList.get(mrectListArrowHead_indice));
                                 linkList2.get(1).set(mrectListArrowHead_indice, 1);
