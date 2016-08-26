@@ -13,60 +13,56 @@
 
     <!--Number of Buttons-->
     <string-array name="number_of_buttons_prob1_partB">
-        <item>7</item>
+        <item>10</item>
     </string-array>
 
     <!--Button Locations-->
     <string-array name="location_prob1_partB_btn0">
-        <item>26.42</item>
-        <item>41.616</item>
+        <item>63.024</item>
+        <item>81.238</item>
     </string-array>
     <string-array name="location_prob1_partB_btn1">
-        <item>76.068</item>
-        <item>13.416</item>
+        <item>39.198</item>
+        <item>67.502</item>
     </string-array>
     <string-array name="location_prob1_partB_btn2">
-        <item>76.068</item>
-        <item>41.616</item>
+        <item>6.85</item>
+        <item>86.528</item>
     </string-array>
     <string-array name="location_prob1_partB_btn3">
-        <item>51.242</item>
-        <item>41.588</item>
+        <item>42.766</item>
+        <item>23.22</item>
     </string-array>
     <string-array name="location_prob1_partB_btn4">
-        <item>51.242</item>
-        <item>70.28</item>
+        <item>6.85</item>
+        <item>67.466</item>
     </string-array>
     <string-array name="location_prob1_partB_btn5">
-        <item>76.074</item>
-        <item>70.34</item>
+        <item>6.85</item>
+        <item>23.22</item>
     </string-array>
     <string-array name="location_prob1_partB_btn6">
-        <item>26.42</item>
-        <item>70.34</item>
+        <item>22.684</item>
+        <item>43.712</item>
     </string-array>
     <string-array name="location_prob1_partB_btn7">
-        <item>26.418</item>
-        <item>55.948</item>
+        <item>61.834</item>
+        <item>43.712</item>
     </string-array>
     <string-array name="location_prob1_partB_btn8">
-        <item>0</item>
-        <item>0</item>
+        <item>80.924</item>
+        <item>23.22</item>
     </string-array>
     <string-array name="location_prob1_partB_btn9">
-        <item>0</item>
-        <item>0</item>
-    </string-array>
-    <string-array name="location_prob1_partB_btn10">
-        <item>0</item>
-        <item>0</item>
+        <item>39.198</item>
+        <item>45.36</item>
     </string-array>
 
 
     <!--Button 0-->
     <string-array name="angleRow_prob1_partB_btn0">
-        <item>100.0</item>
-        <item>100.0</item>
+        <item>PI/2</item>
+        <item>0.0</item>
         <item>100.0</item>
         <item>100.0</item>
     </string-array>
@@ -115,7 +111,7 @@
 
     <!--Button 1-->
     <string-array name="angleRow_prob1_partB_btn1">
-        <item>100.0</item>
+        <item>5*PI/6</item>
         <item>100.0</item>
         <item>100.0</item>
         <item>100.0</item>
@@ -151,7 +147,7 @@
         <item>0.0</item>
     </string-array>
     <string-array name="dependencyRow_prob1_partB_btn1">
-        <item>0.0</item>
+        <item>prob1_partA_btn0_row0</item>
         <item>0.0</item>
         <item>0.0</item>
         <item>0.0</item>
@@ -215,7 +211,7 @@
 
     <!--Button 3-->
     <string-array name="angleRow_prob1_partB_btn3">
-        <item>100.0</item>
+        <item>0.0</item>
         <item>100.0</item>
         <item>100.0</item>
         <item>100.0</item>
@@ -233,7 +229,7 @@
         <item>0.0</item>
     </string-array>
     <string-array name="oppositeAllowedRow_prob1_partB_btn3">
-        <item>1.0</item>
+        <item>0.0</item>
         <item>1.0</item>
         <item>1.0</item>
         <item>1.0</item>
@@ -365,7 +361,7 @@
 
     <!--Button 6-->
     <string-array name="angleRow_prob1_partB_btn6">
-        <item>5*PI/6</item>
+        <item>100.0</item>
         <item>100.0</item>
         <item>100.0</item>
         <item>100.0</item>
@@ -401,7 +397,7 @@
         <item>0.0</item>
     </string-array>
     <string-array name="dependencyRow_prob1_partB_btn6">
-        <item>prob1_partA_btn5_row0</item>
+        <item>0.0</item>
         <item>0.0</item>
         <item>0.0</item>
         <item>0.0</item>

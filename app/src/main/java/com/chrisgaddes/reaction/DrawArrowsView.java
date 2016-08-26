@@ -18,7 +18,6 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
@@ -43,7 +42,6 @@ import java.util.List;
 public class DrawArrowsView extends ImageView {
     private static final String TAG = "ThirdActivity";
 
-    final FloatingActionButton btn_check_done;
     final double pi = Math.PI;
 
     //double angles[] = {-pi, -3 * pi / 4, -pi / 2, -pi / 4, 0, pi / 4, pi / 2, 3 * pi / 4, pi};
@@ -98,12 +96,16 @@ public class DrawArrowsView extends ImageView {
     private float touchAngle;
     private float deltaAngle;
 
+    private boolean invalidateNow;
+
     private boolean allArrowsCorrect;
 
     public TinyDB tinydb;
 
     private int btn_chosen;
     private int u;
+
+    private SharedPreferences.OnSharedPreferenceChangeListener prefListener;
 
     //TODO consider http://stackoverflow.com/questions/32324876/how-to-save-an-answer-in-a-riddle-game-without-creating-a-database
 
@@ -200,6 +202,8 @@ public class DrawArrowsView extends ImageView {
     private BigDecimal tmp5;
     private BigDecimal tmp6;
     private BigDecimal tmp7;
+    private Double opSwitchVal;
+    private BigDecimal opSwitchTmp;
 
     private Double val0;
     private Double val1;
@@ -210,6 +214,10 @@ public class DrawArrowsView extends ImageView {
     private Double val6;
     private Double val7;
 
+    private ThirdActivity thirdActivity;
+
+//    public FloatingActionButton btn_check_done;
+
     /**
      * Description of what this Constructor does/is used for...
      *
@@ -219,8 +227,12 @@ public class DrawArrowsView extends ImageView {
     public DrawArrowsView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        btn_check_done = (FloatingActionButton) findViewById(R.id.btn_check_done);
-
+//        thirdActivity = (ThirdActivity) context;
+//
+//
+//
+//
+//        thirdActivity.showFloatingActionButton();
 
         // Sets image for problem
 //        IV_problem = (ImageView) findViewById(R.id.problem);
@@ -282,6 +294,7 @@ public class DrawArrowsView extends ImageView {
 
         setArrowStyle();
     }
+
 
     /**
      * @param context //TODO add what context is used for
@@ -368,7 +381,6 @@ public class DrawArrowsView extends ImageView {
 
                 tmp0 = new Expression(mangleRow[c]).eval();
                 tmp1 = new Expression(musedRow[c]).eval();
-                // tmp2 is defined below
                 tmp3 = new Expression(moppositeAllowedRow[c]).eval();
                 tmp4 = new Expression(mclockwiseRow[c]).eval();
                 tmp5 = new Expression(mfinishedRow[c]).eval();
@@ -401,13 +413,26 @@ public class DrawArrowsView extends ImageView {
                     tmp2 = new Expression(mforceAngleRow[c]).eval();
                     val2 = Double.valueOf(String.valueOf(tmp2));
 
-                    // Flips value
-                    if (val2.equals(1.0)) {
-                        val2 = 2.0;
-                    } else if (val2.equals(2.0)) {
-                        val2 = 1.0;
+                    // flips to mirror if val3 does not equal 0.0
+                    // If you want force angle to use "same" angle (not op) as it's dependency which
+                    // is defined in dependency row, then set the opposite allowed Row to 1.0 (default).
+                    // If you want it to use the op angle (i.e. mirror it's dependency) the set the
+                    // opposite allowed Row to 2.0 (or any value but 1.0)
+                    if (val3.equals(1.0)) {
+                        if (val2.equals(1.0)) {
+                            val2 = 2.0;
+                        } else {
+                            val2 = 1.0;
+                        }
+                    } else {
+                        // replaced opposite allowed row with default "allowed" flag: 1.0
+                        checkMatrix.get(btn).get(3).add(1.0);
+                        if (val2.equals(1.0)) {
+                            val2 = 1.0;
+                        } else {
+                            val2 = 2.0;
+                        }
                     }
-
 
                     val6 = 0.0;
                     checkMatrix.get(btn).get(2).add(val2);
@@ -547,6 +572,12 @@ public class DrawArrowsView extends ImageView {
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        if (invalidateNow) {
+            invalidateNow = false;
+            invalidate();
+        }
+
+
         // TODO move some of this outside of onDraw for efficiency
         // JAMES SENTELL: "I don't have a deep understanding on getClipBounds(). DO you? If so, do you have any advice on how to set the bounds of the image to the full size of the view? I have a func"
 
@@ -599,7 +630,7 @@ public class DrawArrowsView extends ImageView {
         }
 
         if (debuggingTextToggle) {
-//            canvas.drawText("problem # = " + String.valueOf(hey), 20, 100, paint_text);
+            canvas.drawText("btn_chosen = " + String.valueOf(rectList_indice), 80, 100, paint_text);
 //            canvas.drawText("inside_button = " + String.valueOf(inside_button), 20, 100, paint_text);
             canvas.drawText("rectList_indice = " + String.valueOf(rectList_indice), 20, 160, paint_text);
             canvas.drawText("rectListArrowHead_indice = " + String.valueOf(rectListArrowHead_indice), 20, 220, paint_text);
@@ -706,6 +737,7 @@ public class DrawArrowsView extends ImageView {
 //            }
         }
     };
+
 
     void removeValuesFromArraylists(int mRectListArrowHead_indice) {
         // removes values from Arraylists
@@ -1576,6 +1608,10 @@ public class DrawArrowsView extends ImageView {
         }
     }
 
+
+    public void invalidateNow() {
+        invalidateNow = true;
+    }
 
     public void resetAllValues() {
         setAllToUnused();

@@ -41,7 +41,7 @@
                     android:layout_centerInParent="true"
                     android:layout_margin="10dp"
                     android:gravity="center"
-                    android:text="RXN"
+                    android:text="Reaction"
                     android:textColor="@color/colorPrimary"
                     android:textSize="50sp" />
 
@@ -67,8 +67,7 @@
             android:layout_centerInParent="true"
             android:layout_margin="10dp"
             android:backgroundTint="@color/colorWhiteBackground"
-            android:text="Problem
-        1"
+            android:text="Problem 1"
             android:textAllCaps="false"
             android:textColor="@color/colorPrimary" />
 
@@ -81,8 +80,7 @@
             android:layout_centerInParent="true"
             android:layout_margin="10dp"
             android:backgroundTint="@color/colorWhiteBackground"
-            android:text="Problem
-        2"
+            android:text="Problem 2"
             android:textAllCaps="false"
             android:textColor="@color/colorPrimary" />
 
@@ -96,8 +94,7 @@
             android:layout_centerInParent="true"
             android:layout_margin="10dp"
             android:backgroundTint="@color/colorWhiteBackground"
-            android:text="Problem
-        3"
+            android:text="Problem 3"
             android:textAllCaps="false"
             android:textColor="@color/colorPrimary" />
 

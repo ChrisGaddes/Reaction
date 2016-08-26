@@ -1,19 +1,33 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
     <!-- "Help", should appear as action button if possible -->
+
+    <!--<item-->
+    <!--android:id="@+id/counter"-->
+    <!--android:title=""-->
+    <!--app:showAsAction="always"></item>-->
+
+    <item
+        android:id="@+id/timer"
+        app:actionViewClass="com.chrisgaddes.reaction.ChronometerView"
+        app:showAsAction="always"
+
+        android:title="This Should Not Be Needed"
+
+        ></item>
+
     <item
         android:id="@+id/action_help"
         android:icon="@drawable/ic_question_mark"
         android:title="Help"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 
     <!-- "Refresh", should appear as action button if possible -->
     <item
         android:id="@+id/action_startover"
         android:icon="@drawable/ic_refresh"
         android:title="Start over"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 
     <!-- Settings, should always be in the overflow -->
     <!--<item android:id="@+id/action_settings"-->
@@ -25,5 +39,6 @@
         android:icon="@drawable/ic_more_vert"
         android:title="Settings"
         app:showAsAction="never" />
+
 
 </menu>

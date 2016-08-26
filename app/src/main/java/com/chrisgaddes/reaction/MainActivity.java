@@ -2,6 +2,7 @@ package com.chrisgaddes.reaction;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -41,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
+    private SharedPreferences preference;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
         // loads tinydb database
         tinydb = new TinyDB(this);
-//        tinydb.clear(); //TODO: remove this
+        tinydb.remove("TotalForegroundTime"); //TODO: remove this
 
 //        mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
 //

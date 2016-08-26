@@ -9,6 +9,7 @@
         <!--android:summary="This option if selected will allow the application to check for latest versions."-->
         <!--android:key="applicationUpdates" />-->
 
+
     <CheckBoxPreference android:title="Enable Animations"
         android:defaultValue="true"
         android:summary="Enables or disables animations when drawing arrows."

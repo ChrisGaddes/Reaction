@@ -13,59 +13,31 @@
 
     <!--Number of Buttons-->
     <string-array name="number_of_buttons_prob1_partA">
-        <item>10</item>
+        <item>4</item>
     </string-array>
 
     <!--Button Locations-->
     <string-array name="location_prob1_partA_btn0">
-        <item>37.454</item>
-        <item>66.07</item>
+        <item>74.826</item>
+        <item>36.38</item>
     </string-array>
     <string-array name="location_prob1_partA_btn1">
-        <item>55.164</item>
-        <item>42.612</item>
+        <item>26.17</item>
+        <item>64.528</item>
     </string-array>
     <string-array name="location_prob1_partA_btn2">
-        <item>60.0</item>
-        <item>18.902</item>
+        <item>26.174</item>
+        <item>36.38</item>
     </string-array>
     <string-array name="location_prob1_partA_btn3">
-        <item>80.556</item>
-        <item>80.73</item>
-    </string-array>
-    <string-array name="location_prob1_partA_btn4">
-        <item>54.932</item>
-        <item>66.07</item>
-    </string-array>
-    <string-array name="location_prob1_partA_btn5">
-        <item>19.978</item>
-        <item>86.446</item>
-    </string-array>
-    <string-array name="location_prob1_partA_btn6">
-        <item>19.974</item>
-        <item>66.07</item>
-    </string-array>
-    <string-array name="location_prob1_partA_btn7">
-        <item>19.974</item>
-        <item>42.612</item>
-    </string-array>
-    <string-array name="location_prob1_partA_btn8">
-        <item>19.974</item>
-        <item>18.902</item>
-    </string-array>
-    <string-array name="location_prob1_partA_btn9">
-        <item>80.556</item>
-        <item>18.902</item>
-    </string-array>
-    <string-array name="location_prob1_partA_btn10">
-        <item>80.588</item>
-        <item>42.612</item>
+        <item>50.498</item>
+        <item>36.35</item>
     </string-array>
 
 
     <!--Button 0-->
     <string-array name="angleRow_prob1_partA_btn0">
-        <item>100.0</item>
+        <item>5*PI/6</item>
         <item>100.0</item>
         <item>100.0</item>
         <item>100.0</item>
@@ -115,7 +87,7 @@
 
     <!--Button 1-->
     <string-array name="angleRow_prob1_partA_btn1">
-        <item>100.0</item>
+        <item>5*PI/6</item>
         <item>100.0</item>
         <item>100.0</item>
         <item>100.0</item>

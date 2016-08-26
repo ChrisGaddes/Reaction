@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -16,11 +17,13 @@ import android.transition.Fade;
 import android.transition.Slide;
 import android.util.Base64;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -58,6 +61,7 @@ public class SecondActivity extends AppCompatActivity {
     private int problem_number;
     private String str_prob_file_name;
     private String part_letter;
+    private String str_toolbar_title;
 
     private String str_problem_number;
     private String[] str_problem_statement;
@@ -74,6 +78,17 @@ public class SecondActivity extends AppCompatActivity {
     private int resID;
     private ProgressBar progressBar;
 
+    private long timer;
+    private ChronometerView rc;
+
+    private long pauseTime;
+    private long resumeTime;
+    private long totalForgroundTime;
+
+
+    private Chronometer focus;
+
+
 //    private Data data = new Data();
 
     @Override
@@ -82,7 +97,6 @@ public class SecondActivity extends AppCompatActivity {
 
         setupWindowAnimations();
         setContentView(R.layout.activity_second);
-
 
         context = getApplicationContext();
 
@@ -97,6 +111,7 @@ public class SecondActivity extends AppCompatActivity {
         // Generates strings from problem information
         str_problem_number = "Problem #" + problem_number;
         str_prob_file_name = "prob" + problem_number;
+        str_toolbar_title = "Problem #" + problem_number;
 
         // load problem statement and part statement TODO: Remove loading part statement from this activity
         str_problem_statement = getResources().getStringArray(getResId("mainProblemStatement_" + "prob" + problem_number + "_part" + part_letter, R.array.class));
@@ -120,7 +135,10 @@ public class SecondActivity extends AppCompatActivity {
         // Sets toolbar title
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(str_problem_number);
+        getSupportActionBar().setTitle(str_toolbar_title);
+//        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+//        getSupportActionBar().setCustomView(R.layout.actionbar_custom_view_home);
+
 
         // Sets listener on start button
         btn_start_part = (FloatingActionButton) findViewById(R.id.btn_start_part);
@@ -211,8 +229,30 @@ public class SecondActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.third_menu, menu);
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
+        Long tmpTime = tinydb.getLong("TotalForegroundTime", 0);
+
+        if (tmpTime == 0) {
+//            tinydb.getLong("TotalForegroundTime", 0) + (pauseTime - resumeTime);
+            tinydb.putLong("TotalForegroundTime", 0);
+        }
+
+        startTimer(menu);
+
         return super.onCreateOptionsMenu(menu);
+    }
+
+    private void startTimer(Menu menu) {
+        rc = (ChronometerView) menu
+                .findItem(R.id.timer)
+                .getActionView();
+
+        rc.setBeginTime(tinydb.getLong("TotalForegroundTime", 0));
+        rc.setOverallDuration(2 * 60);
+        rc.setWarningDuration(90);
+        rc.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
+        rc.setTextColor(Color.WHITE);
+        rc.reset();
+        rc.run();
     }
 
     @Override
@@ -239,6 +279,20 @@ public class SecondActivity extends AppCompatActivity {
                 // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        pauseTime = System.currentTimeMillis();
+        totalForgroundTime = tinydb.getLong("TotalForegroundTime", 0) + (pauseTime - resumeTime);
+        tinydb.putLong("TotalForegroundTime", totalForgroundTime);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        resumeTime = System.currentTimeMillis();
     }
 
     public String BitMapToString(Bitmap bitmap) {

@@ -6,10 +6,14 @@ import android.preference.PreferenceFragment;
 
 public class MyPreferencesActivity extends PreferenceActivity {
 
+    public TinyDB tinydb;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         getFragmentManager().beginTransaction().replace(android.R.id.content, new MyPreferenceFragment()).commit();
+
     }
 
     public static class MyPreferenceFragment extends PreferenceFragment
@@ -19,6 +23,8 @@ public class MyPreferencesActivity extends PreferenceActivity {
         {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preferences);
+
+
         }
     }
 

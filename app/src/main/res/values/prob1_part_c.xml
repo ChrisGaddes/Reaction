@@ -18,48 +18,32 @@
 
     <!--Button Locations-->
     <string-array name="location_prob1_partC_btn0">
-        <item>50.744</item>
-        <item>69.934</item>
+        <item>55.34</item>
+        <item>62.17</item>
     </string-array>
     <string-array name="location_prob1_partC_btn1">
-        <item>253.72</item>
-        <item>54.106</item>
+        <item>78.066</item>
+        <item>75.71</item>
     </string-array>
     <string-array name="location_prob1_partC_btn2">
-        <item>27.55</item>
-        <item>3.086</item>
+        <item>24.21</item>
+        <item>80.754</item>
     </string-array>
     <string-array name="location_prob1_partC_btn3">
-        <item>23.286</item>
-        <item>28.596</item>
+        <item>24.212</item>
+        <item>62.696</item>
     </string-array>
     <string-array name="location_prob1_partC_btn4">
-        <item>3.086</item>
-        <item>54.106</item>
+        <item>40.978</item>
+        <item>62.17</item>
     </string-array>
     <string-array name="location_prob1_partC_btn5">
-        <item>37.05</item>
-        <item>62.34</item>
+        <item>55.494</item>
+        <item>41.458</item>
     </string-array>
     <string-array name="location_prob1_partC_btn6">
-        <item>3.086</item>
-        <item>28.596</item>
-    </string-array>
-    <string-array name="location_prob1_partC_btn7">
-        <item>0</item>
-        <item>0</item>
-    </string-array>
-    <string-array name="location_prob1_partC_btn8">
-        <item>0</item>
-        <item>0</item>
-    </string-array>
-    <string-array name="location_prob1_partC_btn9">
-        <item>0</item>
-        <item>0</item>
-    </string-array>
-    <string-array name="location_prob1_partC_btn10">
-        <item>0</item>
-        <item>0</item>
+        <item>58.724</item>
+        <item>20.744</item>
     </string-array>
 
 
@@ -83,10 +67,10 @@
         <item>0.0</item>
     </string-array>
     <string-array name="oppositeAllowedRow_prob1_partC_btn0">
-        <item>0.0</item>
-        <item>0.0</item>
-        <item>0.0</item>
-        <item>0.0</item>
+        <item>1.0</item>
+        <item>1.0</item>
+        <item>1.0</item>
+        <item>1.0</item>
     </string-array>
     <string-array name="clockwiseRow_prob1_partC_btn0">
         <item>100.0</item>
@@ -100,11 +84,23 @@
         <item>0.0</item>
         <item>0.0</item>
     </string-array>
+    <string-array name="dependencyRow_prob1_partC_btn0">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
+    <string-array name="usedSameOrOpRow_prob1_partC_btn0">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
 
     <!--Button 1-->
     <string-array name="angleRow_prob1_partC_btn1">
-        <item>100.0</item>
-        <item>100.0</item>
+        <item>PI/2</item>
+        <item>0.0</item>
         <item>100.0</item>
         <item>100.0</item>
     </string-array>
@@ -121,10 +117,10 @@
         <item>0.0</item>
     </string-array>
     <string-array name="oppositeAllowedRow_prob1_partC_btn1">
-        <item>0.0</item>
-        <item>0.0</item>
-        <item>0.0</item>
-        <item>0.0</item>
+        <item>2.0</item>
+        <item>2.0</item>
+        <item>1.0</item>
+        <item>1.0</item>
     </string-array>
     <string-array name="clockwiseRow_prob1_partC_btn1">
         <item>100.0</item>
@@ -138,10 +134,22 @@
         <item>0.0</item>
         <item>0.0</item>
     </string-array>
+    <string-array name="dependencyRow_prob1_partC_btn1">
+        <item>prob1_partB_btn0_row0</item>
+        <item>prob1_partB_btn0_row1</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
+    <string-array name="usedSameOrOpRow_prob1_partC_btn1">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
 
     <!--Button 2-->
     <string-array name="angleRow_prob1_partC_btn2">
-        <item>100.0</item>
+        <item>5*PI/6</item> <!--Used negative since it is overlaying not mirroring dependency, would be positive normally-->
         <item>100.0</item>
         <item>100.0</item>
         <item>100.0</item>
@@ -159,10 +167,10 @@
         <item>0.0</item>
     </string-array>
     <string-array name="oppositeAllowedRow_prob1_partC_btn2">
-        <item>0.0</item>
-        <item>0.0</item>
-        <item>0.0</item>
-        <item>0.0</item>
+        <item>2.0</item>
+        <item>1.0</item>
+        <item>1.0</item>
+        <item>1.0</item>
     </string-array>
     <string-array name="clockwiseRow_prob1_partC_btn2">
         <item>100.0</item>
@@ -171,6 +179,18 @@
         <item>100.0</item>
     </string-array>
     <string-array name="finishedRow_prob1_partC_btn2">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
+    <string-array name="dependencyRow_prob1_partC_btn2">
+        <item>prob1_partA_btn1_row0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
+    <string-array name="usedSameOrOpRow_prob1_partC_btn2">
         <item>0.0</item>
         <item>0.0</item>
         <item>0.0</item>
@@ -197,10 +217,10 @@
         <item>0.0</item>
     </string-array>
     <string-array name="oppositeAllowedRow_prob1_partC_btn3">
-        <item>0.0</item>
-        <item>0.0</item>
-        <item>0.0</item>
-        <item>0.0</item>
+        <item>1.0</item>
+        <item>1.0</item>
+        <item>1.0</item>
+        <item>1.0</item>
     </string-array>
     <string-array name="clockwiseRow_prob1_partC_btn3">
         <item>100.0</item>
@@ -209,6 +229,18 @@
         <item>100.0</item>
     </string-array>
     <string-array name="finishedRow_prob1_partC_btn3">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
+    <string-array name="dependencyRow_prob1_partC_btn3">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
+    <string-array name="usedSameOrOpRow_prob1_partC_btn3">
         <item>0.0</item>
         <item>0.0</item>
         <item>0.0</item>
@@ -235,10 +267,10 @@
         <item>0.0</item>
     </string-array>
     <string-array name="oppositeAllowedRow_prob1_partC_btn4">
-        <item>0.0</item>
-        <item>0.0</item>
-        <item>0.0</item>
-        <item>0.0</item>
+        <item>1.0</item>
+        <item>1.0</item>
+        <item>1.0</item>
+        <item>1.0</item>
     </string-array>
     <string-array name="clockwiseRow_prob1_partC_btn4">
         <item>100.0</item>
@@ -247,6 +279,18 @@
         <item>100.0</item>
     </string-array>
     <string-array name="finishedRow_prob1_partC_btn4">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
+    <string-array name="dependencyRow_prob1_partC_btn4">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
+    <string-array name="usedSameOrOpRow_prob1_partC_btn4">
         <item>0.0</item>
         <item>0.0</item>
         <item>0.0</item>
@@ -273,10 +317,10 @@
         <item>0.0</item>
     </string-array>
     <string-array name="oppositeAllowedRow_prob1_partC_btn5">
-        <item>0.0</item>
-        <item>0.0</item>
-        <item>0.0</item>
-        <item>0.0</item>
+        <item>1.0</item>
+        <item>1.0</item>
+        <item>1.0</item>
+        <item>1.0</item>
     </string-array>
     <string-array name="clockwiseRow_prob1_partC_btn5">
         <item>100.0</item>
@@ -290,10 +334,22 @@
         <item>0.0</item>
         <item>0.0</item>
     </string-array>
+    <string-array name="dependencyRow_prob1_partC_btn5">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
+    <string-array name="usedSameOrOpRow_prob1_partC_btn5">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
 
     <!--Button 6-->
     <string-array name="angleRow_prob1_partC_btn6">
-        <item>100.0</item>
+        <item>0.0</item>
         <item>100.0</item>
         <item>100.0</item>
         <item>100.0</item>
@@ -312,9 +368,9 @@
     </string-array>
     <string-array name="oppositeAllowedRow_prob1_partC_btn6">
         <item>0.0</item>
-        <item>0.0</item>
-        <item>0.0</item>
-        <item>0.0</item>
+        <item>1.0</item>
+        <item>1.0</item>
+        <item>1.0</item>
     </string-array>
     <string-array name="clockwiseRow_prob1_partC_btn6">
         <item>100.0</item>
@@ -323,6 +379,18 @@
         <item>100.0</item>
     </string-array>
     <string-array name="finishedRow_prob1_partC_btn6">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
+    <string-array name="dependencyRow_prob1_partC_btn6">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
+    <string-array name="usedSameOrOpRow_prob1_partC_btn6">
         <item>0.0</item>
         <item>0.0</item>
         <item>0.0</item>
@@ -349,10 +417,10 @@
         <item>0.0</item>
     </string-array>
     <string-array name="oppositeAllowedRow_prob1_partC_btn7">
-        <item>0.0</item>
-        <item>0.0</item>
-        <item>0.0</item>
-        <item>0.0</item>
+        <item>1.0</item>
+        <item>1.0</item>
+        <item>1.0</item>
+        <item>1.0</item>
     </string-array>
     <string-array name="clockwiseRow_prob1_partC_btn7">
         <item>100.0</item>
@@ -361,6 +429,18 @@
         <item>100.0</item>
     </string-array>
     <string-array name="finishedRow_prob1_partC_btn7">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
+    <string-array name="dependencyRow_prob1_partC_btn7">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
+    <string-array name="usedSameOrOpRow_prob1_partC_btn7">
         <item>0.0</item>
         <item>0.0</item>
         <item>0.0</item>
@@ -387,10 +467,10 @@
         <item>0.0</item>
     </string-array>
     <string-array name="oppositeAllowedRow_prob1_partC_btn8">
-        <item>0.0</item>
-        <item>0.0</item>
-        <item>0.0</item>
-        <item>0.0</item>
+        <item>1.0</item>
+        <item>1.0</item>
+        <item>1.0</item>
+        <item>1.0</item>
     </string-array>
     <string-array name="clockwiseRow_prob1_partC_btn8">
         <item>100.0</item>
@@ -399,6 +479,18 @@
         <item>100.0</item>
     </string-array>
     <string-array name="finishedRow_prob1_partC_btn8">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
+    <string-array name="dependencyRow_prob1_partC_btn8">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
+    <string-array name="usedSameOrOpRow_prob1_partC_btn8">
         <item>0.0</item>
         <item>0.0</item>
         <item>0.0</item>
@@ -425,10 +517,10 @@
         <item>0.0</item>
     </string-array>
     <string-array name="oppositeAllowedRow_prob1_partC_btn9">
-        <item>0.0</item>
-        <item>0.0</item>
-        <item>0.0</item>
-        <item>0.0</item>
+        <item>1.0</item>
+        <item>1.0</item>
+        <item>1.0</item>
+        <item>1.0</item>
     </string-array>
     <string-array name="clockwiseRow_prob1_partC_btn9">
         <item>100.0</item>
@@ -437,6 +529,18 @@
         <item>100.0</item>
     </string-array>
     <string-array name="finishedRow_prob1_partC_btn9">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
+    <string-array name="dependencyRow_prob1_partC_btn9">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
+    <string-array name="usedSameOrOpRow_prob1_partC_btn9">
         <item>0.0</item>
         <item>0.0</item>
         <item>0.0</item>
@@ -463,10 +567,10 @@
         <item>0.0</item>
     </string-array>
     <string-array name="oppositeAllowedRow_prob1_partC_btn10">
-        <item>0.0</item>
-        <item>0.0</item>
-        <item>0.0</item>
-        <item>0.0</item>
+        <item>1.0</item>
+        <item>1.0</item>
+        <item>1.0</item>
+        <item>1.0</item>
     </string-array>
     <string-array name="clockwiseRow_prob1_partC_btn10">
         <item>100.0</item>
@@ -480,5 +584,16 @@
         <item>0.0</item>
         <item>0.0</item>
     </string-array>
-
+    <string-array name="dependencyRow_prob1_partC_btn10">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
+    <string-array name="usedSameOrOpRow_prob1_partC_btn10">
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+    </string-array>
 </resources>

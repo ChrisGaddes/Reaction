@@ -18,6 +18,7 @@ import android.transition.Fade;
 import android.transition.Slide;
 import android.util.Base64;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -60,7 +61,7 @@ public class ThirdActivity extends AppCompatActivity {
     private int problem_number;
     private String part_letter;
 
-    private String str_problem_number;
+    private String str_toolbar_title;
     private String[] str_problem_statement;
     private String str_part_letter;
     private String[] str_part_statement;
@@ -77,6 +78,13 @@ public class ThirdActivity extends AppCompatActivity {
     private String str_part_file_name;
     private String str_prob_file_name;
 
+    private long pauseTime;
+    private long resumeTime;
+    private long totalForgroundTime;
+
+    private ChronometerView rc;
+    private String time_string_for_dialog;
+
 //    private Data data = new Data();
 
     @Override
@@ -85,9 +93,12 @@ public class ThirdActivity extends AppCompatActivity {
         setupWindowAnimations();
         setContentView(R.layout.activity_third);
 
+
         context = getApplicationContext();
 
         btn_check_done = (FloatingActionButton) findViewById(R.id.btn_check_done);
+        btn_check_done.hide();
+
         btn_peek = (ImageButton) findViewById(R.id.btn_peek_main_prob);
 
         IV_peek = (ImageView) findViewById(R.id.IV_peek);
@@ -103,11 +114,11 @@ public class ThirdActivity extends AppCompatActivity {
         str_part_statement = getResources().getStringArray(getResId("problemStatement_" + "prob" + problem_number + "_part" + part_letter, R.array.class));
         part_letter = part_letter.toLowerCase();
         // Generates strings from problem information
-        str_problem_number = "Problem #" + problem_number + " - Part" + part_letter;
+        str_toolbar_title = "#" + problem_number + " - Part" + part_letter;
         str_part_file_name = "prob" + problem_number + "_part" + part_letter;
         str_prob_file_name = "prob" + problem_number;
 
-//        str_combined_title = str_problem_number + " - " + str_part_letter;
+//        str_combined_title = str_toolbar_title + " - " + str_part_letter;
 
 //        // load problem statement and part statement TODO: Remove loading part statement from this activity
 //        str_problem_statement = getResources().getStringArray(getResId("mainProblemStatement_" + "prob" + problem_number + "_part" + part_letter, R.array.class));
@@ -126,10 +137,13 @@ public class ThirdActivity extends AppCompatActivity {
         // Sets toolbar title
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(str_problem_number);
+        getSupportActionBar().setTitle(str_toolbar_title);
+//        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+//        getSupportActionBar().setCustomView(R.layout.actionbar_custom_view_home);
 
 
         mDrawArrowsView = (DrawArrowsView) findViewById(R.id.idDrawArrowsView);
+
 
         btn_check_done.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -156,7 +170,7 @@ public class ThirdActivity extends AppCompatActivity {
 
                 switch (eventaction) {
                     case MotionEvent.ACTION_DOWN:
-                        getSupportActionBar().setTitle(str_problem_number);
+                        getSupportActionBar().setTitle(str_toolbar_title);
                         IV_peek.setAlpha((float) 1.0);
                         break;
 
@@ -193,6 +207,19 @@ public class ThirdActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        pauseTime = System.currentTimeMillis();
+        totalForgroundTime = tinydb.getLong("TotalForegroundTime", 0) + (pauseTime - resumeTime);
+        tinydb.putLong("TotalForegroundTime", totalForgroundTime);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        resumeTime = System.currentTimeMillis();
+    }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void setupWindowAnimations() {
@@ -207,7 +234,7 @@ public class ThirdActivity extends AppCompatActivity {
         explode.setDuration(250);
 
 ////exclude toolbar
-//        explode.excludeTarget(R.id.toolbar, true);
+        explode.excludeTarget(R.id.toolbar, true);
 //exclude status bar
         explode.excludeTarget(android.R.id.statusBarBackground, true);
 //exclude navigation bar
@@ -215,20 +242,34 @@ public class ThirdActivity extends AppCompatActivity {
 //
 ////        explode.excludeTarget(MainActivity), true);
 
-        getWindow();
-        getWindow().setEnterTransition(slide);
-        getWindow().setReturnTransition(explode);
-        getWindow().setAllowEnterTransitionOverlap(false);
-        getWindow().setAllowReturnTransitionOverlap(false);
+//        getWindow();
+//        getWindow().setEnterTransition(explode);
+//        getWindow().setReturnTransition(explode);
+//        getWindow().setAllowEnterTransitionOverlap(false);
+//        getWindow().setAllowReturnTransitionOverlap(false);
     }
 
 
     private void showDialogArrowsCorrect() {
+        // stop counter
+        rc.stop();
+        long timer_time = rc.getCurrentTime();
+        long minutes = timer_time / 60;
+        long seconds = timer_time - (60 * minutes);
+        if (minutes > 0) {
+            time_string_for_dialog = minutes + " minutes, " + seconds + " seconds!";
+        } else if (minutes <= 0 && seconds == 1) {
+            time_string_for_dialog = seconds + " second... Inconceivable!";
+        } else if (minutes <= 0 && seconds != 1) {
+            time_string_for_dialog = seconds + " seconds!";
+        }
+
         new MaterialStyledDialog(this)
                 .setTitle("Correct!")
-                .setDescription(R.string.str_all_arrows_placed_correctly)
+                .setDescription("All forces placed correctly! You finished in " + time_string_for_dialog)
                 .setIcon(R.drawable.ic_check)
                 .setStyle(Style.HEADER_WITH_ICON)
+                .setScrollable(true)
 
                 .setPositive(getResources().getString(R.string.str_next_problem), new MaterialDialog.SingleButtonCallback() {
                     @Override
@@ -316,8 +357,30 @@ public class ThirdActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.third_menu, menu);
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        Long tmpTime = tinydb.getLong("TotalForegroundTime", 0);
+
+        if (tmpTime == 0) {
+            tinydb.putLong("TotalForegroundTime", System.currentTimeMillis());
+        }
+
+        startTimer(menu);
+
         return super.onCreateOptionsMenu(menu);
+    }
+
+    private void startTimer(Menu menu) {
+        rc = (ChronometerView) menu
+                .findItem(R.id.timer)
+                .getActionView();
+
+        rc.setBeginTime(tinydb.getLong("TotalForegroundTime", 0));
+        rc.setOverallDuration(2 * 60);
+        rc.setWarningDuration(90);
+        rc.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
+        rc.setTextColor(Color.WHITE);
+        rc.reset();
+        rc.run();
     }
 
     @Override
@@ -344,6 +407,10 @@ public class ThirdActivity extends AppCompatActivity {
                 // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void showFloatingActionButton() {
+        btn_check_done.show();
     }
 
     public String BitMapToString(Bitmap bitmap) {
