@@ -13,7 +13,9 @@
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,14 +24,24 @@
         </activity>
         <activity
             android:name=".MainIntroActivity"
-            android:theme="@style/Theme.Intro" />
-        <activity android:name=".ThirdActivity">
+            android:theme="@style/Theme.Intro"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ThirdActivity"
+            android:screenOrientation="portrait">
             android:label = "Third Activity Page"
         </activity>
-        <activity android:name=".MyPreferencesActivity">
+        <activity
+            android:name=".MyPreferencesActivity"
+            android:screenOrientation="portrait">
             android:label = "My Preferences"
         </activity>
-        <activity android:name=".SecondActivity" />
+        <activity
+            android:name=".SecondActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".CanteenIntroActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

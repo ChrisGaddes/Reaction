@@ -18,6 +18,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -37,22 +39,48 @@ public class MainActivity extends AppCompatActivity {
     private View actionBarView;
     private int mtoolbar;
     private Toolbar toolbar;
+    private ImageButton btn_menu;
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
     private SharedPreferences preference;
+    private boolean first_launch;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setupWindowAnimations();
-        setContentView(R.layout.activity_main);
 
         // loads tinydb database
         tinydb = new TinyDB(this);
         tinydb.remove("TotalForegroundTime"); //TODO: remove this
+
+        checkFirstRun();
+
+        setupWindowAnimations();
+        setContentView(R.layout.activity_main);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            View decor = getWindow().getDecorView();
+//            if (shouldChangeStatusBarTintToDark) {
+            decor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+//            } else {
+//                // We want to change tint color to white again.
+//                // You can also record the flags in advance so that you can turn UI back completely if
+//                // you have set other flags before, such as translucent or full screen.
+//                decor.setSystemUiVisibility(0);
+//            }
+        }
+
+        if (Build.VERSION.SDK_INT >= 21) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryLight));
+        }
+
 
 //        mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
 //
@@ -71,13 +99,11 @@ public class MainActivity extends AppCompatActivity {
 
         decor = getWindow().getDecorView();
 
-//        mtoolbar = R.id.toolbar;
+        // Sets toolbar title
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("");
 
-//        actionBarView = getActionBarView();
-
-//        mtoolbar = getActionBar(getWindow().getDecorView());
 
         tinydb = new TinyDB(this);
 
@@ -131,11 +157,24 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent, options.toBundle());
             }
         });
+
+        // sets onCLick Listener on menu button
+        btn_menu = (ImageButton) findViewById(R.id.btn_menu);
+        findViewById(R.id.btn_menu).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openOptionsMenu();
+            }
+        });
+
     }
+
 
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void setupWindowAnimations() {
+
+
         Slide slide = new Slide();
         slide.setDuration(250);
         slide.setSlideEdge(Gravity.RIGHT);
@@ -146,6 +185,9 @@ public class MainActivity extends AppCompatActivity {
         Explode explode = new Explode();
         explode.setDuration(250);
 
+//        if (first_launch) {
+//        fade.setDuration(1000);
+//        }
 ////exclude toolbar
 //        explode.excludeTarget(R.id.toolbar, true);
 //exclude status bar
@@ -156,34 +198,61 @@ public class MainActivity extends AppCompatActivity {
 ////        explode.excludeTarget(MainActivity), true);
 
         getWindow();
-        getWindow().setEnterTransition(explode);
+        getWindow().setEnterTransition(fade);
         getWindow().setReturnTransition(explode);
         getWindow().setAllowEnterTransitionOverlap(false);
         getWindow().setAllowReturnTransitionOverlap(false);
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.third_menu, menu);
+        Long tmpTime = tinydb.getLong("TotalForegroundTime", 0);
+
+        invalidateOptionsMenu();
+
+        if (tmpTime == 0) {
+//            tinydb.getLong("TotalForegroundTime", 0) + (pauseTime - resumeTime);
+            tinydb.putLong("TotalForegroundTime", 0);
+        }
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.timer).setVisible(false);
+        super.onPrepareOptionsMenu(menu);
         return true;
     }
 
-    /**
-     * react to the user tapping/selecting an options menu item
-     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+
             case R.id.action_settings:
-                //Toast.makeText(this, "ADD!", Toast.LENGTH_SHORT).show();
                 Intent i = new Intent(this, MyPreferencesActivity.class);
                 startActivity(i);
                 return true;
+
+//            case R.id.action_help:
+//                // User chose the "Help" action, shows help popup
+//                helpDialog();
+//                return true;
+//
+//            case R.id.action_startover:
+//                // User chose the "Start over" action, resets all arrows
+//                mDrawArrowsView.resetAllValues();
+//                return true;
+
             default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
         }
     }
+
 
 //    public static View getActionBarView(final Activity activity) {
 //        if (activity instanceof IToolbarHolder)
@@ -237,6 +306,40 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return null;
+    }
+
+    private void checkFirstRun() {
+        final String PREFS_NAME = "MyPrefsFile";
+        final String PREF_VERSION_CODE_KEY = "version_code";
+        final int DOESNT_EXIST = -1;
+        // Get current version code
+        int currentVersionCode = 0;
+        try {
+            currentVersionCode = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
+        } catch (android.content.pm.PackageManager.NameNotFoundException e) {
+            // handle exception
+            e.printStackTrace();
+            return;
+        }
+        // Get saved version code
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        int savedVersionCode = prefs.getInt(PREF_VERSION_CODE_KEY, DOESNT_EXIST);
+        // Check for first run or upgrade
+        if (currentVersionCode == savedVersionCode) {
+            // This is just a normal run
+            return;
+        } else if (savedVersionCode == DOESNT_EXIST) {
+            tinydb.putBoolean("key_first_launch", true);
+            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this);
+            Intent intent = new Intent(MainActivity.this, CanteenIntroActivity.class);
+            startActivity(intent, options.toBundle());
+
+            // TODO This is a new install (or the user cleared the shared preferences)
+        } else if (currentVersionCode > savedVersionCode) {
+            // TODO This is an upgrade
+        }
+        // Update the shared preferences with the current version code
+        prefs.edit().putInt(PREF_VERSION_CODE_KEY, currentVersionCode).commit();
     }
 
 }

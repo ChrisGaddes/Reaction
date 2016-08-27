@@ -134,8 +134,9 @@ public class SecondActivity extends AppCompatActivity {
 
         // Sets toolbar title
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(str_toolbar_title);
+//        getSupportActionBar().setTitle(str_toolbar_title);
 //        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 //        getSupportActionBar().setCustomView(R.layout.actionbar_custom_view_home);
 

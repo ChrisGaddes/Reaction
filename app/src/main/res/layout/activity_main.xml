@@ -13,92 +13,93 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_activity_Relative_Layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorGrayBackground"
+    android:background="@color/material_light_white"
     tools:context="com.chrisgaddes.reaction.MainActivity">
 
 
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:layout_margin="10dp">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:id="@+id/title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_margin="10dp"
-                    android:gravity="center"
-                    android:text="Reaction"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="50sp" />
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true">
 
 
-            </RelativeLayout>
-
-        </android.support.v7.widget.CardView>
-
-        <TextView
+        <ImageView
+            android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true"
             android:layout_margin="10dp"
-            android:gravity="center_horizontal"
-            android:text="Select
-        a problem to begin:"
-            android:textSize="20sp" />
+            android:src="@drawable/prob1"
+            android:text="Reaction"
+            android:textColor="@color/colorPrimary"
+            android:textSize="50sp" />
+
 
         <Button
             android:id="@+id/btn_load_prob_1"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="70dp"
             android:layout_centerHorizontal="true"
-            android:layout_centerInParent="true"
+            android:layout_below="@id/title"
             android:layout_margin="10dp"
-            android:backgroundTint="@color/colorWhiteBackground"
+            android:backgroundTint="@color/material_light_white"
             android:text="Problem 1"
             android:textAllCaps="false"
-            android:textColor="@color/colorPrimary" />
+            android:textColor="@color/colorPrimaryText" />
 
         <Button
             android:id="@+id/btn_load_prob_2"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="70dp"
             android:layout_below="@id/btn_load_prob_1"
             android:layout_centerHorizontal="true"
             android:layout_centerInParent="true"
             android:layout_margin="10dp"
-            android:backgroundTint="@color/colorWhiteBackground"
+            android:backgroundTint="@color/material_light_white"
             android:text="Problem 2"
             android:textAllCaps="false"
-            android:textColor="@color/colorPrimary" />
-
+            android:textColor="@color/colorPrimaryText" />
 
         <Button
             android:id="@+id/btn_load_prob_3"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="70dp"
             android:layout_below="@id/btn_load_prob_2"
             android:layout_centerHorizontal="true"
             android:layout_centerInParent="true"
             android:layout_margin="10dp"
-            android:backgroundTint="@color/colorWhiteBackground"
+            android:backgroundTint="@color/material_light_white"
             android:text="Problem 3"
             android:textAllCaps="false"
-            android:textColor="@color/colorPrimary" />
+            android:textColor="@color/colorPrimaryText" />
 
+        <ImageButton
+            android:id="@+id/btn_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_more_vert"
+            android:background="@color/material_light_white"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="16dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true" />
 
     </RelativeLayout>
+    <!--Note: if the toolbar is placed in an AppBarLayout it cannot be transparent strangely-->
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:background="@android:color/transparent"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+
+        />
 
 </RelativeLayout>
