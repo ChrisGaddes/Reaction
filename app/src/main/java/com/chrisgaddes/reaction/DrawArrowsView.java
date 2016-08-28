@@ -303,23 +303,9 @@ public class DrawArrowsView extends ImageView {
         // this method sets the location of the points
         // TODO: import these from database
 
-//
-//        // set node locations - touch "button" zones will be placed in boxes around these nodes
-//        PointF pointOne = new PointF((float) 18, (float) 31.5);
-//        PointF pointTwo = new PointF((float) 18, (float) 62.1);
-//        PointF pointThree = new PointF((float) 53.5, (float) 62.1);
-//        PointF pointFour = new PointF((float) 87.55, (float) 62.1);
-//
-//        // pointList.add(percentToPx(pointOne));
-//        pointList.add(percentToPx(pointTwo));
-//        pointList.add(percentToPx(pointThree));
-//        pointList.add(percentToPx(pointFour));
-
-        // create Rects from pointList to create buttons at nodes
-
         loadArrowCheckLocations();
-    }
 
+    }
 
     // TODO put this on a runnable so it doesn't slow down UI thread
     private void loadArrowCheckLocations() {

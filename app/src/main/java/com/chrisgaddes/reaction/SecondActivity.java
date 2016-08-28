@@ -27,7 +27,6 @@ import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -51,12 +50,7 @@ public class SecondActivity extends AppCompatActivity {
     private Context mContext;
     private ListView listView;
 
-    private RelativeLayout view;
-
     private TextView tv_problem_statement;
-    private TextView tv_problem_number;
-    private TextView tv_part_letter;
-    private TextView tv_part_statement;
 
     private int problem_number;
     private String str_prob_file_name;
@@ -121,25 +115,20 @@ public class SecondActivity extends AppCompatActivity {
         tv_problem_statement = (TextView) this.findViewById(R.id.tv_problem_statement2);
         tv_problem_statement.setText(str_problem_statement[0]);
 
-        // Sets image for problem
+        // Loads image for problem
         IV_problem = (ImageView) findViewById(R.id.problem);
         Glide.with(this)
                 .load(getResources().getIdentifier(str_prob_file_name, "drawable", getPackageName()))
                 .into(IV_problem);
 
-
         // Loads views
         mDrawArrowsView = (DrawArrowsView) findViewById(R.id.idDrawArrowsView);
-        view = (RelativeLayout) findViewById(R.id.id_2ndRelativeLayout);
 
         // Sets toolbar title
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
-//        getSupportActionBar().setTitle(str_toolbar_title);
-//        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-//        getSupportActionBar().setCustomView(R.layout.actionbar_custom_view_home);
-
+        getSupportActionBar().setTitle(str_toolbar_title);
 
         // Sets listener on start button
         btn_start_part = (FloatingActionButton) findViewById(R.id.btn_start_part);
@@ -157,7 +146,7 @@ public class SecondActivity extends AppCompatActivity {
     private void setupWindowAnimations() {
         Slide slide = new Slide();
         slide.setDuration(250);
-        slide.setSlideEdge(Gravity.RIGHT);
+        slide.setSlideEdge(Gravity.END);
 
         Fade fade = new Fade();
         fade.setDuration(250);
@@ -187,15 +176,17 @@ public class SecondActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
 
-        if (hasFocus)
-            // Saves layout to bitmap
-            view.setDrawingCacheEnabled(true);
-        view.buildDrawingCache();
-        Bitmap peekImage = view.getDrawingCache();
-//
-//
-        String strPeekImage = BitMapToString(peekImage);
-        tinydb.putString("PeekImage", strPeekImage);
+
+        // TODO: this is dramatically slowing everything down
+//        if (hasFocus)
+//            // Saves layout to bitmap
+//            view.setDrawingCacheEnabled(true);
+//        view.buildDrawingCache();
+//        Bitmap peekImage = view.getDrawingCache();
+////
+////
+//        String strPeekImage = BitMapToString(peekImage);
+//        tinydb.putString("PeekImage", strPeekImage);
 
     }
 
@@ -237,7 +228,8 @@ public class SecondActivity extends AppCompatActivity {
             tinydb.putLong("TotalForegroundTime", 0);
         }
 
-        startTimer(menu);
+
+//        startTimer(menu);
 
         return super.onCreateOptionsMenu(menu);
     }

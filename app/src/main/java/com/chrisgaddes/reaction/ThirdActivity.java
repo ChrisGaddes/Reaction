@@ -1,9 +1,7 @@
 package com.chrisgaddes.reaction;
 
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -26,7 +24,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -42,30 +39,17 @@ import java.lang.reflect.Field;
 public class ThirdActivity extends AppCompatActivity {
 
     private static final String TAG = "ThirdActivity";
-
-    //TODO add pinch to zoom http://stackoverflow.com/questions/30979647/how-to-draw-by-finger-on-canvas-after-pinch-to-zoom-coordinates-changed-in-andro
-
     private DrawArrowsView mDrawArrowsView;
-    private ImageView mProblem;
     private ImageView IV_peek;
-    private Context mContext;
-    private Context context;
-    private ListView listView;
     private Bitmap peekImage;
 
     private TextView tv_problem_statement;
-    private TextView tv_problem_number;
-    private TextView tv_part_letter;
-    private TextView tv_part_statement;
 
     private int problem_number;
     private String part_letter;
 
     private String str_toolbar_title;
-    private String[] str_problem_statement;
-    private String str_part_letter;
     private String[] str_part_statement;
-    private String str_combined_title;
 
     public static FloatingActionButton btn_check_done;
     private ImageButton btn_peek;
@@ -85,22 +69,16 @@ public class ThirdActivity extends AppCompatActivity {
     private ChronometerView rc;
     private String time_string_for_dialog;
 
-//    private Data data = new Data();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupWindowAnimations();
         setContentView(R.layout.activity_third);
 
-
-        context = getApplicationContext();
-
         btn_check_done = (FloatingActionButton) findViewById(R.id.btn_check_done);
         btn_check_done.hide();
 
         btn_peek = (ImageButton) findViewById(R.id.btn_peek_main_prob);
-
         IV_peek = (ImageView) findViewById(R.id.IV_peek);
 
         // Sets database
@@ -109,20 +87,14 @@ public class ThirdActivity extends AppCompatActivity {
         // Loads problem information
         problem_number = tinydb.getInt("problem_number");
         part_letter = tinydb.getString("part_letter");
-        str_part_letter = "Part " + part_letter;
 
         str_part_statement = getResources().getStringArray(getResId("problemStatement_" + "prob" + problem_number + "_part" + part_letter, R.array.class));
         part_letter = part_letter.toLowerCase();
+
         // Generates strings from problem information
         str_toolbar_title = "#" + problem_number + " - Part" + part_letter;
         str_part_file_name = "prob" + problem_number + "_part" + part_letter;
         str_prob_file_name = "prob" + problem_number;
-
-//        str_combined_title = str_toolbar_title + " - " + str_part_letter;
-
-//        // load problem statement and part statement TODO: Remove loading part statement from this activity
-//        str_problem_statement = getResources().getStringArray(getResId("mainProblemStatement_" + "prob" + problem_number + "_part" + part_letter, R.array.class));
-
 
         // Sets text for problem statement
         tv_problem_statement = (TextView) this.findViewById(R.id.tv_problem_statement);
@@ -170,7 +142,7 @@ public class ThirdActivity extends AppCompatActivity {
 
                 switch (eventaction) {
                     case MotionEvent.ACTION_DOWN:
-                        getSupportActionBar().setTitle(str_toolbar_title);
+                        getSupportActionBar().setTitle(str_prob_file_name);
                         IV_peek.setAlpha((float) 1.0);
                         break;
 
@@ -179,7 +151,7 @@ public class ThirdActivity extends AppCompatActivity {
                         break;
 
                     case MotionEvent.ACTION_UP:
-                        getSupportActionBar().setTitle(str_combined_title);
+                        getSupportActionBar().setTitle(str_toolbar_title);
                         IV_peek.setAlpha((float) 0.0);
                         break;
                 }
@@ -307,25 +279,6 @@ public class ThirdActivity extends AppCompatActivity {
                 .show();
     }
 
-    public void changeFabColor() {
-        int[][] states = new int[][]{
-                new int[]{android.R.attr.state_enabled}, // enabled
-                new int[]{-android.R.attr.state_enabled}, // disabled
-                new int[]{-android.R.attr.state_checked}, // unchecked
-                new int[]{android.R.attr.state_pressed}  // pressed
-        };
-
-        int[] colors = new int[]{
-                Color.GREEN,
-                Color.GREEN,
-                Color.GREEN,
-                Color.BLUE
-        };
-        ColorStateList myList = new ColorStateList(states, colors);
-        btn_check_done.setBackgroundTintList(myList);
-//        return(0);
-    }
-
     private void helpDialog() {
         new MaterialStyledDialog(this)
                 .setTitle("Help")
@@ -339,12 +292,10 @@ public class ThirdActivity extends AppCompatActivity {
                         Log.d("MaterialStyledDialogs", "Do something!");
                     }
                 })
-
                 .show();
     }
 
     public static int getResId(String variableName, Class<?> c) {
-
         try {
             Field idField = c.getDeclaredField(variableName);
             return idField.getInt(idField);
@@ -357,15 +308,11 @@ public class ThirdActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.third_menu, menu);
-
         Long tmpTime = tinydb.getLong("TotalForegroundTime", 0);
-
         if (tmpTime == 0) {
             tinydb.putLong("TotalForegroundTime", System.currentTimeMillis());
         }
-
         startTimer(menu);
-
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -373,7 +320,6 @@ public class ThirdActivity extends AppCompatActivity {
         rc = (ChronometerView) menu
                 .findItem(R.id.timer)
                 .getActionView();
-
         rc.setBeginTime(tinydb.getLong("TotalForegroundTime", 0));
         rc.setOverallDuration(2 * 60);
         rc.setWarningDuration(90);
@@ -409,10 +355,6 @@ public class ThirdActivity extends AppCompatActivity {
         }
     }
 
-    public void showFloatingActionButton() {
-        btn_check_done.show();
-    }
-
     public String BitMapToString(Bitmap bitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
@@ -432,29 +374,4 @@ public class ThirdActivity extends AppCompatActivity {
             return null;
         }
     }
-
 }
-
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//        return true;
-//    }
-
-/**
- * react to the user tapping/selecting an options menu item
- */
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case R.id.btn_main_menu:
-//                //Toast.makeText(this, "ADD!", Toast.LENGTH_SHORT).show();
-//                Intent i = new Intent(this, MyPreferencesActivity.class);
-//                startActivity(i);
-//                return true;
-//            default:
-//                return super.onOptionsItemSelected(item);
-//        }
-//    }
