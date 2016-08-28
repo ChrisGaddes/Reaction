@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -17,6 +18,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
 
 import java.lang.reflect.Field;
 
@@ -29,6 +33,14 @@ public class MainActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private boolean first_launch;
+    private Button btn_load_prob_1;
+    private Button btn_load_prob_2;
+    private Button btn_load_prob_3;
+
+    private Animation slideUp;
+    private Animation slideDown;
+
+    private Handler mHandler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
 
+        btn_load_prob_1 = (Button) findViewById(R.id.btn_load_prob_1);
+        btn_load_prob_1.setVisibility(View.INVISIBLE);
         findViewById(R.id.btn_load_prob_1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,6 +89,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        btn_load_prob_2 = (Button) findViewById(R.id.btn_load_prob_2);
+        btn_load_prob_2.setVisibility(View.INVISIBLE);
         findViewById(R.id.btn_load_prob_2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,6 +105,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        btn_load_prob_3 = (Button) findViewById(R.id.btn_load_prob_3);
+        btn_load_prob_3.setVisibility(View.INVISIBLE);
         findViewById(R.id.btn_load_prob_3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,6 +120,34 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent, options.toBundle());
             }
         });
+
+        slideUp = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up);
+        slideDown = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_down);
+
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                btn_load_prob_1.startAnimation(slideUp);
+                btn_load_prob_1.setVisibility(View.VISIBLE);
+            }
+        }, 50);
+
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                btn_load_prob_2.startAnimation(slideUp);
+                btn_load_prob_2.setVisibility(View.VISIBLE);
+            }
+        }, 150);
+
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                btn_load_prob_3.startAnimation(slideUp);
+                btn_load_prob_3.setVisibility(View.VISIBLE);
+            }
+        }, 200);
+
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)

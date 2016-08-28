@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -69,6 +70,7 @@ public class SecondActivity extends AppCompatActivity {
     private long pauseTime;
     private long resumeTime;
     private long totalForgroundTime;
+    private Handler mHandler = new Handler();
 
 
     private Chronometer focus;
@@ -114,7 +116,7 @@ public class SecondActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
 //                Toast.makeText(SecondActivity.this, "Press Red button to begin!", Toast.LENGTH_SHORT).show();
-                Snackbar.make(findViewById(R.id.secondActivityCoordLayout), "Press red button to begin", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(findViewById(R.id.secondActivityCoordLayout), "Press the red button to begin", Snackbar.LENGTH_SHORT).show();
                 return false;
             }
         });
@@ -144,6 +146,16 @@ public class SecondActivity extends AppCompatActivity {
                 startActivity(intent, options.toBundle());
             }
         });
+
+        btn_start_part.hide();
+
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                btn_start_part.show();
+            }
+        }, 350);
+
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)

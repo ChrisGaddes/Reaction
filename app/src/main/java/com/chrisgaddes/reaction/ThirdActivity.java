@@ -27,6 +27,8 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -96,12 +98,19 @@ public class ThirdActivity extends AppCompatActivity {
     private Boolean enable_peek_b;
     private Snackbar snackbar;
 
+    private Animation slideUp;
+    private Animation slideDown;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupWindowAnimations();
         setContentView(R.layout.activity_third);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        // Initialize animations
+        slideUp = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up);
+        slideDown = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_down);
 
         btn_check_done = (FloatingActionButton) findViewById(R.id.btn_check_done);
 //        btn_check_done.hide();
@@ -294,13 +303,14 @@ public class ThirdActivity extends AppCompatActivity {
                         }
                         btn_peek_parta.setAlpha((float) 0.0);
                         btn_peek_partb.setAlpha((float) 0.0);
-
+                        btn_check_done.hide();
                         break;
 
                     case MotionEvent.ACTION_UP:
                         getSupportActionBar().setTitle(str_toolbar_partCurrent_title);
                         IV_peek_probCurrent_view.setAlpha((float) 0.0);
                         IV_problem_part.setAlpha((float) 1.0);
+
                         mDrawArrowsView.setAlpha((float) 1.0);
                         tv_statement.setText(str_part_statement[0]);
 
@@ -314,6 +324,7 @@ public class ThirdActivity extends AppCompatActivity {
                         if (enable_peek_b) {
                             btn_peek_partb.setAlpha((float) 1.0);
                         }
+                        btn_check_done.show();
                         break;
                 }
 
@@ -341,7 +352,7 @@ public class ThirdActivity extends AppCompatActivity {
                             }
                             btn_peek_prob.setAlpha((float) 0.0);
                             btn_peek_partb.setAlpha((float) 0.0);
-
+                            btn_check_done.hide();
                             break;
 
                         case MotionEvent.ACTION_UP:
@@ -358,6 +369,7 @@ public class ThirdActivity extends AppCompatActivity {
                             if (enable_peek_b) {
                                 btn_peek_partb.setAlpha((float) 1.0);
                             }
+                            btn_check_done.show();
                             break;
                     }
                 }
@@ -386,6 +398,7 @@ public class ThirdActivity extends AppCompatActivity {
                             }
                             btn_peek_prob.setAlpha((float) 0.0);
                             btn_peek_parta.setAlpha((float) 0.0);
+                            btn_check_done.hide();
 
                             break;
 
@@ -401,13 +414,13 @@ public class ThirdActivity extends AppCompatActivity {
                             }
                             btn_peek_prob.setAlpha((float) 1.0);
                             btn_peek_parta.setAlpha((float) 1.0);
+                            btn_check_done.show();
 
                             break;
                     }
                 }
                 return true;
             }
-
         });
     }
 
@@ -504,10 +517,8 @@ public class ThirdActivity extends AppCompatActivity {
                                 startActivity(intent, options.toBundle());
                                 break;
                         }
-
                     }
                 })
-
                 .show();
     }
 
