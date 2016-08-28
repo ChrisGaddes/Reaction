@@ -4,8 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.chrisgaddes.reaction.SecondActivity">
+    tools:context="com.chrisgaddes.reaction.SecondActivity"
+    android:id="@+id/relativeLayout_Second">
 
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
@@ -34,7 +39,8 @@
             android:id="@+id/problem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true" />
+            android:layout_centerInParent="true"
+            android:background="@color/material_light_white" />
 
         <!--<ProgressBar-->
         <!--android:id="@+id/progress"-->
@@ -64,23 +70,24 @@
 
     </RelativeLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/btn_start_part"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="20dp"
-        android:layout_marginBottom="20dp"
-        android:layout_alignParentRight="true"
-        android:src="@drawable/ic_forward"
-        android:textAllCaps="false"
-        app:fab_colorNormal="@color/colorPrimaryGreen"
-        app:fab_colorRipple="@color/colorPrimaryDarkGreen"
-        android:transitionGroup="false"
-        app:fab_hideAnimation="@anim/fab_slide_in_from_left"
-        app:fab_showAnimation="@anim/fab_slide_out_to_right"
+    </RelativeLayout>
 
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/secondActivityCoordLayout">
 
-        />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/btn_start_part"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_gravity="bottom|right|end"
+            android:src="@drawable/ic_send"
+            android:transitionGroup="false" />
+
+    </android.support.design.widget.CoordinatorLayout>
+
 
 </RelativeLayout>

@@ -24,12 +24,12 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
 //    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:24.2.0'
-    compile 'com.android.support:support-v4:24.2.0'
-    compile 'com.android.support:design:24.2.0'
+    // Can't use 24.2.0 becuase FAB doesn't come back down after snackbar due to bug in support library
+    compile 'com.android.support:appcompat-v7:24.0.0'
+    compile 'com.android.support:support-v4:24.0.0'
+    compile 'com.android.support:design:24.0.0'
     compile 'com.dmitrymalkovich.android:material-design-dimens:1.2'
     compile 'com.github.javiersantos:MaterialStyledDialogs:1.5.1'
-    compile 'com.github.clans:fab:1.6.4'
     compile 'com.gordonwong:material-sheet-fab:1.2.1'
     compile 'com.sothree.slidinguppanel:library:3.3.0'
     compile project(':smartloginlibrary-v0.5beta')
@@ -42,7 +42,8 @@ dependencies {
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.github.iammert:MaterialIntroView:1.5.2'
     compile 'com.cleveroad:slidingtutorial:0.9.5'
-
+    compile 'com.github.clans:fab:1.6.4'
+    compile 'com.makeramen:roundedimageview:2.2.1'
 
     compile 'com.udojava:EvalEx:1.0'
 

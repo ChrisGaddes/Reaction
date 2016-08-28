@@ -19,11 +19,11 @@
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
-            app:theme="@style/ToolBarStyle"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            android:elevation="8dp"
             android:transitionGroup="false"
-            android:elevation="8dp" />
+            app:theme="@style/ToolBarStyle" />
     </android.support.design.widget.AppBarLayout>
 
 
@@ -45,18 +45,18 @@
             android:layout_gravity="end|bottom"
             android:layout_margin="20dp"
             android:src="@drawable/ic_check"
-            app:elevation="12dp"
-            app:fabSize="normal"
             android:transitionGroup="false"
-            app:borderWidth="0dp" />
+            app:borderWidth="0dp"
+            app:elevation="12dp"
+            app:fabSize="normal" />
 
 
         <RelativeLayout
             android:id="@+id/id_third_activity"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="top"
             android:clipToPadding="false"
+            android:gravity="top"
 
             android:outlineProvider="bounds">
 
@@ -68,57 +68,12 @@
                 android:elevation="8dp">
 
                 <TextView
-                    android:id="@+id/tv_problem_statement"
+                    android:id="@+id/tv_statement"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="20dp" />
             </ScrollView>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:orientation="horizontal"
-                android:layout_alignParentBottom="true">
-
-                <ImageButton
-                    android:id="@+id/btn_peek_main_prob"
-                    android:layout_width="match_parent"
-                    android:layout_height="70dp"
-                    android:src="@drawable/ic_visibility"
-                    android:elevation="8dp"
-                    android:background="@color/material_light_white"
-                    android:layout_alignParentBottom="true"
-                    android:layout_weight=".3" />
-
-                <ImageButton
-                    android:id="@+id/btn_peek_parta"
-                    android:layout_width="match_parent"
-                    android:layout_height="70dp"
-                    android:src="@drawable/ic_visibility"
-                    android:elevation="8dp"
-                    android:background="@color/material_light_white"
-                    android:layout_alignParentBottom="true"
-                    android:layout_weight=".3" />/>
-
-                <ImageButton
-                    android:id="@+id/btn_peek_partb"
-                    android:layout_width="match_parent"
-                    android:layout_height="70dp"
-                    android:src="@drawable/ic_visibility"
-                    android:elevation="8dp"
-                    android:background="@color/material_light_white"
-                    android:layout_alignParentBottom="true"
-                    android:layout_weight=".3" />/>
-
-                <ImageView
-                    android:id="@+id/btn_blank"
-                    android:layout_width="match_parent"
-                    android:layout_height="70dp"
-                    android:elevation="8dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_weight=".3" />/>
-
-            </LinearLayout>
 
 
             <com.chrisgaddes.reaction.SquareImageView
@@ -135,14 +90,74 @@
                 android:layout_below="@id/scrollView"
                 android:clipChildren="false" />
 
+            <com.chrisgaddes.reaction.SquareImageView
+                android:id="@+id/peek_probCurrent_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/scrollView"
+                android:clipChildren="false" />
+
+            <com.chrisgaddes.reaction.SquareImageView
+                android:id="@+id/peek_parta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/scrollView"
+                android:clipChildren="false" />
+
+            <com.chrisgaddes.reaction.SquareImageView
+                android:id="@+id/peek_partb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/scrollView"
+                android:clipChildren="false" />
+
         </RelativeLayout>
 
-        <ImageView
-            android:id="@+id/IV_peek"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:alpha="0.0"
-            android:elevation="40dp" />
+            android:layout_height="96dp"
+
+            android:elevation="12dp"
+            android:layout_gravity="bottom">
+
+            <com.chrisgaddes.reaction.SquareImageView
+                android:id="@+id/btn_peek_prob"
+                android:layout_width="56dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_visibility"
+                android:elevation="4dp"
+                android:background="@color/material_light_white"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="20dp" />
+
+            <com.chrisgaddes.reaction.SquareImageView
+                android:id="@+id/btn_peek_parta"
+                android:layout_width="56dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_visibility"
+                android:elevation="4dp"
+                android:background="@color/material_light_white"
+                android:layout_alignParentBottom="true"
+                android:layout_toRightOf="@id/btn_peek_prob"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="20dp" />
+
+            <com.chrisgaddes.reaction.SquareImageView
+                android:id="@+id/btn_peek_partb"
+                android:layout_width="56dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_visibility"
+                android:elevation="4dp"
+                android:background="@color/material_light_white"
+                android:layout_alignParentBottom="true"
+                android:layout_toRightOf="@id/btn_peek_parta"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="20dp" />
+
+        </RelativeLayout>
 
     </android.support.design.widget.CoordinatorLayout>
+
 </RelativeLayout>

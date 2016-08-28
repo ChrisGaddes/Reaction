@@ -6,6 +6,7 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
@@ -95,6 +96,9 @@ public class DrawArrowsView extends ImageView {
     private float stepAngle;
     private float touchAngle;
     private float deltaAngle;
+
+    private Canvas canvas;
+    private Bitmap bitmap;
 
     private boolean invalidateNow;
 
@@ -304,7 +308,6 @@ public class DrawArrowsView extends ImageView {
         // TODO: import these from database
 
         loadArrowCheckLocations();
-
     }
 
     // TODO put this on a runnable so it doesn't slow down UI thread
@@ -548,6 +551,10 @@ public class DrawArrowsView extends ImageView {
 
         // I needed the size of the canvas in order to calculate the percentage the points were accross the screen, but it won't properly get the size until the view is drawn. So, I trigger setButtonPoints from here once the view is drawn and use the if statement below to only allow it to run once. This seems like a terrible was to do it but it works. I'd love advice on how to improve this if you think it matters"
 
+        canvas = new Canvas();
+        bitmap = Bitmap.createBitmap((int) viewWidth, (int) viewHeight, Bitmap.Config.RGB_565);
+        canvas.setBitmap(bitmap);
+
         // TODO run this off main thread IMPORTANT
         if (!SetButtonPoints_RunAlready) {
             setButtonPoints(getContext());
@@ -557,30 +564,25 @@ public class DrawArrowsView extends ImageView {
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+//        if (bitmap==null){
+//            bitmap = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888);
+//            Canvas canvasToSave = new Canvas(savedBitmap);
+//            for(CustomTextViewDrawItem item : drawItemList){
+//                canvasToSave.drawText(item.Text, item.X, item.Y, textPaint);
+//            }
+//
+//            if (eLabel.backgroundGradient != null){
+//                canvasToSave.drawPath(path, fillPaint);
+//            }
+//        }
+//        canvas.drawBitmap(savedBitmap, 0, 0, new Paint());
 
         if (invalidateNow) {
             invalidateNow = false;
             invalidate();
         }
 
-
-        // TODO move some of this outside of onDraw for efficiency
-        // JAMES SENTELL: "I don't have a deep understanding on getClipBounds(). DO you? If so, do you have any advice on how to set the bounds of the image to the full size of the view? I have a func"
-
-        /**
-         * Not entirely sure, perhaps try the following (straight from stackoverflow - use at own
-         * risk...)
-         *
-         * ImageView imageView = (ImageView)findViewById(R.id.imageview);
-         * Drawable drawable = imageView.getDrawable();
-         * Rect imageBounds = drawable.getBounds();
-         */
-        Rect imageBounds = canvas.getClipBounds();  // Adjust this for where you want it
-//        mGrayedImage.setBounds(imageBounds);
-//        mFocusedImage.setBounds(imageBounds);
-
-//        mGrayedImage.draw(canvas);
-//        mFocusedImage.draw(canvas);
+//        Rect imageBounds = canvas.getClipBounds();  // Adjust this for where you want it
 
         // draws rectangles around arrowheads
         for (Rect rect1 : rectListArrowHead) {
@@ -656,8 +658,6 @@ public class DrawArrowsView extends ImageView {
             canvas.drawText("allArrowsCorrect = " + String.valueOf(allArrowsCorrect), 1100, 1000, paint_text);
 
             canvas.drawText("used_already2 = " + String.valueOf(used_already2), 600, 1120, paint_text);
-
-
             canvas.drawText("btn 1, checkMatrix first row = " + String.valueOf(checkMatrix.get(0).get(0)), 20, 1340, paint_text);
             canvas.drawText("btn 1, checkMatrix second row = " + String.valueOf(checkMatrix.get(0).get(1)), 20, 1400, paint_text);
             canvas.drawText("btn 1, checkMatrix third row = " + String.valueOf(checkMatrix.get(0).get(2)), 20, 1460, paint_text);
@@ -678,16 +678,6 @@ public class DrawArrowsView extends ImageView {
 
     Runnable mLongPressed = new Runnable() {
         public void run() {
-
-//            boolean moment_already_used = false;
-//            for (int v = 1; v < isMomentList; v++) {
-//                if (isMomentList.get(v)){
-//                    moment_already_used = true;
-//                }
-//            }
-
-            // breaks if moment has already been used
-//            if (!moment_already_used) {
             //sets clockwise to true
             moving_clockwise = true;
 
@@ -697,17 +687,11 @@ public class DrawArrowsView extends ImageView {
             // forces minimum size of moment until touch is moved past mimimum
             moved_outside_radius_already = false;
 
-//            Snackbar.make(getContext(), "Moment Added", Snackbar.LENGTH_SHORT).show();
-//            Toast.makeText(getContext(), "Moment Added", Toast.LENGTH_SHORT).show();
-
             // remove arrow on long press
             len_from_btn_to_touch = len_arrow_shaft;
 
             removeValuesFromArraylists(rectListArrowHead_indice);
-
             isMomentList.add(rectListArrowHead_indice, true);
-
-
             isClockwiseList.add(rectListArrowHead_indice, 200.0);
             null_path = new Path();
             pathListCorrect.add(null_path);
@@ -718,12 +702,8 @@ public class DrawArrowsView extends ImageView {
 
             onActionDown();
             invalidate();
-//            } else {
-//
-//            }
         }
     };
-
 
     void removeValuesFromArraylists(int mRectListArrowHead_indice) {
         // removes values from Arraylists
@@ -1014,7 +994,6 @@ public class DrawArrowsView extends ImageView {
 //            showDialogArrowsCorrect();
             return true;
         } else {
-            Snackbar.make(this, "Not Finished Yet...", Snackbar.LENGTH_SHORT).show();
             return false;
 //            invalidate();
 

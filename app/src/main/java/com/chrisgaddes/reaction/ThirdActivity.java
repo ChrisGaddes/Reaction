@@ -4,10 +4,13 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -15,6 +18,7 @@ import android.transition.Explode;
 import android.transition.Fade;
 import android.transition.Slide;
 import android.util.Base64;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -22,7 +26,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageButton;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -41,26 +45,45 @@ public class ThirdActivity extends AppCompatActivity {
     private static final String TAG = "ThirdActivity";
     private DrawArrowsView mDrawArrowsView;
     private ImageView IV_peek;
-    private Bitmap peekImage;
+    private ImageView IV_peek_probCurrent_view;
+    private ImageView IV_peek_parta;
+    private ImageView IV_peek_partb;
 
-    private TextView tv_problem_statement;
+
+    private TextView tv_statement;
 
     private int problem_number;
     private String part_letter;
 
-    private String str_toolbar_title;
+    private String str_toolbar_partCurrent_title;
     private String[] str_part_statement;
+    private String[] str_problem_statement;
+    private String str_parta_statement[];
+    private String str_partb_statement[];
 
     public static FloatingActionButton btn_check_done;
-    private ImageButton btn_peek;
+    private SquareImageView btn_peek_prob;
+    private SquareImageView btn_peek_parta;
+    private SquareImageView btn_peek_partb;
 
     public TinyDB tinydb;
     private int eventaction;
 
     private Toolbar toolbar;
-    private ImageView problem_part;
-    private String str_part_file_name;
-    private String str_prob_file_name;
+    private ImageView IV_problem_part;
+    private String str_partCurrent_file_name;
+    private String str_parta_file_name;
+    private String str_partb_file_name;
+    private String str_partc_file_name;
+
+    private String str_parta_title;
+    private String str_partb_title;
+    private String str_partc_title;
+
+
+    private String str_toolbar_problem_title;
+
+    private String str_probCurrent_file_name;
 
     private long pauseTime;
     private long resumeTime;
@@ -69,17 +92,19 @@ public class ThirdActivity extends AppCompatActivity {
     private ChronometerView rc;
     private String time_string_for_dialog;
 
+    private Boolean enable_peek_a;
+    private Boolean enable_peek_b;
+    private Snackbar snackbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupWindowAnimations();
         setContentView(R.layout.activity_third);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         btn_check_done = (FloatingActionButton) findViewById(R.id.btn_check_done);
-        btn_check_done.hide();
-
-        btn_peek = (ImageButton) findViewById(R.id.btn_peek_main_prob);
-        IV_peek = (ImageView) findViewById(R.id.IV_peek);
+//        btn_check_done.hide();
 
         // Sets database
         tinydb = new TinyDB(this);
@@ -88,95 +113,302 @@ public class ThirdActivity extends AppCompatActivity {
         problem_number = tinydb.getInt("problem_number");
         part_letter = tinydb.getString("part_letter");
 
+        // resets booleans to false (hidden)
+        enable_peek_a = false;
+        enable_peek_b = false;
+
+        // shows peek image buttons once previous part is finished
+        if (part_letter.equals("B")) {
+            enable_peek_a = true;
+        } else if (part_letter.equals("C")) {
+            enable_peek_a = true;
+            enable_peek_b = true;
+        }
+
+        // load problem statement and part statement
+        str_problem_statement = getResources().getStringArray(getResId("mainProblemStatement_" + "prob" + problem_number + "_part" + part_letter, R.array.class));
+
         str_part_statement = getResources().getStringArray(getResId("problemStatement_" + "prob" + problem_number + "_part" + part_letter, R.array.class));
+        str_parta_statement = getResources().getStringArray(getResId("problemStatement_" + "prob" + problem_number + "_part" + "A", R.array.class));
+        str_partb_statement = getResources().getStringArray(getResId("problemStatement_" + "prob" + problem_number + "_part" + "B", R.array.class));
+
+
+        // converts to lower case
         part_letter = part_letter.toLowerCase();
 
         // Generates strings from problem information
-        str_toolbar_title = "#" + problem_number + " - Part" + part_letter;
-        str_part_file_name = "prob" + problem_number + "_part" + part_letter;
-        str_prob_file_name = "prob" + problem_number;
+        str_toolbar_partCurrent_title = "#" + problem_number + " - Part " + part_letter.toUpperCase();
+        str_partCurrent_file_name = "prob" + problem_number + "_part" + part_letter;
+        str_parta_file_name = "prob" + problem_number + "_part" + "a";
+        str_partb_file_name = "prob" + problem_number + "_part" + "b";
+        str_partc_file_name = "prob" + problem_number + "_part" + "c";
+
+        str_probCurrent_file_name = "prob" + problem_number;
+        str_toolbar_problem_title = "Problem #" + problem_number;
+        str_parta_title = "#" + problem_number + " - Part " + "A";
+        str_partb_title = "#" + problem_number + " - Part " + "B";
+        str_partc_title = "#" + problem_number + " - Part " + "C";
 
         // Sets text for problem statement
-        tv_problem_statement = (TextView) this.findViewById(R.id.tv_problem_statement);
-        tv_problem_statement.setText(str_part_statement[0]);
+        tv_statement = (TextView) this.findViewById(R.id.tv_statement);
+        tv_statement.setText(str_part_statement[0]);
+
+        // Sets image for part
+        IV_problem_part = (ImageView) findViewById(R.id.problem_part);
+        Glide.with(this)
+                .load(getResources().getIdentifier(str_partCurrent_file_name, "drawable", getPackageName()))
+                .into(IV_problem_part);
 
         // Sets image for problem
-        problem_part = (ImageView) findViewById(R.id.problem_part);
+        IV_peek_probCurrent_view = (ImageView) findViewById(R.id.peek_probCurrent_view);
+        btn_peek_prob = (SquareImageView) findViewById(R.id.btn_peek_prob);
         Glide.with(this)
-                .load(getResources().getIdentifier(str_part_file_name, "drawable", getPackageName()))
-                .into(problem_part);
+                .load(getResources().getIdentifier(str_probCurrent_file_name, "drawable", getPackageName()))
+                .load(getResources().getIdentifier(str_probCurrent_file_name, "drawable", getPackageName()))
+                .into(IV_peek_probCurrent_view);
+        Glide.with(this)
+                .load(getResources().getIdentifier(str_probCurrent_file_name, "drawable", getPackageName()))
+                .into(btn_peek_prob);
+
+        // Sets image for problem
+        IV_peek_parta = (ImageView) findViewById(R.id.peek_parta);
+        btn_peek_parta = (SquareImageView) findViewById(R.id.btn_peek_parta);
+        Glide.with(this)
+                .load(getResources().getIdentifier(str_parta_file_name, "drawable", getPackageName()))
+                .into(IV_peek_parta);
+        Glide.with(this)
+                .load(getResources().getIdentifier(str_parta_file_name, "drawable", getPackageName()))
+                .into(btn_peek_parta);
+
+        // Sets image for problem
+        IV_peek_partb = (ImageView) findViewById(R.id.peek_partb);
+        btn_peek_partb = (SquareImageView) findViewById(R.id.btn_peek_partb);
+        Glide.with(this)
+                .load(getResources().getIdentifier(str_partb_file_name, "drawable", getPackageName()))
+                .into(IV_peek_partb);
+        Glide.with(this)
+                .load(getResources().getIdentifier(str_partb_file_name, "drawable", getPackageName()))
+                .into(btn_peek_partb);
+
+        // Hides problem view and previous part views initially
+        IV_peek_probCurrent_view.setAlpha((float) 0.0);
+        IV_peek_parta.setAlpha((float) 0.0);
+        IV_peek_partb.setAlpha((float) 0.0);
+
+        if (enable_peek_a) {
+            btn_peek_parta.setAlpha((float) 1.0);
+        } else {
+            btn_peek_parta.setAlpha((float) 0.0);
+        }
+
+        if (enable_peek_b) {
+            btn_peek_partb.setAlpha((float) 1.0);
+        } else {
+            btn_peek_partb.setAlpha((float) 0.0);
+        }
 
         // Sets toolbar title
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(str_toolbar_title);
+        getSupportActionBar().setTitle(str_toolbar_partCurrent_title);
 //        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 //        getSupportActionBar().setCustomView(R.layout.actionbar_custom_view_home);
 
 
         mDrawArrowsView = (DrawArrowsView) findViewById(R.id.idDrawArrowsView);
 
-
         btn_check_done.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 boolean mrunCheckIfFinished = mDrawArrowsView.runCheckIfFinished();
                 if (mrunCheckIfFinished) {
+
+                    Bitmap bm = getBitmapFromView(mDrawArrowsView);
                     showDialogArrowsCorrect();
                 } else {
-//                    Snackbar.make(this, "Not Finished Yet...", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(R.id.coordinatorLayout), "Not Finished Yet...", Snackbar.LENGTH_SHORT).setCallback(new Snackbar.Callback() {
+                        @Override
+                        public void onDismissed(Snackbar snackbar, int event) {
+                            switch (event) {
+                                case Snackbar.Callback.DISMISS_EVENT_ACTION:
+                                    btn_peek_prob.setAlpha((float) 1.0);
+                                    if (enable_peek_a) {
+                                        btn_peek_parta.setAlpha((float) 1.0);
+                                    }
+                                    if (enable_peek_b) {
+                                        btn_peek_partb.setAlpha((float) 1.0);
+                                    }
+                                    break;
+                                case Snackbar.Callback.DISMISS_EVENT_TIMEOUT:
+                                    btn_peek_prob.setAlpha((float) 1.0);
+                                    if (enable_peek_a) {
+                                        btn_peek_parta.setAlpha((float) 1.0);
+                                    }
+                                    if (enable_peek_b) {
+                                        btn_peek_partb.setAlpha((float) 1.0);
+                                    }
+                                    break;
+                            }
+                        }
+
+                        @Override
+                        public void onShown(Snackbar snackbar) {
+                            btn_peek_prob.setAlpha((float) 0.0);
+                            if (enable_peek_a) {
+                                btn_peek_parta.setAlpha((float) 0.0);
+                            }
+                            if (enable_peek_b) {
+                                btn_peek_partb.setAlpha((float) 0.0);
+                            }
+                        }
+//                    }).setAction("Start Over", new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            btn_peek_prob.setAlpha((float) 1.0);
+//                            if (enable_peek_a) {
+//                                btn_peek_parta.setAlpha((float) 1.0);
+//                            }
+//                            if (enable_peek_b) {
+//                                btn_peek_partb.setAlpha((float) 1.0);
+//                            }
+//                            mDrawArrowsView.resetAllValues();
+//                        }
+                    }).show();
                 }
             }
         });
 
-
-        String strPeekImage = tinydb.getString("PeekImage");
-        peekImage = StringToBitMap(strPeekImage);
-        IV_peek.setImageBitmap(peekImage);
-
-        btn_peek.setOnTouchListener(new View.OnTouchListener() {
-
+        btn_peek_prob.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-
                 eventaction = event.getAction();
-
                 switch (eventaction) {
                     case MotionEvent.ACTION_DOWN:
-                        getSupportActionBar().setTitle(str_prob_file_name);
-                        IV_peek.setAlpha((float) 1.0);
-                        break;
+                        getSupportActionBar().setTitle(str_toolbar_problem_title);
+                        IV_peek_probCurrent_view.setAlpha((float) 1.0);
+                        IV_problem_part.setAlpha((float) 0.0);
+                        mDrawArrowsView.setAlpha((float) 0.0);
+                        tv_statement.setText(str_problem_statement[0]);
 
-                    case MotionEvent.ACTION_MOVE:
-//                onActionMove();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            btn_peek_prob.setElevation(dpToPx(8));
+                        }
+                        btn_peek_parta.setAlpha((float) 0.0);
+                        btn_peek_partb.setAlpha((float) 0.0);
+
                         break;
 
                     case MotionEvent.ACTION_UP:
-                        getSupportActionBar().setTitle(str_toolbar_title);
-                        IV_peek.setAlpha((float) 0.0);
+                        getSupportActionBar().setTitle(str_toolbar_partCurrent_title);
+                        IV_peek_probCurrent_view.setAlpha((float) 0.0);
+                        IV_problem_part.setAlpha((float) 1.0);
+                        mDrawArrowsView.setAlpha((float) 1.0);
+                        tv_statement.setText(str_part_statement[0]);
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            btn_peek_prob.setElevation(dpToPx(4));
+                        }
+                        btn_peek_prob.setAlpha((float) 1.0);
+                        if (enable_peek_a) {
+                            btn_peek_parta.setAlpha((float) 1.0);
+                        }
+                        if (enable_peek_b) {
+                            btn_peek_partb.setAlpha((float) 1.0);
+                        }
                         break;
                 }
+
                 return true;
             }
         });
 
 
-        // dialog that says arrows were placed correctly
+        // clicked on part a button
+        btn_peek_parta.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                eventaction = event.getAction();
+                if (enable_peek_a) {
+                    switch (eventaction) {
+                        case MotionEvent.ACTION_DOWN:
+                            getSupportActionBar().setTitle(str_parta_title);
+                            IV_peek_parta.setAlpha((float) 1.0);
+                            IV_problem_part.setAlpha((float) 0.0);
+                            mDrawArrowsView.setAlpha((float) 0.0);
+                            tv_statement.setText(str_parta_statement[0]);
 
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                btn_peek_parta.setElevation(dpToPx(8));
+                            }
+                            btn_peek_prob.setAlpha((float) 0.0);
+                            btn_peek_partb.setAlpha((float) 0.0);
 
-//        final Button mbtn_refresh = (Button) findViewById(R.id.action_refresh);
-//        mbtn_refresh.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                mDrawArrowsView.resetAllValues();
-//            }
-//        });
+                            break;
 
-//        final Button mbtn_change_color = (Button) findViewById(R.id.btn_change_color);
-//        mbtn_change_color.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//
-//            }
-//        });
+                        case MotionEvent.ACTION_UP:
+                            getSupportActionBar().setTitle(str_toolbar_partCurrent_title);
+                            IV_peek_parta.setAlpha((float) 0.0);
+                            IV_problem_part.setAlpha((float) 1.0);
+                            mDrawArrowsView.setAlpha((float) 1.0);
+                            tv_statement.setText(str_part_statement[0]);
 
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                btn_peek_parta.setElevation(dpToPx(4));
+                            }
+                            btn_peek_prob.setAlpha((float) 1.0);
+                            if (enable_peek_b) {
+                                btn_peek_partb.setAlpha((float) 1.0);
+                            }
+                            break;
+                    }
+                }
+                return true;
+            }
+        });
+
+        // clicked on part b button
+        btn_peek_partb.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                eventaction = event.getAction();
+                if (enable_peek_b) {
+                    switch (eventaction) {
+                        case MotionEvent.ACTION_DOWN:
+
+                            getSupportActionBar().setTitle(str_partb_title);
+                            IV_peek_partb.setAlpha((float) 1.0);
+                            IV_problem_part.setAlpha((float) 0.0);
+                            mDrawArrowsView.setAlpha((float) 0.0);
+                            tv_statement.setText(str_partb_statement[0]);
+
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                btn_peek_partb.setElevation(dpToPx(8));
+                            }
+                            btn_peek_prob.setAlpha((float) 0.0);
+                            btn_peek_parta.setAlpha((float) 0.0);
+
+                            break;
+
+                        case MotionEvent.ACTION_UP:
+                            getSupportActionBar().setTitle(str_toolbar_partCurrent_title);
+                            IV_peek_partb.setAlpha((float) 0.0);
+                            IV_problem_part.setAlpha((float) 1.0);
+                            mDrawArrowsView.setAlpha((float) 1.0);
+                            tv_statement.setText(str_part_statement[0]);
+
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                btn_peek_partb.setElevation(dpToPx(4));
+                            }
+                            btn_peek_prob.setAlpha((float) 1.0);
+                            btn_peek_parta.setAlpha((float) 1.0);
+
+                            break;
+                    }
+                }
+                return true;
+            }
+
+        });
     }
 
     @Override
@@ -221,7 +453,6 @@ public class ThirdActivity extends AppCompatActivity {
 //        getWindow().setAllowReturnTransitionOverlap(false);
     }
 
-
     private void showDialogArrowsCorrect() {
         // stop counter
         rc.stop();
@@ -238,10 +469,11 @@ public class ThirdActivity extends AppCompatActivity {
 
         new MaterialStyledDialog(this)
                 .setTitle("Correct!")
-                .setDescription("All forces placed correctly! You finished in " + time_string_for_dialog)
+                .setDescription("All forces plac32ed correctly! You finished in " + time_string_for_dialog)
                 .setIcon(R.drawable.ic_check)
                 .setStyle(Style.HEADER_WITH_ICON)
                 .setScrollable(true)
+                .setCancelable(false)
 
                 .setPositive(getResources().getString(R.string.str_next_problem), new MaterialDialog.SingleButtonCallback() {
                     @Override
@@ -374,4 +606,40 @@ public class ThirdActivity extends AppCompatActivity {
             return null;
         }
     }
+
+    public static Bitmap getBitmapFromView(View view) {
+        //Define a bitmap with the same size as the view
+        Bitmap returnedBitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
+        //Bind a canvas to it
+        Canvas canvas = new Canvas(returnedBitmap);
+        //Get the view's background
+        Drawable bgDrawable = view.getBackground();
+        if (bgDrawable != null)
+            //has background drawable, then draw it on the canvas
+            bgDrawable.draw(canvas);
+        else
+            //does not have background drawable, then draw white background on the canvas
+            canvas.drawColor(Color.WHITE);
+        // draw the view on the canvas
+        view.draw(canvas);
+        //return the bitmap
+        return returnedBitmap;
+    }
+
+    public static Bitmap getBitmapFromView2(View view) {
+        view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        Bitmap bitmap = Bitmap.createBitmap(view.getMeasuredWidth(), view.getMeasuredHeight(),
+                Bitmap.Config.RGB_565);
+        Canvas canvas = new Canvas(bitmap);
+        view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+        view.draw(canvas);
+        return bitmap;
+    }
+
+    // converts dp to pixels
+    public int dpToPx(int dp) {
+        DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
+        return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+    }
+
 }

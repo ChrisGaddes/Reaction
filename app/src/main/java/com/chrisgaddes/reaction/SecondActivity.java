@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -21,12 +22,12 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Chronometer;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -46,21 +47,15 @@ public class SecondActivity extends AppCompatActivity {
     //TODO add pinch to zoom http://stackoverflow.com/questions/30979647/how-to-draw-by-finger-on-canvas-after-pinch-to-zoom-coordinates-changed-in-andro
 
     private DrawArrowsView mDrawArrowsView;
-    private ImageView mProblem;
-    private Context mContext;
-    private ListView listView;
 
     private TextView tv_problem_statement;
 
     private int problem_number;
     private String str_prob_file_name;
     private String part_letter;
-    private String str_toolbar_title;
+    private String str_toolbar_problem_title;
 
-    private String str_problem_number;
     private String[] str_problem_statement;
-    private String str_part_letter;
-    private String[] str_part_statement;
 
     private FloatingActionButton btn_start_part;
 
@@ -69,10 +64,6 @@ public class SecondActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private ImageView IV_problem;
-    private int resID;
-    private ProgressBar progressBar;
-
-    private long timer;
     private ChronometerView rc;
 
     private long pauseTime;
@@ -91,6 +82,7 @@ public class SecondActivity extends AppCompatActivity {
 
         setupWindowAnimations();
         setContentView(R.layout.activity_second);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         context = getApplicationContext();
 
@@ -100,16 +92,16 @@ public class SecondActivity extends AppCompatActivity {
         // Loads problem information
         problem_number = tinydb.getInt("problem_number");
         part_letter = tinydb.getString("part_letter");
-        str_part_letter = "Part " + part_letter;
+
 
         // Generates strings from problem information
-        str_problem_number = "Problem #" + problem_number;
+
         str_prob_file_name = "prob" + problem_number;
-        str_toolbar_title = "Problem #" + problem_number;
+        str_toolbar_problem_title = "Problem #" + problem_number;
 
         // load problem statement and part statement TODO: Remove loading part statement from this activity
         str_problem_statement = getResources().getStringArray(getResId("mainProblemStatement_" + "prob" + problem_number + "_part" + part_letter, R.array.class));
-        str_part_statement = getResources().getStringArray(getResId("problemStatement_" + "prob" + problem_number + "_part" + part_letter, R.array.class));
+
 
         // Sets text for problem statement
         tv_problem_statement = (TextView) this.findViewById(R.id.tv_problem_statement2);
@@ -117,6 +109,18 @@ public class SecondActivity extends AppCompatActivity {
 
         // Loads image for problem
         IV_problem = (ImageView) findViewById(R.id.problem);
+
+        IV_problem.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+//                Toast.makeText(SecondActivity.this, "Press Red button to begin!", Toast.LENGTH_SHORT).show();
+                Snackbar.make(findViewById(R.id.secondActivityCoordLayout), "Press red button to begin", Snackbar.LENGTH_SHORT).show();
+                return false;
+            }
+        });
+
+
+
         Glide.with(this)
                 .load(getResources().getIdentifier(str_prob_file_name, "drawable", getPackageName()))
                 .into(IV_problem);
@@ -128,7 +132,7 @@ public class SecondActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(str_toolbar_title);
+        getSupportActionBar().setTitle(str_toolbar_problem_title);
 
         // Sets listener on start button
         btn_start_part = (FloatingActionButton) findViewById(R.id.btn_start_part);
