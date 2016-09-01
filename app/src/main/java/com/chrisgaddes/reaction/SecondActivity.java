@@ -3,8 +3,6 @@ package com.chrisgaddes.reaction;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,7 +15,6 @@ import android.support.v7.widget.Toolbar;
 import android.transition.Explode;
 import android.transition.Fade;
 import android.transition.Slide;
-import android.util.Base64;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -25,9 +22,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Chronometer;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -37,7 +34,6 @@ import com.bumptech.glide.Glide;
 import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
 import com.github.javiersantos.materialstyleddialogs.enums.Style;
 
-import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Field;
 
 
@@ -72,11 +68,11 @@ public class SecondActivity extends AppCompatActivity {
     private long totalForgroundTime;
     private Handler mHandler = new Handler();
 
+    private Animation fadeIn;
+    private Animation fadeOut;
 
-    private Chronometer focus;
-
-
-//    private Data data = new Data();
+    private Animation scaleIn;
+    private Animation scaleOut;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +82,13 @@ public class SecondActivity extends AppCompatActivity {
         setContentView(R.layout.activity_second);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
+
+        fadeIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fadein);
+        fadeOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fadeout);
+
+        scaleIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.scale_fab_in);
+        scaleOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.scale_fab_out);
+
         context = getApplicationContext();
 
         // Sets database
@@ -94,7 +97,6 @@ public class SecondActivity extends AppCompatActivity {
         // Loads problem information
         problem_number = tinydb.getInt("problem_number");
         part_letter = tinydb.getString("part_letter");
-
 
         // Generates strings from problem information
 
@@ -111,6 +113,12 @@ public class SecondActivity extends AppCompatActivity {
 
         // Loads image for problem
         IV_problem = (ImageView) findViewById(R.id.problem);
+//        IV_problem.setAlpha((float) 0.0);
+        Glide.with(this)
+                .load(getResources().getIdentifier(str_prob_file_name, "drawable", getPackageName()))
+                .into(IV_problem);
+//        IV_problem.startAnimation(scaleIn);
+//        IV_problem.setAlpha((float) 1.0);
 
         IV_problem.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -120,12 +128,6 @@ public class SecondActivity extends AppCompatActivity {
                 return false;
             }
         });
-
-
-
-        Glide.with(this)
-                .load(getResources().getIdentifier(str_prob_file_name, "drawable", getPackageName()))
-                .into(IV_problem);
 
         // Loads views
         mDrawArrowsView = (DrawArrowsView) findViewById(R.id.idDrawArrowsView);
@@ -140,8 +142,8 @@ public class SecondActivity extends AppCompatActivity {
         btn_start_part = (FloatingActionButton) findViewById(R.id.btn_start_part);
         btn_start_part.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+//                IV_problem.startAnimation(scaleOut);
                 Intent intent = new Intent(getApplicationContext(), ThirdActivity.class);
-
                 ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(SecondActivity.this);
                 startActivity(intent, options.toBundle());
             }
@@ -186,24 +188,6 @@ public class SecondActivity extends AppCompatActivity {
         getWindow().setReturnTransition(explode);
         getWindow().setAllowEnterTransitionOverlap(false);
         getWindow().setAllowReturnTransitionOverlap(false);
-    }
-
-
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-
-
-        // TODO: this is dramatically slowing everything down
-//        if (hasFocus)
-//            // Saves layout to bitmap
-//            view.setDrawingCacheEnabled(true);
-//        view.buildDrawingCache();
-//        Bitmap peekImage = view.getDrawingCache();
-////
-////
-//        String strPeekImage = BitMapToString(peekImage);
-//        tinydb.putString("PeekImage", strPeekImage);
-
     }
 
     private void helpDialog() {
@@ -301,74 +285,7 @@ public class SecondActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+//        IV_problem.startAnimation(scaleIn);
         resumeTime = System.currentTimeMillis();
     }
-
-    public String BitMapToString(Bitmap bitmap) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        byte[] b = baos.toByteArray();
-        String temp = Base64.encodeToString(b, Base64.DEFAULT);
-        return temp;
-    }
-
-    public Bitmap StringToBitMap(String encodedString) {
-        try {
-            byte[] encodeByte = Base64.decode(encodedString, Base64.DEFAULT);
-            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0,
-                    encodeByte.length);
-            return bitmap;
-        } catch (Exception e) {
-            e.getMessage();
-            return null;
-        }
-    }
-
-    public ViewGroup getActionBar(View view) {
-        try {
-            if (view instanceof ViewGroup) {
-                ViewGroup viewGroup = (ViewGroup) view;
-
-                if (viewGroup instanceof android.support.v7.widget.Toolbar) {
-                    return viewGroup;
-                }
-
-                for (int i = 0; i < viewGroup.getChildCount(); i++) {
-                    ViewGroup actionBar = getActionBar(viewGroup.getChildAt(i));
-
-                    if (actionBar != null) {
-                        return actionBar;
-                    }
-                }
-            }
-        } catch (Exception e) {
-        }
-
-        return null;
-    }
-
 }
-
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//        return true;
-//    }
-
-/**
- * react to the user tapping/selecting an options menu item
- */
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case R.id.btn_main_menu:
-//                //Toast.makeText(this, "ADD!", Toast.LENGTH_SHORT).show();
-//                Intent i = new Intent(this, MyPreferencesActivity.class);
-//                startActivity(i);
-//                return true;
-//            default:
-//                return super.onOptionsItemSelected(item);
-//        }
-//    }

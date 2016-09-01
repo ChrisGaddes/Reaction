@@ -24,28 +24,28 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Intro" />
         <activity
             android:name=".MainIntroActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Intro" />
         <activity
             android:name=".ThirdActivity"
-            android:screenOrientation="portrait">
-            android:label = "Third Activity Page"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".SecondActivity">
         </activity>
         <activity
             android:name=".MyPreferencesActivity"
             android:screenOrientation="portrait">
-            android:label = "My Preferences"
         </activity>
         <activity
             android:name=".SecondActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".CanteenIntroActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".LoadingScreenActivity"></activity>
     </application>
 
 </manifest>
