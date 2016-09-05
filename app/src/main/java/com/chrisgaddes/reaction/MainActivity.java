@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.transition.Explode;
 import android.transition.Fade;
@@ -22,10 +23,14 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ScrollView;
+
+import com.github.florent37.viewanimator.ViewAnimator;
 
 import java.lang.reflect.Field;
+
+import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,9 +41,9 @@ public class MainActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private boolean first_launch;
-    private Button btn_load_prob_1;
-    private Button btn_load_prob_2;
-    private Button btn_load_prob_3;
+    private CardView card_load_prob_1;
+    private CardView card_load_prob_2;
+    private CardView card_load_prob_3;
 
     private Animation slideUp;
     private Animation slideDown;
@@ -59,6 +64,11 @@ public class MainActivity extends AppCompatActivity {
         setupWindowAnimations();
         setContentView(R.layout.activity_main);
 
+        // enables overscroll animation like in IOS
+        ScrollView scrollView = (ScrollView) findViewById(R.id.scrollview_main_activity);
+        OverScrollDecoratorHelper.setUpOverScroll(scrollView);
+
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             View decor = getWindow().getDecorView();
             decor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
@@ -71,14 +81,14 @@ public class MainActivity extends AppCompatActivity {
             window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryLight));
         }
 
-        // Sets toolbar title
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("");
+//        // Sets toolbar title
+//        toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+//        getSupportActionBar().setTitle("");
 
-        btn_load_prob_1 = (Button) findViewById(R.id.btn_load_prob_1);
-        btn_load_prob_1.setVisibility(View.INVISIBLE);
-        findViewById(R.id.btn_load_prob_1).setOnClickListener(new View.OnClickListener() {
+        card_load_prob_1 = (CardView) findViewById(R.id.card_load_prob_1);
+        card_load_prob_1.setVisibility(View.INVISIBLE);
+        findViewById(R.id.card_load_prob_1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 problem_number = 1;
@@ -93,9 +103,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        btn_load_prob_2 = (Button) findViewById(R.id.btn_load_prob_2);
-        btn_load_prob_2.setVisibility(View.INVISIBLE);
-        findViewById(R.id.btn_load_prob_2).setOnClickListener(new View.OnClickListener() {
+        card_load_prob_2 = (CardView) findViewById(R.id.card_load_prob_2);
+        card_load_prob_2.setVisibility(View.INVISIBLE);
+        findViewById(R.id.card_load_prob_2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 problem_number = 2;
@@ -109,9 +119,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        btn_load_prob_3 = (Button) findViewById(R.id.btn_load_prob_3);
-        btn_load_prob_3.setVisibility(View.INVISIBLE);
-        findViewById(R.id.btn_load_prob_3).setOnClickListener(new View.OnClickListener() {
+        card_load_prob_3 = (CardView) findViewById(R.id.card_load_prob_3);
+        card_load_prob_3.setVisibility(View.INVISIBLE);
+        findViewById(R.id.card_load_prob_3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 problem_number = 3;
@@ -128,29 +138,55 @@ public class MainActivity extends AppCompatActivity {
         slideUp = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up);
         slideDown = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_down);
 
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                btn_load_prob_1.startAnimation(slideUp);
-                btn_load_prob_1.setVisibility(View.VISIBLE);
-            }
-        }, 50);
 
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                btn_load_prob_2.startAnimation(slideUp);
-                btn_load_prob_2.setVisibility(View.VISIBLE);
-            }
-        }, 150);
+        ViewAnimator
+                .animate(card_load_prob_1)
+                .dp().translationY(200, 0)
+                .duration(500)
+                .accelerate()
+                .start();
 
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                btn_load_prob_3.startAnimation(slideUp);
-                btn_load_prob_3.setVisibility(View.VISIBLE);
-            }
-        }, 200);
+        ViewAnimator
+                .animate(card_load_prob_2)
+                .dp().translationY(250, 0)
+                .duration(500)
+                .accelerate()
+                .start();
+
+        ViewAnimator
+                .animate(card_load_prob_3)
+                .dp().translationY(300, 0)
+                .duration(500)
+                .accelerate()
+                .start();
+
+        card_load_prob_1.setVisibility(View.VISIBLE);
+        card_load_prob_2.setVisibility(View.VISIBLE);
+        card_load_prob_3.setVisibility(View.VISIBLE);
+
+//        mHandler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                card_load_prob_1.startAnimation(slideUp);
+//                card_load_prob_1.setVisibility(View.VISIBLE);
+//            }
+//        }, 50);
+//
+//        mHandler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                card_load_prob_2.startAnimation(slideUp);
+//                card_load_prob_2.setVisibility(View.VISIBLE);
+//            }
+//        }, 150);
+//
+//        mHandler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                card_load_prob_3.startAnimation(slideUp);
+//                card_load_prob_3.setVisibility(View.VISIBLE);
+//            }
+//        }, 200);
 
     }
 

@@ -74,6 +74,8 @@ public class SecondActivity extends AppCompatActivity {
     private Animation scaleIn;
     private Animation scaleOut;
 
+    private boolean rc_run_yet;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -142,7 +144,7 @@ public class SecondActivity extends AppCompatActivity {
         btn_start_part = (FloatingActionButton) findViewById(R.id.btn_start_part);
         btn_start_part.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-//                IV_problem.startAnimation(scaleOut);
+                rc.stop();
                 Intent intent = new Intent(getApplicationContext(), ThirdActivity.class);
                 ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(SecondActivity.this);
                 startActivity(intent, options.toBundle());
@@ -228,8 +230,11 @@ public class SecondActivity extends AppCompatActivity {
             tinydb.putLong("TotalForegroundTime", 0);
         }
 
+        MenuItem startover = menu.findItem(R.id.action_startover);
+        startover.setVisible(false);
 
-//        startTimer(menu);
+
+        startTimer(menu);
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -246,6 +251,8 @@ public class SecondActivity extends AppCompatActivity {
         rc.setTextColor(Color.WHITE);
         rc.reset();
         rc.run();
+
+        rc_run_yet = true;
     }
 
     @Override
@@ -274,17 +281,34 @@ public class SecondActivity extends AppCompatActivity {
         }
     }
 
+    // TODO fix this onPause on Stop nonsense
     @Override
     protected void onPause() {
         super.onPause();
+        rc.stop();
         pauseTime = System.currentTimeMillis();
         totalForgroundTime = tinydb.getLong("TotalForegroundTime", 0) + (pauseTime - resumeTime);
         tinydb.putLong("TotalForegroundTime", totalForgroundTime);
     }
 
+//    @Override
+//    protected void onStop() {
+//        super.onStop();
+//        rc.stop();
+//        pauseTime = System.currentTimeMillis();
+//        totalForgroundTime = tinydb.getLong("TotalForegroundTime", 0) + (pauseTime - resumeTime);
+//        tinydb.putLong("TotalForegroundTime", totalForgroundTime);
+//    }
+
     @Override
     protected void onResume() {
         super.onResume();
+
+        if (rc_run_yet) {
+            // prevents rc from running before startTimer begins
+            rc.run();
+        }
+
 //        IV_problem.startAnimation(scaleIn);
         resumeTime = System.currentTimeMillis();
     }

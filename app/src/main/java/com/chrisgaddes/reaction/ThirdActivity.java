@@ -5,8 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -36,8 +35,6 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
-import com.daimajia.androidanimations.library.Techniques;
-import com.daimajia.androidanimations.library.YoYo;
 import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
 import com.github.javiersantos.materialstyleddialogs.enums.Style;
 
@@ -53,6 +50,9 @@ public class ThirdActivity extends AppCompatActivity {
     private ImageView IV_peek_probMain_view;
     private ImageView IV_peek_parta;
     private ImageView IV_peek_partb;
+
+    private ImageView IV_peek_parta_arrows;
+    private ImageView IV_peek_partb_arrows;
 
     private String description;
     private String strDialogNextButton;
@@ -72,6 +72,9 @@ public class ThirdActivity extends AppCompatActivity {
     private SquareImageView btn_peek_probMain;
     private SquareImageView btn_peek_parta;
     private SquareImageView btn_peek_partb;
+
+    private SquareImageView btn_peek_parta_arrows;
+    private SquareImageView btn_peek_partb_arrows;
 
     public TinyDB tinydb;
     private int eventaction;
@@ -112,8 +115,15 @@ public class ThirdActivity extends AppCompatActivity {
     private Animation fadeIn;
     private Animation fadeOut;
 
+    private Bitmap bm_A;
+    private Bitmap bm_B;
+    private Boolean finished_saving_bitmaps;
+
     private Handler mHandler = new Handler();
 
+    private AsyncTaskLoadBitmapFromDataBase asyncLoadBitmap;
+
+    private AsyncTaskSaveViewToBitmap asyncSaveToBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +132,9 @@ public class ThirdActivity extends AppCompatActivity {
         setContentView(R.layout.activity_third);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
+        asyncSaveToBitmap = new AsyncTaskSaveViewToBitmap();
+        asyncLoadBitmap = new AsyncTaskLoadBitmapFromDataBase();
+
         fadeIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fadein);
         fadeOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fadeout);
 
@@ -129,8 +142,6 @@ public class ThirdActivity extends AppCompatActivity {
         scaleOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.scale_fab_out);
         scaleInFast = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.scale_in_fast);
         scaleOutFast = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.scale_out_fast);
-
-
 
         btn_check_done = (FloatingActionButton) findViewById(R.id.btn_check_done);
 //        btn_check_done.hide();
@@ -142,22 +153,27 @@ public class ThirdActivity extends AppCompatActivity {
         problem_number = tinydb.getInt("problem_number");
         part_letter = tinydb.getString("part_letter");
 
+        if (part_letter.equals("A")) {
+            tinydb.putBoolean("finished_saving_bitmaps", false);
+        }
+
+
         // resets booleans to false (hidden)
         enable_peek_a = false;
         enable_peek_b = false;
 
         // shows peek image buttons once previous part is finished
-        if (part_letter.equals("A")) {
+        if (part_letter.toUpperCase().equals("A")) {
             enable_peek_a = false;
             enable_peek_b = false;
         }
 
-        if (part_letter.equals("B")) {
+        if (part_letter.toUpperCase().equals("B")) {
             enable_peek_a = true;
             enable_peek_b = false;
         }
 
-        if (part_letter.equals("C")) {
+        if (part_letter.toUpperCase().equals("C")) {
             enable_peek_a = true;
             enable_peek_b = true;
         }
@@ -209,11 +225,15 @@ public class ThirdActivity extends AppCompatActivity {
                 .load(getResources().getIdentifier(str_probCurrent_file_name, "drawable", getPackageName()))
                 .into(btn_peek_probMain);
 
-        // Sets image for problem
+        // Sets image for part a
         IV_peek_parta = (ImageView) findViewById(R.id.peek_parta);
+        IV_peek_parta_arrows = (ImageView) findViewById(R.id.peek_parta_arrows);
         IV_peek_parta.setAlpha((float) 0.0);
+        IV_peek_parta_arrows.setAlpha((float) 0.0);
         btn_peek_parta = (SquareImageView) findViewById(R.id.btn_peek_parta);
+        btn_peek_parta_arrows = (SquareImageView) findViewById(R.id.btn_peek_parta_arrows);
         btn_peek_parta.setAlpha((float) 0.0);
+        btn_peek_parta_arrows.setAlpha((float) 0.0);
         Glide.with(this)
                 .load(getResources().getIdentifier(str_parta_file_name, "drawable", getPackageName()))
                 .into(IV_peek_parta);
@@ -221,11 +241,15 @@ public class ThirdActivity extends AppCompatActivity {
                 .load(getResources().getIdentifier(str_parta_file_name, "drawable", getPackageName()))
                 .into(btn_peek_parta);
 
-        // Sets image for problem
+        // Sets image for part b
         IV_peek_partb = (ImageView) findViewById(R.id.peek_partb);
+        IV_peek_partb_arrows = (ImageView) findViewById(R.id.peek_partb_arrows);
         IV_peek_partb.setAlpha((float) 0.0);
+        IV_peek_partb_arrows.setAlpha((float) 0.0);
         btn_peek_partb = (SquareImageView) findViewById(R.id.btn_peek_partb);
+        btn_peek_partb_arrows = (SquareImageView) findViewById(R.id.btn_peek_partb_arrows);
         btn_peek_partb.setAlpha((float) 0.0);
+        btn_peek_partb_arrows.setAlpha((float) 0.0);
         Glide.with(this)
                 .load(getResources().getIdentifier(str_partb_file_name, "drawable", getPackageName()))
                 .into(IV_peek_partb);
@@ -233,6 +257,9 @@ public class ThirdActivity extends AppCompatActivity {
                 .load(getResources().getIdentifier(str_partb_file_name, "drawable", getPackageName()))
                 .into(btn_peek_partb);
 
+        if (part_letter.toUpperCase().equals("B")) {
+            asyncLoadBitmap.execute();
+        }
 
         mHandler.postDelayed(new Runnable() {
             @Override
@@ -240,18 +267,30 @@ public class ThirdActivity extends AppCompatActivity {
                 btn_peek_probMain.startAnimation(scaleIn);
                 btn_peek_probMain.setAlpha((float) 1.0);
 
+//                if (finished_saving_bitmaps){
+//                if ((enable_peek_a || enable_peek_b) && finished_saving_bitmaps ) {
+//                    AsyncTaskLoadBitmapFromDataBase asyncLoadBitmap = new AsyncTaskLoadBitmapFromDataBase();
+
+//                }
+
                 if (enable_peek_a) {
                     btn_peek_parta.startAnimation(scaleIn);
+                    btn_peek_parta_arrows.startAnimation(scaleIn);
                     btn_peek_parta.setAlpha((float) 1.0);
+                    btn_peek_parta_arrows.setAlpha((float) 1.0);
                 } else {
                     btn_peek_parta.setAlpha((float) 0.0);
+                    btn_peek_parta_arrows.setAlpha((float) 0.0);
                 }
 
                 if (enable_peek_b) {
                     btn_peek_parta.startAnimation(scaleIn);
+                    btn_peek_parta_arrows.startAnimation(scaleIn);
                     btn_peek_partb.setAlpha((float) 1.0);
+                    btn_peek_partb_arrows.setAlpha((float) 1.0);
                 } else {
                     btn_peek_partb.setAlpha((float) 0.0);
+                    btn_peek_partb_arrows.setAlpha((float) 0.0);
                 }
             }
         }, 750);
@@ -266,6 +305,7 @@ public class ThirdActivity extends AppCompatActivity {
 
 
         mDrawArrowsView = (DrawArrowsView) findViewById(R.id.idDrawArrowsView);
+
 //        mDrawArrowsView.setAlpha((float) 1.0);
 
 
@@ -273,8 +313,6 @@ public class ThirdActivity extends AppCompatActivity {
             public void onClick(View v) {
                 boolean mrunCheckIfFinished = mDrawArrowsView.runCheckIfFinished();
                 if (mrunCheckIfFinished) {
-
-                    Bitmap bm = getBitmapFromView(mDrawArrowsView);
                     showDialogArrowsCorrect();
                 } else {
                     Snackbar.make(findViewById(R.id.coordinatorLayout), "Not Finished Yet...", Snackbar.LENGTH_SHORT).setCallback(new Snackbar.Callback() {
@@ -285,18 +323,22 @@ public class ThirdActivity extends AppCompatActivity {
                                     btn_peek_probMain.setAlpha((float) 1.0);
                                     if (enable_peek_a) {
                                         btn_peek_parta.setAlpha((float) 1.0);
+                                        btn_peek_parta_arrows.setAlpha((float) 1.0);
                                     }
                                     if (enable_peek_b) {
                                         btn_peek_partb.setAlpha((float) 1.0);
+                                        btn_peek_partb_arrows.setAlpha((float) 1.0);
                                     }
                                     break;
                                 case Snackbar.Callback.DISMISS_EVENT_TIMEOUT:
                                     btn_peek_probMain.setAlpha((float) 1.0);
                                     if (enable_peek_a) {
                                         btn_peek_parta.setAlpha((float) 1.0);
+                                        btn_peek_parta_arrows.setAlpha((float) 1.0);
                                     }
                                     if (enable_peek_b) {
                                         btn_peek_partb.setAlpha((float) 1.0);
+                                        btn_peek_partb_arrows.setAlpha((float) 1.0);
                                     }
                                     break;
                             }
@@ -307,9 +349,11 @@ public class ThirdActivity extends AppCompatActivity {
                             btn_peek_probMain.setAlpha((float) 0.0);
                             if (enable_peek_a) {
                                 btn_peek_parta.setAlpha((float) 0.0);
+                                btn_peek_parta_arrows.setAlpha((float) 0.0);
                             }
                             if (enable_peek_b) {
                                 btn_peek_partb.setAlpha((float) 0.0);
+                                btn_peek_partb_arrows.setAlpha((float) 0.0);
                             }
                         }
 //                    }).setAction("Start Over", new View.OnClickListener() {
@@ -348,25 +392,29 @@ public class ThirdActivity extends AppCompatActivity {
                         }
 
                         if (enable_peek_a) {
-                            YoYo.with(Techniques.SlideOutDown)
-                                    .duration(200)
-                                    .playOn(btn_peek_parta);
+//                            YoYo.with(Techniques.SlideOutDown)
+//                                    .duration(200)
+//                                    .playOn(btn_peek_parta);
+                            btn_peek_parta.startAnimation(scaleOut);
+                            btn_peek_parta_arrows.startAnimation(scaleOut);
                         }
 
 //                        btn_peek_parta.startAnimation(scaleOut);
 //                        btn_peek_partb.startAnimation(scaleOut);
 
                         if (enable_peek_b) {
-                            YoYo.with(Techniques.SlideOutDown)
-                                    .duration(200)
-                                    .playOn(btn_peek_partb);
+//                            YoYo.with(Techniques.SlideOutDown)
+//                                    .duration(200)
+//                                    .playOn(btn_peek_partb);
+                            btn_peek_partb.startAnimation(scaleOut);
+                            btn_peek_partb_arrows.startAnimation(scaleOut);
                         }
 
-                        YoYo.with(Techniques.SlideOutRight)
-                                .duration(200)
-                                .playOn(btn_check_done);
+//                        YoYo.with(Techniques.SlideOutRight)
+//                                .duration(200)
+//                                .playOn(btn_check_done);
 
-//                        btn_check_done.hide();
+                        btn_check_done.hide();
                         break;
 
                     case MotionEvent.ACTION_UP:
@@ -383,22 +431,24 @@ public class ThirdActivity extends AppCompatActivity {
 //                        btn_peek_probMain.setAlpha((float) 1.0);
                         if (enable_peek_a) {
 
-                            YoYo.with(Techniques.SlideInUp)
-                                    .duration(200)
-                                    .playOn(btn_peek_parta);
-//                            btn_peek_parta.startAnimation(scaleIn);
+//                            YoYo.with(Techniques.SlideInUp)
+//                                    .duration(200)
+//                                    .playOn(btn_peek_parta);
+                            btn_peek_parta.startAnimation(scaleIn);
+                            btn_peek_parta_arrows.startAnimation(scaleIn);
                         }
                         if (enable_peek_b) {
-//                            btn_peek_partb.startAnimation(scaleIn);
-                            YoYo.with(Techniques.SlideInUp)
-                                    .duration(200)
-                                    .playOn(btn_peek_partb);
+                            btn_peek_partb.startAnimation(scaleIn);
+                            btn_peek_partb_arrows.startAnimation(scaleIn);
+//                            YoYo.with(Techniques.SlideInUp)
+//                                    .duration(200)
+//                                    .playOn(btn_peek_partb);
                         }
 
-                        YoYo.with(Techniques.SlideInRight)
-                                .duration(200)
-                                .playOn(btn_check_done);
-//                        btn_check_done.show();
+//                        YoYo.with(Techniques.SlideInRight)
+//                                .duration(200)
+//                                .playOn(btn_check_done);
+                        btn_check_done.show();
                         break;
                 }
 
@@ -417,33 +467,39 @@ public class ThirdActivity extends AppCompatActivity {
                         case MotionEvent.ACTION_DOWN:
                             getSupportActionBar().setTitle(str_parta_title);
                             IV_peek_parta.setAlpha((float) 1.0);
+                            IV_peek_parta_arrows.setAlpha((float) 1.0);
                             IV_problem_part.setAlpha((float) 0.0);
                             mDrawArrowsView.setAlpha((float) 0.0);
                             tv_statement.setText(str_parta_statement[0]);
 
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                                 btn_peek_parta.setElevation(dpToPx(8));
+                                btn_peek_parta_arrows.setElevation(dpToPx(8));
                             }
                             btn_peek_probMain.startAnimation(scaleOut);
                             btn_peek_partb.startAnimation(scaleOut);
+                            btn_peek_partb_arrows.startAnimation(scaleOut);
                             btn_check_done.hide();
                             break;
 
                         case MotionEvent.ACTION_UP:
                             getSupportActionBar().setTitle(str_toolbar_partCurrent_title);
                             IV_peek_parta.setAlpha((float) 0.0);
+                            IV_peek_parta_arrows.setAlpha((float) 0.0);
                             IV_problem_part.setAlpha((float) 1.0);
                             mDrawArrowsView.setAlpha((float) 1.0);
                             tv_statement.setText(str_part_statement[0]);
 
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                                 btn_peek_parta.setElevation(dpToPx(4));
+                                btn_peek_parta_arrows.setElevation(dpToPx(4));
                             }
 //                            btn_peek_probMain.setAlpha((float) 1.0);
 
                             btn_peek_probMain.startAnimation(scaleIn);
                             if (enable_peek_b) {
                                 btn_peek_partb.startAnimation(scaleIn);
+                                btn_peek_partb_arrows.startAnimation(scaleIn);
                             }
                             btn_check_done.show();
                             break;
@@ -465,15 +521,18 @@ public class ThirdActivity extends AppCompatActivity {
 
                             getSupportActionBar().setTitle(str_partb_title);
                             IV_peek_partb.setAlpha((float) 1.0);
+                            IV_peek_partb_arrows.setAlpha((float) 1.0);
                             IV_problem_part.setAlpha((float) 0.0);
                             mDrawArrowsView.setAlpha((float) 0.0);
                             tv_statement.setText(str_partb_statement[0]);
 
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                                 btn_peek_partb.setElevation(dpToPx(8));
+                                btn_peek_partb_arrows.setElevation(dpToPx(8));
                             }
                             btn_peek_probMain.startAnimation(scaleOut);
                             btn_peek_parta.startAnimation(scaleOut);
+                            btn_peek_parta_arrows.startAnimation(scaleOut);
                             btn_check_done.hide();
 
                             break;
@@ -481,15 +540,18 @@ public class ThirdActivity extends AppCompatActivity {
                         case MotionEvent.ACTION_UP:
                             getSupportActionBar().setTitle(str_toolbar_partCurrent_title);
                             IV_peek_partb.setAlpha((float) 0.0);
+                            IV_peek_partb_arrows.setAlpha((float) 0.0);
                             IV_problem_part.setAlpha((float) 1.0);
                             mDrawArrowsView.setAlpha((float) 1.0);
                             tv_statement.setText(str_part_statement[0]);
 
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                                 btn_peek_partb.setElevation(dpToPx(4));
+                                btn_peek_partb_arrows.setElevation(dpToPx(4));
                             }
                             btn_peek_probMain.startAnimation(scaleIn);
                             btn_peek_parta.startAnimation(scaleIn);
+                            btn_peek_parta_arrows.startAnimation(scaleIn);
                             btn_check_done.show();
 
                             break;
@@ -559,7 +621,9 @@ public class ThirdActivity extends AppCompatActivity {
         // animate buttons out
         btn_peek_probMain.startAnimation(scaleOut);
         btn_peek_parta.startAnimation(scaleOut);
+        btn_peek_parta_arrows.startAnimation(scaleOut);
         btn_peek_partb.startAnimation(scaleOut);
+        btn_peek_partb_arrows.startAnimation(scaleOut);
         btn_check_done.hide();
 
 
@@ -594,6 +658,7 @@ public class ThirdActivity extends AppCompatActivity {
                                 tinydb.putInt("problem_number", problem_number);
                             }
 
+
                             Intent mainIntent = new Intent(ThirdActivity.this, SecondActivity.class);
                             startActivity(mainIntent, options.toBundle());
                         }
@@ -616,12 +681,9 @@ public class ThirdActivity extends AppCompatActivity {
                     })
                     .show();
 
-        } else
-
-        {
+        } else {
             description = "All forces placed correctly! You finished in " + time_string_for_dialog;
             strDialogNextButton = "Next Part";
-
 
 //        String strDialogNextButton = "hi";
 
@@ -643,11 +705,20 @@ public class ThirdActivity extends AppCompatActivity {
                             switch (part_letter.toUpperCase()) {
                                 case "A":
                                     tinydb.putString("part_letter", "B");
-                                    recreate();
+
+                                    tinydb.putString("previous_part_letter", "A");
+
+                                    asyncSaveToBitmap.execute();
+
+//                                    recreate();
                                     break;
                                 case "B":
                                     tinydb.putString("part_letter", "C");
-                                    recreate();
+                                    tinydb.putString("previous_part_letter", "B");
+
+                                    asyncSaveToBitmap.execute();
+
+//                                    recreate();
                                     break;
                                 case "C":
                                     tinydb.putString("part_letter", "A");
@@ -709,7 +780,7 @@ public class ThirdActivity extends AppCompatActivity {
         rc.setOverallDuration(2 * 60);
         rc.setWarningDuration(90);
         rc.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
-        rc.setTextColor(Color.WHITE);
+//        rc.setTextColor(Color.WHITE);
         rc.reset();
         rc.run();
     }
@@ -760,29 +831,56 @@ public class ThirdActivity extends AppCompatActivity {
         }
     }
 
-    public static Bitmap getBitmapFromView(View view) {
+    public Bitmap getBitmapFromView(View view) {
         //Define a bitmap with the same size as the view
         Bitmap returnedBitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
+
+//        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.prob1_parta);
+
         //Bind a canvas to it
         Canvas canvas = new Canvas(returnedBitmap);
         //Get the view's background
-        Drawable bgDrawable = view.getBackground();
-        if (bgDrawable != null)
-            //has background drawable, then draw it on the canvas
-            bgDrawable.draw(canvas);
-        else
-            //does not have background drawable, then draw white background on the canvas
-            canvas.drawColor(Color.WHITE);
-        // draw the view on the canvas
+//        Drawable bgDrawable = view.getBackground();
+//        if (bgDrawable != null)
+//            //has background drawable, then draw it on the canvas
+//            bgDrawable.draw(canvas);
+//        else
+//            //does not have background drawable, then draw white background on the canvas
+//            canvas.drawColor(Color.TRANSPARENT);
+//        // draw the view on the canvas
+
+
+//        Drawable part = getResources().getIdentifier(str_partCurrent_file_name, "drawable", getPackageName());
+
+//        ResourcesCompat.getDrawable(getResources(), R.drawable.name, null);
+
+//        Drawable part =  getApplicationContext().getResources().getIdentifier(str_partCurrent_file_name, "drawable", getApplicationContext().getPackageName());
+
+//        Drawable problem_image = this.getResources().getDrawable(this.getResources().getIdentifier(str_partCurrent_file_name, "drawable", this.getPackageName()));
+
+//        Bitmap problem_image = ((BitmapDrawable)IV_problem_part.getDrawable()).getBitmap();
+
+
+//        getResources().getIdentifier(str_probCurrent_file_name , "drawable", getPackageName())
+
+//        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.prob1);
+
+//        String imgName = "myicon";
+//        int resID = this.getResources().getIdentifier(str_parta_file_name, "drawable", getPackageName());
+//        Bitmap problem_image = BitmapFactory.decodeResource(this.getResources(), resID);
+//
+//        canvas.drawBitmap(problem_image,0,0,null);
         view.draw(canvas);
+
         //return the bitmap
         return returnedBitmap;
+
     }
 
     public static Bitmap getBitmapFromView2(View view) {
         view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         Bitmap bitmap = Bitmap.createBitmap(view.getMeasuredWidth(), view.getMeasuredHeight(),
-                Bitmap.Config.RGB_565);
+                Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
         view.draw(canvas);
@@ -794,4 +892,183 @@ public class ThirdActivity extends AppCompatActivity {
         DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
         return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
+
+    private class AsyncTaskSaveViewToBitmap extends AsyncTask<String, String, String> {
+
+        private String resp;
+
+        @Override
+        protected String doInBackground(String... params) {
+//            publishProgress("Sleeping..."); // Calls onProgressUpdate()
+//            try {
+            tinydb.putBoolean("finished_saving_bitmaps", false);
+
+            String previous_part_letter = tinydb.getString("previous_part_letter");
+
+            Bitmap bm = getBitmapFromView(mDrawArrowsView);
+            String str_bm = BitMapToString(bm);
+
+            String db_title_A = "prob" + problem_number + "_part" + "A" + "_arrows";
+            String db_title_B = "prob" + problem_number + "_part" + "B" + "_arrows";
+
+            if (previous_part_letter.toUpperCase().equals("A")) {
+                tinydb.putString(db_title_A, str_bm);
+            }
+
+            if (previous_part_letter.toUpperCase().equals("B")) {
+                tinydb.putString(db_title_B, str_bm);
+            }
+
+
+            return resp;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            // execution of result of Long time consuming operation
+//            finalResult.setText(result);
+            tinydb.putBoolean("finished_saving_bitmaps", true);
+            recreate();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            // Things to be done before execution of long running operation. For
+            // example showing ProgessDialog
+        }
+
+        @Override
+        protected void onProgressUpdate(String... text) {
+//            finalResult.setText(text[0]);
+            // Things to be done while execution of long running operation is in
+            // progress. For example updating ProgessDialog
+        }
+    }
+
+    private class AsyncTaskLoadBitmapFromDataBase extends AsyncTask<String, String, String> {
+
+        private String resp;
+
+        @Override
+        protected String doInBackground(String... params) {
+//            publishProgress("Sleeping..."); // Calls onProgressUpdate()
+//            try {
+//            while (!finished_saving_bitmaps){
+//                // wait
+//            }
+
+            finished_saving_bitmaps = tinydb.getBoolean("finished_saving_bitmaps");
+            if (finished_saving_bitmaps) {
+                String db_title_A = "prob" + problem_number + "_part" + "A" + "_arrows";
+                String db_title_B = "prob" + problem_number + "_part" + "B" + "_arrows";
+
+                String previous_part_letter = tinydb.getString("previous_part_letter");
+                if (part_letter.toUpperCase().equals("B")) {
+                    String bmA = tinydb.getString(db_title_A);
+                    bm_A = StringToBitMap(bmA);
+                }
+
+                if (part_letter.toUpperCase().equals("C")) {
+                    String bmA = tinydb.getString(db_title_A);
+
+                    String bmB = tinydb.getString(db_title_B);
+                    bm_B = StringToBitMap(bmB);
+                }
+
+                // resets previous part letter
+                tinydb.remove("previous_part_letter");
+
+//                // Do your long operations here and return the result
+//                int time = Integer.parseInt(params[0]);
+//                // Sleeping for given time period
+//                Thread.sleep(time);
+//                resp = "Slept for " + time + " milliseconds";
+//            } //catch (InterruptedException e) {
+//                e.printStackTrace();
+//                resp = e.getMessage();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                resp = e.getMessage();
+//            }
+            }
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    IV_peek_parta_arrows.setImageBitmap(bm_A);
+                    btn_peek_parta_arrows.setImageBitmap(bm_A);
+                }
+            });
+
+            return resp;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+//            // execution of result of Long time consuming operation
+////            finalResult.setText(result);
+////            finished_saving_bitmaps = tinydb.getBoolean("finished_saving_bitmaps");
+//            if (enable_peek_a) {
+////                Glide.with(ThirdActivity.this)
+////                        .load(bm_A)
+////                        .into(IV_peek_parta_arrows);
+////
+////                Glide.with(ThirdActivity.this)
+////                        .load(bm_A)
+////                        .into(btn_peek_parta_arrows);
+//
+////                IV_peek_parta_arrows.setImageBitmap(bm_A);
+////                btn_peek_parta_arrows.setImageBitmap(bm_A);
+//            }
+//
+//            if (enable_peek_b) {
+//
+//                Glide.with(ThirdActivity.this)
+//                        .load(bm_A)
+//                        .into(IV_peek_partb_arrows);
+//
+//                Glide.with(ThirdActivity.this)
+//                        .load(bm_A)
+//                        .into(btn_peek_partb_arrows);
+////                IV_peek_partb_arrows.setImageBitmap(bm_B);
+////                btn_peek_partb_arrows.setImageBitmap(bm_B);
+//            }
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            // Things to be done before execution of long running operation. For
+            // example showing ProgessDialog
+        }
+
+        @Override
+        protected void onProgressUpdate(String... text) {
+//            finalResult.setText(text[0]);
+            // Things to be done while execution of long running operation is in
+            // progress. For example updating ProgessDialog
+        }
+    }
+
+//    public Bitmap replaceColor(Bitmap src,int fromColor, int targetColor) {
+//        if(src == null) {
+//            return null;
+//        }
+//        // Source image size
+//        int width = src.getWidth();
+//        int height = src.getHeight();
+//        int[] pixels = new int[width * height];
+//        //get pixels
+//        src.getPixels(pixels, 0, width, 0, 0, width, height);
+//
+//        for(int x = 0; x < pixels.length; ++x) {
+//            pixels[x] = (pixels[x] == fromColor) ? targetColor : pixels[x];
+//        }
+//        // create result bitmap output
+//        Bitmap result = Bitmap.createBitmap(width, height, src.getConfig());
+//        //set pixels
+//        result.setPixels(pixels, 0, width, 0, 0, width, height);
+//
+//        return result;
+//    }
 }

@@ -13,7 +13,7 @@
     <color name="colorPrimaryText">#ff212121</color>
     <color name="colorSecondaryText">#ff9f9f9f</color>
     <color name="colorIcons">#FFFFFF</color>
-    <color name="colorDivider">#BDBDBD</color>
+    <color name="colorDivider">#ffeeeeee</color>
 
 
     <color name="orange">#ff5500</color>

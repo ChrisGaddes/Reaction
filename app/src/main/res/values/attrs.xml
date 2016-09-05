@@ -6,4 +6,17 @@
         <attr name="extraInformation" format="string" />
     </declare-styleable>
 
+
+    <declare-styleable name="cardStyle">
+        <attr name="cardStyle" format="reference" />
+    </declare-styleable>
+
+    <style name="Light" parent="Theme.AppCompat.NoActionBar">
+        <item name="cardStyle">@style/CardView.Light</item>
+    </style>
+
+    <style name="Dark" parent="Theme.AppCompat.NoActionBar">
+        <item name="cardStyle">@style/CardView.Dark</item>
+    </style>
+
 </resources>

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
@@ -44,6 +45,9 @@ public class DrawArrowsView extends ImageView {
     private static final String TAG = "ThirdActivity";
 
     final double pi = Math.PI;
+
+    private Rect src;
+    private Rect dest;
 
     //double angles[] = {-pi, -3 * pi / 4, -pi / 2, -pi / 4, 0, pi / 4, pi / 2, 3 * pi / 4, pi};
     final double[] angles = {-pi, -5 * pi / 6, -2 * pi / 3, -pi / 2, -pi / 3, -pi / 6, 0, pi / 6, pi / 3, pi / 2, 2 * pi / 3, 5 * pi / 6, pi, 2 * pi};
@@ -98,7 +102,7 @@ public class DrawArrowsView extends ImageView {
     private float deltaAngle;
 
     private Canvas canvas;
-    private Bitmap bitmap;
+    private Bitmap problem_image_bitmap;
 
     private boolean invalidateNow;
 
@@ -108,6 +112,8 @@ public class DrawArrowsView extends ImageView {
 
     private int btn_chosen;
     private int u;
+
+    private String[] str_part_statement;
 
     private SharedPreferences.OnSharedPreferenceChangeListener prefListener;
 
@@ -493,7 +499,7 @@ public class DrawArrowsView extends ImageView {
         paint_arrow_correct_location.setStrokeCap(Paint.Cap.ROUND);
 
         // toggles arrow animation - this value can be changed in menu in app
-        boolean animationToggle = SP.getBoolean("animationToggle", false);
+        boolean animationToggle = SP.getBoolean("animationToggle", true);
         if (animationToggle) {
             // arrow animations enabled
             time_anim_arrow_dur = 150;
@@ -551,9 +557,9 @@ public class DrawArrowsView extends ImageView {
 
         // I needed the size of the canvas in order to calculate the percentage the points were accross the screen, but it won't properly get the size until the view is drawn. So, I trigger setButtonPoints from here once the view is drawn and use the if statement below to only allow it to run once. This seems like a terrible was to do it but it works. I'd love advice on how to improve this if you think it matters"
 
-        canvas = new Canvas();
-        bitmap = Bitmap.createBitmap((int) viewWidth, (int) viewHeight, Bitmap.Config.RGB_565);
-        canvas.setBitmap(bitmap);
+//        canvas = new Canvas();
+//        problem_image_bitmap = Bitmap.createBitmap((int) viewWidth, (int) viewHeight, Bitmap.Config.RGB_565);
+//        canvas.setBitmap(problem_image_bitmap);
 
         // TODO run this off main thread IMPORTANT
         if (!SetButtonPoints_RunAlready) {
@@ -564,19 +570,36 @@ public class DrawArrowsView extends ImageView {
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-//        if (bitmap==null){
-//            bitmap = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888);
-//            Canvas canvasToSave = new Canvas(savedBitmap);
-//            for(CustomTextViewDrawItem item : drawItemList){
-//                canvasToSave.drawText(item.Text, item.X, item.Y, textPaint);
-//            }
-//
-//            if (eLabel.backgroundGradient != null){
-//                canvasToSave.drawPath(path, fillPaint);
-//            }
-//        }
-//        canvas.drawBitmap(savedBitmap, 0, 0, new Paint());
 
+        if (problem_image_bitmap == null) {
+            // Load problem number and part letter
+            problem_number = tinydb.getInt("problem_number");
+            part_letter = tinydb.getString("part_letter");
+
+
+
+//
+////            getResId("prob1", R.drawable.class)
+//
+
+            String drawable_name = "prob" + problem_number + "_part" + part_letter.toLowerCase();
+
+            int resID = getResId(drawable_name, R.drawable.class); // this.getContext().getResources().getIdentifier("prob1", "drawable", getContext().getPackageName());
+
+
+            problem_image_bitmap = BitmapFactory.decodeResource(this.getResources(), resID);
+
+            src = new Rect(0, 0, canvas.getWidth(), canvas.getHeight());
+            dest = new Rect(0, 0, (int) viewWidth, (int) viewHeight);
+
+//            canvas.drawBitmap(problem_image_bitmap,src,dest,null);
+
+//            problem_image_bitmap = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888);
+//            Canvas canvasToSave = new Canvas(savedBitmap);
+//            canvas.drawBitmap(savedBitmap, 0, 0, new Paint());
+        }
+
+//        canvas.drawBitmap(problem_image_bitmap,src,dest,null);
         if (invalidateNow) {
             invalidateNow = false;
             invalidate();

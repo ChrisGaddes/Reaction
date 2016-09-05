@@ -24,8 +24,7 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Intro" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".MainIntroActivity"
             android:screenOrientation="portrait"
