@@ -1,6 +1,7 @@
 package com.chrisgaddes.reaction;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -39,6 +40,8 @@ import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
 import com.github.javiersantos.materialstyleddialogs.enums.Style;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.lang.reflect.Field;
 
 
@@ -90,6 +93,7 @@ public class ThirdActivity extends AppCompatActivity {
     private String str_partb_title;
     private String str_partc_title;
 
+    private String DiretoryName;
 
     private String str_toolbar_problem_title;
 
@@ -124,6 +128,7 @@ public class ThirdActivity extends AppCompatActivity {
     private AsyncTaskLoadBitmapFromDataBase asyncLoadBitmap;
 
     private AsyncTaskSaveViewToBitmap asyncSaveToBitmap;
+    private MyCache cache;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,6 +153,9 @@ public class ThirdActivity extends AppCompatActivity {
 
         // Sets database
         tinydb = new TinyDB(this);
+
+        cache = new MyCache();
+        cache.OpenOrCreateCache(this, "ArrowBitmaps");
 
         // Loads problem information
         problem_number = tinydb.getInt("problem_number");
@@ -261,18 +269,17 @@ public class ThirdActivity extends AppCompatActivity {
             asyncLoadBitmap.execute();
         }
 
+        if (part_letter.toUpperCase().equals("C")) {
+            asyncLoadBitmap.execute();
+        }
+
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 btn_peek_probMain.startAnimation(scaleIn);
                 btn_peek_probMain.setAlpha((float) 1.0);
 
-//                if (finished_saving_bitmaps){
-//                if ((enable_peek_a || enable_peek_b) && finished_saving_bitmaps ) {
-//                    AsyncTaskLoadBitmapFromDataBase asyncLoadBitmap = new AsyncTaskLoadBitmapFromDataBase();
-
-//                }
-
+                // shows appropriate peek buttons
                 if (enable_peek_a) {
                     btn_peek_parta.startAnimation(scaleIn);
                     btn_peek_parta_arrows.startAnimation(scaleIn);
@@ -704,17 +711,17 @@ public class ThirdActivity extends AppCompatActivity {
 
                             switch (part_letter.toUpperCase()) {
                                 case "A":
-                                    tinydb.putString("part_letter", "B");
-
-                                    tinydb.putString("previous_part_letter", "A");
+//                                    tinydb.putString("part_letter", "B");
+//
+//                                    tinydb.putString("previous_part_letter", "A");
 
                                     asyncSaveToBitmap.execute();
 
 //                                    recreate();
                                     break;
                                 case "B":
-                                    tinydb.putString("part_letter", "C");
-                                    tinydb.putString("previous_part_letter", "B");
+//                                    tinydb.putString("part_letter", "C");
+//                                    tinydb.putString("previous_part_letter", "B");
 
                                     asyncSaveToBitmap.execute();
 
@@ -832,49 +839,16 @@ public class ThirdActivity extends AppCompatActivity {
     }
 
     public Bitmap getBitmapFromView(View view) {
-        //Define a bitmap with the same size as the view
+        // defines a bitmap with the same size as the view
         Bitmap returnedBitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
-
-//        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.prob1_parta);
-
-        //Bind a canvas to it
+        // binds a canvas to it
         Canvas canvas = new Canvas(returnedBitmap);
-        //Get the view's background
-//        Drawable bgDrawable = view.getBackground();
-//        if (bgDrawable != null)
-//            //has background drawable, then draw it on the canvas
-//            bgDrawable.draw(canvas);
-//        else
-//            //does not have background drawable, then draw white background on the canvas
-//            canvas.drawColor(Color.TRANSPARENT);
-//        // draw the view on the canvas
 
-
-//        Drawable part = getResources().getIdentifier(str_partCurrent_file_name, "drawable", getPackageName());
-
-//        ResourcesCompat.getDrawable(getResources(), R.drawable.name, null);
-
-//        Drawable part =  getApplicationContext().getResources().getIdentifier(str_partCurrent_file_name, "drawable", getApplicationContext().getPackageName());
-
-//        Drawable problem_image = this.getResources().getDrawable(this.getResources().getIdentifier(str_partCurrent_file_name, "drawable", this.getPackageName()));
-
-//        Bitmap problem_image = ((BitmapDrawable)IV_problem_part.getDrawable()).getBitmap();
-
-
-//        getResources().getIdentifier(str_probCurrent_file_name , "drawable", getPackageName())
-
-//        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.prob1);
-
-//        String imgName = "myicon";
-//        int resID = this.getResources().getIdentifier(str_parta_file_name, "drawable", getPackageName());
-//        Bitmap problem_image = BitmapFactory.decodeResource(this.getResources(), resID);
-//
-//        canvas.drawBitmap(problem_image,0,0,null);
+        // saves arrows from view to bitmap
         view.draw(canvas);
 
-        //return the bitmap
+        // returns the bitmap
         return returnedBitmap;
-
     }
 
     public static Bitmap getBitmapFromView2(View view) {
@@ -899,26 +873,26 @@ public class ThirdActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... params) {
-//            publishProgress("Sleeping..."); // Calls onProgressUpdate()
-//            try {
-            tinydb.putBoolean("finished_saving_bitmaps", false);
-
-            String previous_part_letter = tinydb.getString("previous_part_letter");
-
             Bitmap bm = getBitmapFromView(mDrawArrowsView);
-            String str_bm = BitMapToString(bm);
 
             String db_title_A = "prob" + problem_number + "_part" + "A" + "_arrows";
             String db_title_B = "prob" + problem_number + "_part" + "B" + "_arrows";
 
-            if (previous_part_letter.toUpperCase().equals("A")) {
-                tinydb.putString(db_title_A, str_bm);
+            if (part_letter.toUpperCase().equals("A")) {
+                cache.SaveBitmap(db_title_A, bm);
             }
 
-            if (previous_part_letter.toUpperCase().equals("B")) {
-                tinydb.putString(db_title_B, str_bm);
+            if (part_letter.toUpperCase().equals("B")) {
+                cache.SaveBitmap(db_title_B, bm);
             }
 
+            if (part_letter.toUpperCase().equals("A")) {
+                tinydb.putString("part_letter", "B");
+            }
+
+            if (part_letter.toUpperCase().equals("B")) {
+                tinydb.putString("part_letter", "C");
+            }
 
             return resp;
         }
@@ -951,89 +925,35 @@ public class ThirdActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... params) {
-//            publishProgress("Sleeping..."); // Calls onProgressUpdate()
-//            try {
-//            while (!finished_saving_bitmaps){
-//                // wait
-//            }
 
-            finished_saving_bitmaps = tinydb.getBoolean("finished_saving_bitmaps");
-            if (finished_saving_bitmaps) {
-                String db_title_A = "prob" + problem_number + "_part" + "A" + "_arrows";
-                String db_title_B = "prob" + problem_number + "_part" + "B" + "_arrows";
+            String db_title_A = "prob" + problem_number + "_part" + "A" + "_arrows";
+            String db_title_B = "prob" + problem_number + "_part" + "B" + "_arrows";
 
-                String previous_part_letter = tinydb.getString("previous_part_letter");
-                if (part_letter.toUpperCase().equals("B")) {
-                    String bmA = tinydb.getString(db_title_A);
-                    bm_A = StringToBitMap(bmA);
-                }
-
-                if (part_letter.toUpperCase().equals("C")) {
-                    String bmA = tinydb.getString(db_title_A);
-
-                    String bmB = tinydb.getString(db_title_B);
-                    bm_B = StringToBitMap(bmB);
-                }
-
-                // resets previous part letter
-                tinydb.remove("previous_part_letter");
-
-//                // Do your long operations here and return the result
-//                int time = Integer.parseInt(params[0]);
-//                // Sleeping for given time period
-//                Thread.sleep(time);
-//                resp = "Slept for " + time + " milliseconds";
-//            } //catch (InterruptedException e) {
-//                e.printStackTrace();
-//                resp = e.getMessage();
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//                resp = e.getMessage();
-//            }
+            if (part_letter.toUpperCase().equals("B")) {
+                bm_A = cache.OpenBitmap(db_title_A);
             }
 
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    IV_peek_parta_arrows.setImageBitmap(bm_A);
-                    btn_peek_parta_arrows.setImageBitmap(bm_A);
-                }
-            });
-
+            if (part_letter.toUpperCase().equals("C")) {
+                bm_A = cache.OpenBitmap(db_title_A);
+                bm_B = cache.OpenBitmap(db_title_B);
+            }
             return resp;
         }
 
         @Override
         protected void onPostExecute(String result) {
-//            // execution of result of Long time consuming operation
-////            finalResult.setText(result);
-////            finished_saving_bitmaps = tinydb.getBoolean("finished_saving_bitmaps");
-//            if (enable_peek_a) {
-////                Glide.with(ThirdActivity.this)
-////                        .load(bm_A)
-////                        .into(IV_peek_parta_arrows);
-////
-////                Glide.with(ThirdActivity.this)
-////                        .load(bm_A)
-////                        .into(btn_peek_parta_arrows);
-//
-////                IV_peek_parta_arrows.setImageBitmap(bm_A);
-////                btn_peek_parta_arrows.setImageBitmap(bm_A);
-//            }
-//
-//            if (enable_peek_b) {
-//
-//                Glide.with(ThirdActivity.this)
-//                        .load(bm_A)
-//                        .into(IV_peek_partb_arrows);
-//
-//                Glide.with(ThirdActivity.this)
-//                        .load(bm_A)
-//                        .into(btn_peek_partb_arrows);
-////                IV_peek_partb_arrows.setImageBitmap(bm_B);
-////                btn_peek_partb_arrows.setImageBitmap(bm_B);
-//            }
+            if (enable_peek_a) {
+                IV_peek_parta_arrows.setImageBitmap(bm_A);
+                btn_peek_parta_arrows.setImageBitmap(bm_A);
+            }
 
+            if (enable_peek_b) {
+                IV_peek_parta_arrows.setImageBitmap(bm_A);
+                btn_peek_parta_arrows.setImageBitmap(bm_A);
+
+                IV_peek_partb_arrows.setImageBitmap(bm_B);
+                btn_peek_partb_arrows.setImageBitmap(bm_B);
+            }
         }
 
         @Override
@@ -1049,6 +969,62 @@ public class ThirdActivity extends AppCompatActivity {
             // progress. For example updating ProgessDialog
         }
     }
+
+    public class MyCache {
+
+        private String DiretoryName;
+
+        public void OpenOrCreateCache(Context _context, String _directoryName) {
+            File file = new File(_context.getCacheDir().getAbsolutePath() + "/" + _directoryName);
+            if (!file.exists()) {
+                file.mkdir();
+            }
+            DiretoryName = file.getAbsolutePath();
+        }
+
+        public void SaveBitmap(String fileName, Bitmap bmp) {
+            try {
+                File file = new File(DiretoryName + "/" + fileName);
+                if (file.exists()) {
+                    file.delete();
+                }
+                FileOutputStream Filestream = new FileOutputStream(DiretoryName + "/" + fileName);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byte[] byteArray = stream.toByteArray();
+                Filestream.write(byteArray);
+                Filestream.close();
+                bmp.recycle();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        public Bitmap OpenBitmap(String name) {
+            try {
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+                File file = new File(DiretoryName + "/" + name);
+                if (file.exists()) {
+                    Bitmap bitmap = BitmapFactory.decodeFile(DiretoryName + "/" + name, options);
+                    return bitmap;
+                } else {
+                    return null;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+//        public void CleanCacheBitMap(){
+//            File file = new File(Diretorio);
+//            if(file.exists()){
+//                file.delete();
+//            }
+    }
+
+}
 
 //    public Bitmap replaceColor(Bitmap src,int fromColor, int targetColor) {
 //        if(src == null) {
@@ -1071,4 +1047,4 @@ public class ThirdActivity extends AppCompatActivity {
 //
 //        return result;
 //    }
-}
+

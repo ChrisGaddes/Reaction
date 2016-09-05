@@ -88,8 +88,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/scrollView"
                 android:clipChildren="false"
-                android:background="@color/transparent"
-                android:src="@drawable/hey" />
+                android:background="@color/transparent" />
 
         <com.chrisgaddes.reaction.SquareImageView
                 android:id="@+id/peek_partb"
@@ -152,7 +151,6 @@
                 android:layout_width="56dp"
                 android:layout_height="match_parent"
                 android:elevation="4dp"
-                android:background="@color/material_light_white"
                 android:layout_alignParentBottom="true"
                 android:layout_toRightOf="@id/btn_peek_prob"
                 android:layout_marginBottom="20dp"
@@ -174,7 +172,6 @@
                 android:layout_width="56dp"
                 android:layout_height="match_parent"
                 android:elevation="4dp"
-                android:background="@color/material_light_white"
                 android:layout_alignParentBottom="true"
                 android:layout_toRightOf="@id/btn_peek_parta"
                 android:layout_marginBottom="20dp"
