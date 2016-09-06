@@ -149,13 +149,14 @@
         <item>0.0</item>
     </string-array>
     <string-array name="forceAngleRow_prob3_partA_btn2">
-        <item>0.0</item>
+        <!-- force the angle to be the opposite -->
+        <item>2.0</item>
         <item>0.0</item>
         <item>0.0</item>
         <item>0.0</item>
     </string-array>
     <string-array name="oppositeAllowedRow_prob3_partA_btn2">
-        <item>0.0</item>
+        <item>1.0</item>
         <item>1.0</item>
         <item>1.0</item>
         <item>1.0</item>
@@ -223,7 +224,7 @@
         <item>0.0</item>
     </string-array>
     <string-array name="dependencyRow_prob3_partA_btn3">
-        <item>0.0</item>
+        <item>1.0</item>
         <item>0.0</item>
         <item>0.0</item>
         <item>0.0</item>

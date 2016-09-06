@@ -109,7 +109,7 @@ public class DrawArrowsView extends ImageView {
 
     private int arrow_head_point_x;
     private int arrow_head_point_y;
-    private boolean arrow_head_outward;
+    private boolean arrow_head_inward;
 
 
     private boolean allArrowsCorrect;
@@ -1266,22 +1266,27 @@ public class DrawArrowsView extends ImageView {
 
         // checks if dependency row has a 1.0 in it which means flip the arrow to outward
         // this only works if the arrow is at 0 (i.e. the first of the four possible correct angles at a given point)
-        arrow_head_outward = String.valueOf(checkMatrix.get(btn_chosen).get(6).get(0)).equals("1.0");
+        arrow_head_inward = String.valueOf(checkMatrix.get(btn_chosen).get(6).get(0)).equals("1.0");
 
-        if (arrow_head_outward) {
-            // sets angle of arrow head
+        if (String.valueOf(checkMatrix.get(btn_chosen).get(6).get(3)).equals("1.0")) {
+            // this is a quick and dirty workaround for when dependency row is already used
+            arrow_head_inward = true;
+        }
+
+        if (arrow_head_inward) {
+            // sets angle of arrow head facing inward
             angle_arrow_head_left = 4 * pi / 3 - angle - pi;
             angle_arrow_head_right = -pi / 3 - angle - pi;
 
-            // sets coordinates of arrow head
+            // sets coordinates of arrow head facing inward
             arrow_head_point_x = btn_loc_x;
             arrow_head_point_y = btn_loc_y;
         } else {
-            // sets angle of arrow head
+            // sets angle of arrow head facing outward
             angle_arrow_head_left = 4 * pi / 3 - angle;
             angle_arrow_head_right = -pi / 3 - angle;
 
-            // sets coordinates of arrow head
+            // sets coordinates of arrow head facing outward
             arrow_head_point_x = loc_arrow_point_x;
             arrow_head_point_y = loc_arrow_point_y;
         }
