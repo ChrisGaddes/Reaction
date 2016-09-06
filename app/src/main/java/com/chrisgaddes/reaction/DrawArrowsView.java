@@ -786,9 +786,7 @@ public class DrawArrowsView extends ImageView {
 
                     // TODO move this into loop right below. Seems redundant
                     // checks if release is inside button
-                    if (rectListButtons.get(linkList.get(rectListArrowHead_indice)).contains(X, Y) && moved_outside_radius_already) {
-                        inside_button = true;
-                    }
+                    inside_button = rectListButtons.get(linkList.get(rectListArrowHead_indice)).contains(X, Y) && moved_outside_radius_already;
 
                     // break if released inside button
                     if (inside_button && moved_outside_radius_already) {
@@ -1095,59 +1093,62 @@ public class DrawArrowsView extends ImageView {
     private void onActionDown() {
         invalidate();
 
-        if (rectDone.contains(X, Y)) {
-            // Checks all arrows that are currently placed
-//            checkAllArrows();
-//            if (allArrowsCorrect = checkIfFinished()) {
-//                Snackbar.make(this, "Finished!", Snackbar.LENGTH_SHORT).show();
-//            } else {
-            Snackbar.make(this, "Not Finished Yet...", Snackbar.LENGTH_SHORT).show();
-//            }
+//        if (rectDone.contains(X, Y)) {
+//            // Checks all arrows that are currently placed
+////            checkAllArrows();
+////            if (allArrowsCorrect = checkIfFinished()) {
+////                Snackbar.make(this, "Finished!", Snackbar.LENGTH_SHORT).show();
+////            } else {
+////            Snackbar.make(this, "Not Finished Yet...", Snackbar.LENGTH_SHORT).show();
+////            }
+////
+////            new MaterialIntroView.Builder(this)
+////                    .enableDotAnimation(true)
+////                    .enableIcon(false)
+////                    .setFocusGravity(FocusGravity.CENTER)
+////                    .setFocusType(Focus.MINIMUM)
+////                    .setDelayMillis(500)
+////                    .enableFadeAnimation(true)
+////                    .performClick(true)
+////                    .setInfoText("Hi There! Click this card and see what happens.")
+////                    .setTarget(view)
+////                    .setUsageId("intro_card") //THIS SHOULD BE UNIQUE ID
+////                    .show();
 //
-//            new MaterialIntroView.Builder(this)
-//                    .enableDotAnimation(true)
-//                    .enableIcon(false)
-//                    .setFocusGravity(FocusGravity.CENTER)
-//                    .setFocusType(Focus.MINIMUM)
-//                    .setDelayMillis(500)
-//                    .enableFadeAnimation(true)
-//                    .performClick(true)
-//                    .setInfoText("Hi There! Click this card and see what happens.")
-//                    .setTarget(view)
-//                    .setUsageId("intro_card") //THIS SHOULD BE UNIQUE ID
-//                    .show();
-
-
-        }
+//
+//        }
 
         // able_to_click is used to eliminate rapid clicks which can cause problems
         if (able_to_click) {
-            k = 0;
-            for (Rect rect_tmp1 : rectListButtons) {
-                if (rect_tmp1.contains(X, Y)) {
-                    // touch is inside button
-                    clicked_on_button = true;
-                    // touch is NOT on arrow head
-                    clicked_on_arrow_head = false;
-                    // starts long press timer
-                    handler.postDelayed(mLongPressed, 500);
-                    rectList_indice = k;
-                    btn_loc_x = rect_tmp1.centerX();
-                    btn_loc_y = rect_tmp1.centerY();
-                    rectListArrowHead_indice = rectListArrowHead.size();
-                }
-                k++;
-            }
 
             // check if arrow head has just been clicked on
             k = 0;
-            if (!clicked_on_button) {
+//            if (!clicked_on_button) {
                 for (Rect rect_tmp2 : rectListArrowHead) {
                     if (rect_tmp2.contains(X, Y)) {
                         clicked_on_arrow_head = true;
                         rectListArrowHead_indice = k;
                         btn_loc_x = rectListButtons.get(linkList.get(rectListArrowHead_indice)).centerX();
                         btn_loc_y = rectListButtons.get(linkList.get(rectListArrowHead_indice)).centerY();
+                    }
+                    k++;
+                }
+//            }
+
+            if (!clicked_on_arrow_head) {
+                k = 0;
+                for (Rect rect_tmp1 : rectListButtons) {
+                    if (rect_tmp1.contains(X, Y)) {
+                        // touch is inside button
+                        clicked_on_button = true;
+                        // touch is NOT on arrow head
+                        clicked_on_arrow_head = false;
+                        // starts long press timer
+                        handler.postDelayed(mLongPressed, 500);
+                        rectList_indice = k;
+                        btn_loc_x = rect_tmp1.centerX();
+                        btn_loc_y = rect_tmp1.centerY();
+                        rectListArrowHead_indice = rectListArrowHead.size();
                     }
                     k++;
                 }
