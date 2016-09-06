@@ -12,9 +12,7 @@
         app:actionViewClass="com.chrisgaddes.reaction.ChronometerView"
         app:showAsAction="always"
 
-        android:title="This Should Not Be Needed"
-
-        ></item>
+        android:title="This Should Not Be Needed, but Android requires it..." />
 
     <item
         android:id="@+id/action_help"

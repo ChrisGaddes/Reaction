@@ -27,7 +27,7 @@
     </string-array>
     <string-array name="location_prob3_partA_btn2">
         <item>48.092</item>
-        <item>45.762</item>
+        <item>41.458</item>
     </string-array>
     <string-array name="location_prob3_partA_btn3">
         <item>71.826</item>
@@ -37,8 +37,8 @@
 
     <!--Button 0-->
     <string-array name="angleRow_prob3_partA_btn0">
-        <item>100.0</item>
-        <item>100.0</item>
+        <item>PI/2</item>
+        <item>0.0</item>
         <item>100.0</item>
         <item>100.0</item>
     </string-array>
@@ -137,7 +137,7 @@
 
     <!--Button 2-->
     <string-array name="angleRow_prob3_partA_btn2">
-        <item>100.0</item>
+        <item>PI/2</item>
         <item>100.0</item>
         <item>100.0</item>
         <item>100.0</item>
@@ -155,7 +155,7 @@
         <item>0.0</item>
     </string-array>
     <string-array name="oppositeAllowedRow_prob3_partA_btn2">
-        <item>1.0</item>
+        <item>0.0</item>
         <item>1.0</item>
         <item>1.0</item>
         <item>1.0</item>
@@ -187,7 +187,7 @@
 
     <!--Button 3-->
     <string-array name="angleRow_prob3_partA_btn3">
-        <item>100.0</item>
+        <item>PI/2</item>
         <item>100.0</item>
         <item>100.0</item>
         <item>100.0</item>

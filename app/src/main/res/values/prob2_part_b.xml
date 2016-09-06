@@ -13,53 +13,39 @@
 
     <!--Number of Buttons-->
     <string-array name="number_of_buttons_prob2_partB">
-        <item>9</item>
+        <item>6</item>
     </string-array>
 
     <!--Button Locations-->
     <string-array name="location_prob2_partB_btn0">
-        <item>47.034</item>
-        <item>21.604</item>
+        <item>46.99</item>
+        <item>21.86</item>
     </string-array>
     <string-array name="location_prob2_partB_btn1">
-        <item>83.994</item>
-        <item>43.19</item>
-    </string-array>
-    <string-array name="location_prob2_partB_btn2">
-        <item>46.874</item>
-        <item>64.53</item>
-    </string-array>
-    <string-array name="location_prob2_partB_btn3">
-        <item>32.034</item>
-        <item>73.19</item>
-    </string-array>
-    <string-array name="location_prob2_partB_btn4">
-        <item>17.058</item>
-        <item>73.19</item>
-    </string-array>
-    <string-array name="location_prob2_partB_btn5">
         <item>65.514</item>
         <item>32.52</item>
     </string-array>
-    <string-array name="location_prob2_partB_btn6">
-        <item>65.714</item>
-        <item>32.52</item>
+    <string-array name="location_prob2_partB_btn2">
+        <item>83.994</item>
+        <item>43.19</item>
     </string-array>
-    <string-array name="location_prob2_partB_btn7">
-        <item>65.914</item>
-        <item>32.52</item>
+    <string-array name="location_prob2_partB_btn3">
+        <item>46.722</item>
+        <item>64.226</item>
     </string-array>
-    <string-array name="location_prob2_partB_btn8">
-        <item>65.434</item>
-        <item>53.86</item>
+    <string-array name="location_prob2_partB_btn4">
+        <item>31.722</item>
+        <item>72.886</item>
     </string-array>
-
-    <!--Correct angles-->
+    <string-array name="location_prob2_partB_btn5">
+        <item>17.034</item>
+        <item>72.886</item>
+    </string-array>
 
 
     <!--Button 0-->
     <string-array name="angleRow_prob2_partB_btn0">
-        <item>100.0</item>
+        <item>PI/6</item>
         <item>100.0</item>
         <item>100.0</item>
         <item>100.0</item>
@@ -159,7 +145,7 @@
 
     <!--Button 2-->
     <string-array name="angleRow_prob2_partB_btn2">
-        <item>100.0</item>
+        <item>PI/6</item>
         <item>100.0</item>
         <item>100.0</item>
         <item>100.0</item>

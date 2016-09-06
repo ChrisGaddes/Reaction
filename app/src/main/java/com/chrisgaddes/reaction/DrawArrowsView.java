@@ -74,6 +74,7 @@ public class DrawArrowsView extends ImageView {
      */
 
     private final Paint paint_arrow_correct_location;
+    private final Paint paint_arrow_correct_location_shadow;
     private final Paint paint_box;
     private final Paint paint_text;
     private final Paint paint_angle_check;
@@ -277,6 +278,7 @@ public class DrawArrowsView extends ImageView {
         // create new paints
         paint_arrow = new Paint();
         paint_arrow_correct_location = new Paint();
+        paint_arrow_correct_location_shadow = new Paint();
         path_arrow = new Path();
         paint_box = new Paint();
         paint_arrow_head_box = new Paint();
@@ -331,6 +333,8 @@ public class DrawArrowsView extends ImageView {
         String str_number_of_buttons = "number_of_buttons_" + "prob" + problem_number + "_part" + part_letter;
         String[] mnumberOfButtons = getResources().getStringArray(getResId(str_number_of_buttons, R.array.class));
         int number_of_buttons = Integer.parseInt(mnumberOfButtons[0]);
+
+        mforceAngleRow = new String[4];
 
         for (int btn = 0; btn < number_of_buttons; btn++) {
 
@@ -491,12 +495,23 @@ public class DrawArrowsView extends ImageView {
         paint_arrow.setStyle(Paint.Style.STROKE);
         paint_arrow.setStrokeCap(Paint.Cap.ROUND);
 
+
         // sets style of arrow if placed at correct location
         paint_arrow_correct_location.setStyle(Paint.Style.FILL);
         paint_arrow_correct_location.setStrokeWidth(dpToPx(6));
         paint_arrow_correct_location.setColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
         paint_arrow_correct_location.setStyle(Paint.Style.STROKE);
         paint_arrow_correct_location.setStrokeCap(Paint.Cap.ROUND);
+
+
+        //TODO: Decide if shadow is worth keeping
+        // sets style of arrow if placed at correct location
+        paint_arrow_correct_location_shadow.setStyle(Paint.Style.FILL);
+        paint_arrow_correct_location_shadow.setStrokeWidth(dpToPx(6));
+        paint_arrow_correct_location_shadow.setColor(ContextCompat.getColor(getContext(), R.color.black));
+        paint_arrow_correct_location_shadow.setStyle(Paint.Style.STROKE);
+        paint_arrow_correct_location_shadow.setStrokeCap(Paint.Cap.ROUND);
+        paint_arrow_correct_location_shadow.setShadowLayer(dpToPx(6) - dpToPx(4), dpToPx(2), dpToPx(2), R.color.black);
 
         // toggles arrow animation - this value can be changed in menu in app
         boolean animationToggle = SP.getBoolean("animationToggle", true);
@@ -637,7 +652,8 @@ public class DrawArrowsView extends ImageView {
 
         // draws correct arrows from pathlist pthLst_arrows
         for (Path pthLst_arrows : pathListCorrect) {
-            canvas.drawPath(pthLst_arrows, paint_arrow_correct_location);
+            canvas.drawPath(pthLst_arrows, paint_arrow_correct_location_shadow);
+//            canvas.drawPath(pthLst_arrows, paint_arrow_correct_location);
         }
 
         if (debuggingTextToggle) {

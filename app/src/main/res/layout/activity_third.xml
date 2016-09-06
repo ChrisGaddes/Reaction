@@ -23,7 +23,7 @@
             android:layout_height="?attr/actionBarSize"
             android:elevation="8dp"
             android:transitionGroup="false"
-            app:theme="@style/ToolBarStyle" />
+            android:theme="@style/ToolBarStyle" />
     </android.support.design.widget.AppBarLayout>
 
     <android.support.percent.PercentRelativeLayout
