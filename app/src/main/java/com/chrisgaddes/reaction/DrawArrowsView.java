@@ -107,6 +107,11 @@ public class DrawArrowsView extends ImageView {
 
     private boolean invalidateNow;
 
+    private int arrow_head_point_x;
+    private int arrow_head_point_y;
+    private boolean arrow_head_outward;
+
+
     private boolean allArrowsCorrect;
 
     public TinyDB tinydb;
@@ -396,7 +401,9 @@ public class DrawArrowsView extends ImageView {
                 val7 = Double.valueOf(String.valueOf(tmp7));
 
                 // Sets forceAngleRow from previous problem
-                if (mdependencyRow[c].equals("0.0")) {
+                if (mdependencyRow[c].equals("0.0") || mdependencyRow[c].equals("1.0")) {
+                    // if mdependency row equals 0.0 than the arrow head should be left facing outward
+                    // if mdependency row equals 1.0 than the arrow head should be flipped to inward
 
                     mforceAngleRow = getResources().getStringArray(getResId(str_forceAngleRow, R.array.class));
                     tmp2 = new Expression(mforceAngleRow[c]).eval();
@@ -1093,33 +1100,9 @@ public class DrawArrowsView extends ImageView {
     private void onActionDown() {
         invalidate();
 
-//        if (rectDone.contains(X, Y)) {
-//            // Checks all arrows that are currently placed
-////            checkAllArrows();
-////            if (allArrowsCorrect = checkIfFinished()) {
-////                Snackbar.make(this, "Finished!", Snackbar.LENGTH_SHORT).show();
-////            } else {
-////            Snackbar.make(this, "Not Finished Yet...", Snackbar.LENGTH_SHORT).show();
-////            }
-////
-////            new MaterialIntroView.Builder(this)
-////                    .enableDotAnimation(true)
-////                    .enableIcon(false)
-////                    .setFocusGravity(FocusGravity.CENTER)
-////                    .setFocusType(Focus.MINIMUM)
-////                    .setDelayMillis(500)
-////                    .enableFadeAnimation(true)
-////                    .performClick(true)
-////                    .setInfoText("Hi There! Click this card and see what happens.")
-////                    .setTarget(view)
-////                    .setUsageId("intro_card") //THIS SHOULD BE UNIQUE ID
-////                    .show();
-//
-//
-//        }
-
         // able_to_click is used to eliminate rapid clicks which can cause problems
         if (able_to_click) {
+
 
             // check if arrow head has just been clicked on
             k = 0;
@@ -1255,27 +1238,23 @@ public class DrawArrowsView extends ImageView {
 
 
     private void showSnackBarArrowPlaced(int mrectListArrowHead_indice) {
-        // overlays gray arrow over red arrow if in correct location
+        // overlays colored arrow over gray arrow if in correct location
         if (match) {
             SpannableStringBuilder snackbarText = new SpannableStringBuilder();
-//            snackbarText.append("" + convertRadToDegreeAndInvert(angle) + "\u00B0" + " is a ");
             snackbarText.append("");
             int boldStart = snackbarText.length();
             snackbarText.append("Correct Direction");
             snackbarText.setSpan(new ForegroundColorSpan(Color.WHITE), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             snackbarText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             snackbarText.append("");
-//            Snackbar.make(this, snackbarText, Snackbar.LENGTH_SHORT).show();
         } else {
             SpannableStringBuilder snackbarText = new SpannableStringBuilder();
-//            snackbarText.append("" + convertRadToDegreeAndInvert(angle) + "\u00B0" + " is a ");
             snackbarText.append("");
             int boldStart = snackbarText.length();
             snackbarText.append("Wrong Direction");
             snackbarText.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getContext(), R.color.colorAccent)), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             snackbarText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             snackbarText.append(" - Try again");
-//            Snackbar.make(this, snackbarText, Snackbar.LENGTH_SHORT).show();
         }
     }
 
@@ -1283,25 +1262,46 @@ public class DrawArrowsView extends ImageView {
     private void drawArrow() {
         // TODO make this modular - inputs = btn_loc_x, btn_loc_y, angle - outputs = path_arrow
 
-        // sets angle of arrow head
-        angle_arrow_head_left = 4 * pi / 3 - angle;
-        angle_arrow_head_right = -pi / 3 - angle;
+        btn_chosen = linkList.get(rectListArrowHead_indice);
 
-        // calculates location of points for both sides of arrow head
-        float loc_arrow_head_left_x = (float) ((float) len_arrow_head * Math.sin(angle_arrow_head_left) + loc_arrow_point_x);
-        float loc_arrow_head_left_y = (float) ((float) len_arrow_head * Math.cos(angle_arrow_head_left) + loc_arrow_point_y);
-        float loc_arrow_head_right_x = (float) ((float) len_arrow_head * Math.sin(angle_arrow_head_right) + loc_arrow_point_x);
-        float loc_arrow_head_right_y = (float) ((float) len_arrow_head * Math.cos(angle_arrow_head_right) + loc_arrow_point_y);
+        // checks if dependency row has a 1.0 in it which means flip the arrow to outward
+        // this only works if the arrow is at 0 (i.e. the first of the four possible correct angles at a given point)
+        arrow_head_outward = String.valueOf(checkMatrix.get(btn_chosen).get(6).get(0)).equals("1.0");
+
+        if (arrow_head_outward) {
+            // sets angle of arrow head
+            angle_arrow_head_left = 4 * pi / 3 - angle - pi;
+            angle_arrow_head_right = -pi / 3 - angle - pi;
+
+            // sets coordinates of arrow head
+            arrow_head_point_x = btn_loc_x;
+            arrow_head_point_y = btn_loc_y;
+        } else {
+            // sets angle of arrow head
+            angle_arrow_head_left = 4 * pi / 3 - angle;
+            angle_arrow_head_right = -pi / 3 - angle;
+
+            // sets coordinates of arrow head
+            arrow_head_point_x = loc_arrow_point_x;
+            arrow_head_point_y = loc_arrow_point_y;
+        }
+
+//         calculates location of points for both sides of arrow head
+        float loc_arrow_head_left_x = (float) ((float) len_arrow_head * Math.sin(angle_arrow_head_left) + arrow_head_point_x);
+        float loc_arrow_head_left_y = (float) ((float) len_arrow_head * Math.cos(angle_arrow_head_left) + arrow_head_point_y);
+        float loc_arrow_head_right_x = (float) ((float) len_arrow_head * Math.sin(angle_arrow_head_right) + arrow_head_point_x);
+        float loc_arrow_head_right_y = (float) ((float) len_arrow_head * Math.cos(angle_arrow_head_right) + arrow_head_point_y);
 
         // draws arrow head
         path_arrow.moveTo(loc_arrow_head_left_x, loc_arrow_head_left_y);
-        path_arrow.lineTo(loc_arrow_point_x, loc_arrow_point_y);
+        path_arrow.lineTo(arrow_head_point_x, arrow_head_point_y);
         path_arrow.lineTo(loc_arrow_head_right_x, loc_arrow_head_right_y);
 
         // draws arrow shaft
         path_arrow.moveTo(btn_loc_x, btn_loc_y);
         path_arrow.lineTo(loc_arrow_point_x, loc_arrow_point_y);
         path_arrow.moveTo(loc_arrow_point_x, loc_arrow_point_y);
+
     }
 
     private void drawMoment() {
