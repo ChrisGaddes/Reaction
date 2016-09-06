@@ -111,6 +111,7 @@ public class DrawArrowsView extends ImageView {
     private int arrow_head_point_y;
     private boolean arrow_head_inward;
 
+    private TheObserver mObserver;
 
     private boolean allArrowsCorrect;
 
@@ -230,6 +231,8 @@ public class DrawArrowsView extends ImageView {
     private Double val6;
     private Double val7;
 
+    private Context mContext;
+
     private ThirdActivity thirdActivity;
 
 //    public FloatingActionButton btn_check_done;
@@ -243,7 +246,9 @@ public class DrawArrowsView extends ImageView {
     public DrawArrowsView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-//        thirdActivity = (ThirdActivity) context;
+        mContext = context;
+
+        thirdActivity = (ThirdActivity) context;
 //
 //
 //
@@ -785,6 +790,20 @@ public class DrawArrowsView extends ImageView {
                 break;
 
             case MotionEvent.ACTION_UP:
+
+                callSomeFuntionOnMyMainActivityClass();
+
+//                new MaterialIntroView.Builder(thirdActivity)
+//                        .enableDotAnimation(true)
+//                        .enableIcon(false)
+//                        .setFocusGravity(FocusGravity.CENTER)
+//                        .setFocusType(Focus.MINIMUM)
+//                        .setDelayMillis(500)
+//                        .enableFadeAnimation(true)
+//                        .performClick(false)
+//                        .setInfoText("Hi There! Welcome to Reaction!")
+//                        .setUsageId("2") //THIS SHOULD BE UNIQUE ID
+//                        .show();
 
                 if (clicked_on_button || clicked_on_arrow_head) {
 
@@ -1382,18 +1401,18 @@ public class DrawArrowsView extends ImageView {
             angle_arrow_head_left = -pi / 14 + 4 * pi / 3 - (3 * pi / 2 + angle);
         }
 
-        // calculates location of points for both sides of arrow head
+        // calculates location of points for both sides of arrow head for moment
         float loc_arrow_head_left_x = (float) ((float) len_arrow_head * Math.sin(angle_arrow_head_left) + loc_arrow_point_x);
         float loc_arrow_head_left_y = (float) ((float) len_arrow_head * Math.cos(angle_arrow_head_left) + loc_arrow_point_y);
         float loc_arrow_head_right_x = (float) ((float) len_arrow_head * Math.sin(angle_arrow_head_right) + loc_arrow_point_x);
         float loc_arrow_head_right_y = (float) ((float) len_arrow_head * Math.cos(angle_arrow_head_right) + loc_arrow_point_y);
 
-        // draws arrow head
+        // draws arrow head on moment
         path_arrow.moveTo(loc_arrow_head_left_x, loc_arrow_head_left_y);
         path_arrow.lineTo(loc_arrow_point_x, loc_arrow_point_y);
         path_arrow.lineTo(loc_arrow_head_right_x, loc_arrow_head_right_y);
 
-        // draws moment shaft
+        // draws semicircular moment shaft
         oval_moment.set((float) (btn_loc_x - len_from_btn_to_touch), (float) (btn_loc_y - len_from_btn_to_touch), (float) (btn_loc_x + len_from_btn_to_touch), (float) (btn_loc_y + len_from_btn_to_touch));
         path_arrow.arcTo(oval_moment, (float) angle_deg, sweep_angle, true);
     }
@@ -1653,5 +1672,15 @@ public class DrawArrowsView extends ImageView {
         }
     }
 
+    // this is to set the observer
+    public void setObserver(TheObserver observer) {
+        mObserver = observer;
+    }
 
+    // here be the magic
+    private void callSomeFuntionOnMyMainActivityClass() {
+        if (mObserver != null) {
+            mObserver.callback();
+        }
+    }
 }

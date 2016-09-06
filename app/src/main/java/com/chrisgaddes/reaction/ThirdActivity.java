@@ -312,6 +312,15 @@ public class ThirdActivity extends AppCompatActivity {
 
         mDrawArrowsView = (DrawArrowsView) findViewById(R.id.idDrawArrowsView);
 
+        mDrawArrowsView.setObserver(new TheObserver() {
+                                        public void callback() {
+                                            // here you call something inside your activity, for instance
+//                                            methodOnYourActivity();
+                                            Log.d("Clicked", "Woo Hoo!");
+                                        }
+                                    }
+        );
+
 //        mDrawArrowsView.setAlpha((float) 1.0);
 
 
@@ -566,6 +575,20 @@ public class ThirdActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+//        new MaterialIntroView.Builder(this)
+//                .enableDotAnimation(true)
+//                .enableIcon(false)
+//                .setFocusGravity(FocusGravity.CENTER)
+//                .setFocusType(Focus.MINIMUM)
+//                .setDelayMillis(500)
+//                .enableFadeAnimation(true)
+//                .performClick(true)
+//                .setInfoText("Hi There! Welcome to Reaction!")
+//                .setTarget()
+//                .setUsageId("2") //THIS SHOULD BE UNIQUE ID
+//                .show();
+
     }
 
     @Override
