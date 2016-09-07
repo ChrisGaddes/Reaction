@@ -84,6 +84,7 @@ public class ThirdActivity extends AppCompatActivity {
 
     private TinyDB tinydb;
     private int eventaction;
+    private String previous_part_letter;
 
     private Toolbar toolbar;
     private ImageView IV_problem_part;
@@ -125,8 +126,8 @@ public class ThirdActivity extends AppCompatActivity {
 
     private Handler mHandler = new Handler();
 
-    private AsyncTaskLoadBitmapFromDataBase asyncLoadBitmapPartA;
-    private AsyncTaskLoadBitmapFromDataBase asyncLoadBitmapPartB;
+//    private AsyncTaskLoadBitmapFromDataBase asyncLoadBitmapPartA;
+//    private AsyncTaskLoadBitmapFromDataBase asyncLoadBitmapPartB;
 
     private AsyncTaskSaveViewToBitmap asyncSaveToBitmapPartA;
     private AsyncTaskSaveViewToBitmap asyncSaveToBitmapPartB;
@@ -135,6 +136,8 @@ public class ThirdActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Log.d(TAG, "onCreate run");
         setupWindowAnimations();
         setContentView(R.layout.activity_third);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -163,10 +166,10 @@ public class ThirdActivity extends AppCompatActivity {
 //        t.start();
 
         asyncSaveToBitmapPartA = new AsyncTaskSaveViewToBitmap();
-        asyncLoadBitmapPartA = new AsyncTaskLoadBitmapFromDataBase();
+//        asyncLoadBitmapPartA = new AsyncTaskLoadBitmapFromDataBase();
 
         asyncSaveToBitmapPartB = new AsyncTaskSaveViewToBitmap();
-        asyncLoadBitmapPartB = new AsyncTaskLoadBitmapFromDataBase();
+//        asyncLoadBitmapPartB = new AsyncTaskLoadBitmapFromDataBase();
 
         fadeIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fadein);
         fadeOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fadeout);
@@ -188,9 +191,6 @@ public class ThirdActivity extends AppCompatActivity {
         // Loads method to (re)startPart
         startPart();
 
-
-        mDrawArrowsView = (DrawArrowsView) findViewById(R.id.idDrawArrowsView);
-
         mDrawArrowsView.setObserver(new TheObserver() {
                                         public void callback() {
 //                                            Log.d("Clicked", "Woo Hoo!");
@@ -198,14 +198,11 @@ public class ThirdActivity extends AppCompatActivity {
                                     }
         );
 
-//        mDrawArrowsView.setAlpha((float) 1.0);
-
-
         btn_check_done.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 boolean mrunCheckIfFinished = mDrawArrowsView.runCheckIfFinished();
                 if (mrunCheckIfFinished) {
-                    showDialogArrowsCorrect();
+                    setDialogArrowsCorrect();
                 } else {
                     Snackbar.make(findViewById(R.id.coordinatorLayout), "Not Finished Yet...", Snackbar.LENGTH_SHORT).setCallback(new Snackbar.Callback() {
                         @Override
@@ -248,9 +245,11 @@ public class ThirdActivity extends AppCompatActivity {
                                 btn_peek_partb_arrows.setAlpha((float) 0.0);
                             }
                         }
-//                    }).setAction("Start Over", new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
+                    }).setAction("Hint", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Log.d(TAG, "Put hint here");
+
 //                            btn_peek_probMain.setAlpha((float) 1.0);
 //                            if (enable_peek_a) {
 //                                btn_peek_parta.setAlpha((float) 1.0);
@@ -259,7 +258,7 @@ public class ThirdActivity extends AppCompatActivity {
 //                                btn_peek_partb.setAlpha((float) 1.0);
 //                            }
 //                            mDrawArrowsView.resetAllValues();
-//                        }
+                        }
                     }).show();
                 }
             }
@@ -284,27 +283,14 @@ public class ThirdActivity extends AppCompatActivity {
                         }
 
                         if (enable_peek_a) {
-//                            YoYo.with(Techniques.SlideOutDown)
-//                                    .duration(200)
-//                                    .playOn(btn_peek_parta);
                             btn_peek_parta.startAnimation(scaleOut);
                             btn_peek_parta_arrows.startAnimation(scaleOut);
                         }
 
-//                        btn_peek_parta.startAnimation(scaleOut);
-//                        btn_peek_partb.startAnimation(scaleOut);
-
                         if (enable_peek_b) {
-//                            YoYo.with(Techniques.SlideOutDown)
-//                                    .duration(200)
-//                                    .playOn(btn_peek_partb);
                             btn_peek_partb.startAnimation(scaleOut);
                             btn_peek_partb_arrows.startAnimation(scaleOut);
                         }
-
-//                        YoYo.with(Techniques.SlideOutRight)
-//                                .duration(200)
-//                                .playOn(btn_check_done);
 
                         btn_check_done.hide();
                         break;
@@ -456,29 +442,17 @@ public class ThirdActivity extends AppCompatActivity {
     }
 
     private void startPart() {
+
         // Loads problem information
         problem_number = tinydb.getInt("problem_number");
         part_letter = tinydb.getString("part_letter");
 
-        // resets booleans to false (hidden)
-        enable_peek_a = false;
-        enable_peek_b = false;
+        getEnablePeek();
 
-        // shows peek image buttons once previous part is finished
-        if (part_letter.toUpperCase().equals("A")) {
-            enable_peek_a = false;
-            enable_peek_b = false;
-        }
 
-        if (part_letter.toUpperCase().equals("B")) {
-            enable_peek_a = true;
-            enable_peek_b = false;
-        }
+        mDrawArrowsView = (DrawArrowsView) findViewById(R.id.idDrawArrowsView);
 
-        if (part_letter.toUpperCase().equals("C")) {
-            enable_peek_a = true;
-            enable_peek_b = true;
-        }
+        mDrawArrowsView.setAlpha((float) 1.0);
 
         // load problem statement and part statement
         str_problem_statement = getResources().getStringArray(getResId("mainProblemStatement_" + "prob" + problem_number + "_part" + part_letter, R.array.class));
@@ -559,49 +533,60 @@ public class ThirdActivity extends AppCompatActivity {
                 .load(getResources().getIdentifier(str_partb_file_name, "drawable", getPackageName()))
                 .into(btn_peek_partb);
 
-        if (part_letter.toUpperCase().equals("B")) {
-            asyncLoadBitmapPartA.execute();
-        }
-
-        if (part_letter.toUpperCase().equals("C")) {
-            asyncLoadBitmapPartB.execute();
-        }
-
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                btn_peek_probMain.startAnimation(scaleIn);
-                btn_peek_probMain.setAlpha((float) 1.0);
-
-                // shows appropriate peek buttons
-                if (enable_peek_a) {
-                    btn_peek_parta.startAnimation(scaleIn);
-                    btn_peek_parta_arrows.startAnimation(scaleIn);
-                    btn_peek_parta.setAlpha((float) 1.0);
-                    btn_peek_parta_arrows.setAlpha((float) 1.0);
-                } else {
-                    btn_peek_parta.setAlpha((float) 0.0);
-                    btn_peek_parta_arrows.setAlpha((float) 0.0);
-                }
-
-                if (enable_peek_b) {
-                    btn_peek_parta.startAnimation(scaleIn);
-                    btn_peek_parta_arrows.startAnimation(scaleIn);
-                    btn_peek_partb.setAlpha((float) 1.0);
-                    btn_peek_partb_arrows.setAlpha((float) 1.0);
-                } else {
-                    btn_peek_partb.setAlpha((float) 0.0);
-                    btn_peek_partb_arrows.setAlpha((float) 0.0);
-                }
-            }
-        }, 750);
-
 
         // Sets toolbar title
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(str_toolbar_partCurrent_title);
+
+        // reloads peek images from files if activity destroyed and recreated
+        insertPeekIfDestroyed();
+
+        showPeekImages();
     }
+
+    private void insertPeekIfDestroyed() {
+        // reloads peek images from files
+        if (enable_peek_a) {
+            if (btn_peek_parta_arrows.getDrawable() == null) {
+                Log.d(TAG, "Peek A is null");
+                String db_title_A = "prob" + problem_number + "_part" + "A" + "_arrows";
+                bm_A = cache.OpenBitmap(db_title_A);
+
+                IV_peek_parta_arrows.setImageBitmap(bm_A);
+                btn_peek_parta_arrows.setImageBitmap(bm_A);
+            }
+        }
+
+        if (enable_peek_b) {
+            if (btn_peek_partb_arrows.getDrawable() == null) {
+                Log.d(TAG, "Peek B is null");
+                String db_title_B = "prob" + problem_number + "_part" + "B" + "_arrows";
+                bm_B = cache.OpenBitmap(db_title_B);
+
+                IV_peek_partb_arrows.setImageBitmap(bm_B);
+                btn_peek_partb_arrows.setImageBitmap(bm_B);
+            }
+        }
+    }
+
+    private void getEnablePeek() {
+        // sets enable peek booleans
+        if (tinydb.getString("part_letter").equals("A")) {
+            enable_peek_a = false;
+            enable_peek_b = false;
+        } else if (tinydb.getString("part_letter").equals("B")) {
+            enable_peek_a = true;
+            enable_peek_b = false;
+        } else if (tinydb.getString("part_letter").equals("C")) {
+            enable_peek_a = true;
+            enable_peek_b = true;
+        } else {
+            enable_peek_a = false;
+            enable_peek_b = false;
+        }
+    }
+
 
     @Override
     protected void onPause() {
@@ -615,6 +600,7 @@ public class ThirdActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         resumeTime = System.currentTimeMillis();
+        Log.d(TAG, "onResume run");
     }
 
     @Override
@@ -623,16 +609,8 @@ public class ThirdActivity extends AppCompatActivity {
         Log.d(TAG + "onDestroy", "Destroyed");
 //        RefWatcher refWatcher = ExampleApplication.getRefWatcher(ThirdActivity.this);
 
-//        Glide.clear(IV_peek_probMain_view);
-//        GLide.clear(IV_peek_parta
-//        IV_peek_partb
-//        IV_peek_parta_arrows
-//        IV_peek_partb_arrows
-//        IV_peek_probMain_view
-
+// TODO remove this unbindDrawables if safe
         unbindDrawables(findViewById(R.id.relativeLayout_Main));
-//        System.gc();
-
 
 //        if (refWatcher != null) {
 //            refWatcher.watch(this);
@@ -645,21 +623,6 @@ public class ThirdActivity extends AppCompatActivity {
 //            refWatcher.watch(bm_A);
 //            refWatcher.watch(bm_B);
 //        }
-
-
-//        if (bm_A != null && ! bm_A.isRecycled()) {
-//            bm_A.recycle();
-//        }
-//
-//        if (bm_B != null && ! bm_B.isRecycled()) {
-//            bm_B.recycle();
-//        }
-//
-//        IV_peek_parta.setImageDrawable(null);
-//        IV_peek_partb.setImageDrawable(null);
-//        IV_peek_parta_arrows.setImageDrawable(null);
-//        IV_peek_partb_arrows.setImageDrawable(null);
-//        IV_peek_probMain_view.setImageDrawable(null);
 
     }
 
@@ -691,7 +654,7 @@ public class ThirdActivity extends AppCompatActivity {
 //        getWindow().setAllowReturnTransitionOverlap(false);
     }
 
-    private void showDialogArrowsCorrect() {
+    private void setDialogArrowsCorrect() {
         // stop counter
         rc.stop();
         long timer_time = rc.getCurrentTime();
@@ -705,6 +668,29 @@ public class ThirdActivity extends AppCompatActivity {
             time_string_for_dialog = seconds + " seconds!";
         }
 
+        switch (part_letter.toUpperCase()) {
+            case "A":
+                previous_part_letter = tinydb.getString("part_letter");
+                tinydb.putString("part_letter", "B");
+//                part_letter = "B";
+                asyncSaveToBitmapPartA.execute();
+                showDialogCorrectPartA();
+                break;
+            case "B":
+                previous_part_letter = tinydb.getString("part_letter");
+                tinydb.putString("part_letter", "C");
+//                part_letter = "C";
+                asyncSaveToBitmapPartB.execute();
+                showDialogCorrectPartB();
+                break;
+            case "C":
+                previous_part_letter = tinydb.getString("part_letter");
+                tinydb.putString("part_letter", "A");
+//                part_letter = "A";
+                showDialogCorrectPartC();
+                break;
+        }
+
         // animate buttons out
         btn_peek_probMain.startAnimation(scaleOut);
         btn_peek_parta.startAnimation(scaleOut);
@@ -713,103 +699,100 @@ public class ThirdActivity extends AppCompatActivity {
         btn_peek_partb_arrows.startAnimation(scaleOut);
         btn_check_done.hide();
 
+        // resets DrawArrowsView
+        mDrawArrowsView.resetForNextPart();
+        mDrawArrowsView.loadArrowCheckLocations();
+//        mDrawArrowsView.setAlpha((float) 0.0);
+    }
 
-        if (part_letter.toUpperCase().equals("C")) {
-            description = "All forces placed correctly! You finished in " + time_string_for_dialog + "Problem " + problem_number + " is now complete.";
-            strDialogNextButton = "Main Menu";
+    private void showDialogCorrectPartA() {
+        description = "All forces placed correctly! You finished in " + time_string_for_dialog;
+        strDialogNextButton = "Next Part";
+        new MaterialStyledDialog(this)
+                .setTitle("Correct!")
+                .setDescription(description)
+                .setIcon(R.drawable.ic_check)
+                .setStyle(Style.HEADER_WITH_ICON)
+                .setScrollable(true)
+                .setCancelable(false)
+                .setPositive(strDialogNextButton, new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(MaterialDialog dialog, DialogAction which) {
+                        mDrawArrowsView.setAlpha((float) 0.0);
+                        btn_check_done.show();
+                        startPart();
+                            }
+                        }
+                ).show();
+    }
 
-            new MaterialStyledDialog(this)
-                    .setTitle("Correct! Problem " + problem_number + " finished!")
-                    .setDescription(description)
-                    .setIcon(R.drawable.ic_check)
-                    .setStyle(Style.HEADER_WITH_ICON)
-                    .setScrollable(true)
-                    .setCancelable(false)
+    private void showDialogCorrectPartB() {
+        description = "All forces placed correctly! You finished in " + time_string_for_dialog;
+        strDialogNextButton = "Next Part";
+        new MaterialStyledDialog(this)
+                .setTitle("Correct!")
+                .setDescription(description)
+                .setIcon(R.drawable.ic_check)
+                .setStyle(Style.HEADER_WITH_ICON)
+                .setScrollable(true)
+                .setCancelable(false)
+                .setPositive(strDialogNextButton, new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(MaterialDialog dialog, DialogAction which) {
+                        mDrawArrowsView.setAlpha((float) 0.0);
+                        btn_check_done.show();
 
-                    .setPositive("Next Problem", new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(MaterialDialog dialog, DialogAction which) {
-                            mDrawArrowsView.setAlpha((float) 0.0);
-                            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(ThirdActivity.this);
+                        startPart();
+                            }
+                        }
+                ).show();
+    }
 
-                            tinydb.putString("part_letter", "A");
-                            // TODO put logic in here so it knows how many problems there are
-
+    private void showDialogCorrectPartC() {
+        description = "All forces placed correctly! You finished in " + time_string_for_dialog + "Problem " + problem_number + " is now complete.";
+        strDialogNextButton = "Main Menu";
+        new MaterialStyledDialog(this)
+                .setTitle("Correct! Problem " + problem_number + " finished!")
+                .setDescription(description)
+                .setIcon(R.drawable.ic_check)
+                .setStyle(Style.HEADER_WITH_ICON)
+                .setScrollable(true)
+                .setCancelable(false)
+                .setPositive("Next Problem", new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(MaterialDialog dialog, DialogAction which) {
+                        mDrawArrowsView.setAlpha((float) 0.0);
+                        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(ThirdActivity.this);
+                        // TODO put logic in here so it knows how many problems there are
+                        tinydb.putBoolean("prob" + problem_number + "_completed", true);
+                        // put code here that redirects them to survey if they finish all 3 problems
+                        if (problem_number < 3) {
                             tinydb.putBoolean("prob" + problem_number + "_completed", true);
+                            problem_number++;
+                            tinydb.putInt("problem_number", problem_number);
+                        }
+                        Intent mainIntent = new Intent(ThirdActivity.this, SecondActivity.class);
+                        startActivity(mainIntent, options.toBundle());
+                        finish();
+                    }
+                })
+                .setNegative("Main Menu", new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(MaterialDialog dialog, DialogAction which) {
+                        mDrawArrowsView.setAlpha((float) 0.0);
+                        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(ThirdActivity.this);
+                        part_letter = tinydb.getString("part_letter");
 
-                            // put code here that redirects them to survey if they finish all 3 problems
-
-                            if (problem_number < 3) {
-                                tinydb.putBoolean("prob" + problem_number + "_completed", true);
-                                problem_number++;
-                                tinydb.putInt("problem_number", problem_number);
-                            }
-
-
-                            Intent mainIntent = new Intent(ThirdActivity.this, SecondActivity.class);
+                        // TODO put logic in here so it knows how many problems there are instead of hard coding in 3
+                        if (problem_number < 3) {
+                            tinydb.putBoolean("prob" + problem_number + "_completed", true);
+                            Intent mainIntent = new Intent(ThirdActivity.this, MainActivity.class);
                             startActivity(mainIntent, options.toBundle());
+                            finish();
                         }
-
-                    })
-                    .setNegative("Main Menu", new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(MaterialDialog dialog, DialogAction which) {
-                            Intent intent = getIntent();
-                            mDrawArrowsView.setAlpha((float) 0.0);
-                            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(ThirdActivity.this);
-
-                            // TODO put logic in here so it knows how many problems there are instead of hard coding in 3
-                            if (problem_number < 3) {
-                                tinydb.putBoolean("prob" + problem_number + "_completed", true);
-                                Intent mainIntent = new Intent(ThirdActivity.this, MainActivity.class);
-                                startActivity(mainIntent, options.toBundle());
-                                finish();
-                            }
-                        }
-                    })
-                    .show();
-
-        } else {
-            description = "All forces placed correctly! You finished in " + time_string_for_dialog;
-            strDialogNextButton = "Next Part";
-
-//        String strDialogNextButton = "hi";
-
-            new MaterialStyledDialog(this)
-                    .setTitle("Correct!")
-                    .setDescription(description)
-                    .setIcon(R.drawable.ic_check)
-                    .setStyle(Style.HEADER_WITH_ICON)
-                    .setScrollable(true)
-                    .setCancelable(false)
-
-                    .setPositive(strDialogNextButton, new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(MaterialDialog dialog, DialogAction which) {
-                            Intent intent = getIntent();
-                            mDrawArrowsView.setAlpha((float) 0.0);
-                            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(ThirdActivity.this);
-
-                            switch (part_letter.toUpperCase()) {
-                                case "A":
-                                    asyncSaveToBitmapPartA.execute();
-                                    break;
-                                case "B":
-                                    asyncSaveToBitmapPartB.execute();
-                                    break;
-                                case "C":
-                                    tinydb.putString("part_letter", "A");
-                                    // TODO put logic in here so it knows how many problems there are
-                                    tinydb.putInt("problem_number", problem_number++);
-                                    Intent mainIntent = new Intent(ThirdActivity.this, MainActivity.class);
-                                    startActivity(mainIntent, options.toBundle());
-                                    finish();
-                                    break;
-                            }
-                        }
-                    })
-                    .show();
-        }
+                    }
+                })
+                .show();
 
     }
 
@@ -896,7 +879,7 @@ public class ThirdActivity extends AppCompatActivity {
         // binds a canvas to it
         Canvas canvas = new Canvas(returnedBitmap);
 
-        // saves arrows from view to bitmap
+        // saves arrows from DrawArrowsView to bitmap
         view.draw(canvas);
 
         // returns the bitmap
@@ -920,121 +903,94 @@ public class ThirdActivity extends AppCompatActivity {
             String db_title_A = "prob" + problem_number + "_part" + "A" + "_arrows";
             String db_title_B = "prob" + problem_number + "_part" + "B" + "_arrows";
 
-            if (part_letter.toUpperCase().equals("A")) {
+            // part_letter: A
+            if (previous_part_letter.toUpperCase().equals("A")) {
+                // saves Bitmap of finished Part A to file
                 cache.SaveBitmap(db_title_A, bm);
-                tinydb.putString("part_letter", "B");
-                if (bm != null) {
-//                    bm.recycle();
-                    bm = null;
-                }
+                bm_A = bm;
             }
 
-            if (part_letter.toUpperCase().equals("B")) {
+            // part_letter: B
+            if (previous_part_letter.toUpperCase().equals("B")) {
+                // loads Bitmap of finished Part A
                 cache.SaveBitmap(db_title_B, bm);
-                tinydb.putString("part_letter", "C");
-                if (bm != null) {
-//                    bm.recycle();
-                    bm = null;
-                }
-
-            }
-
-            return resp;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            // execution of result of Long time consuming operation
-//            finalResult.setText(result);
-            tinydb.putBoolean("finished_saving_bitmaps", true);
-//            myBitmap.recycle();
-//            myBitmap = null;
-
-            mDrawArrowsView.resetForNextPart();
-//            mDrawArrowsView.resetAllValues();
-            mDrawArrowsView.loadArrowCheckLocations();
-            mDrawArrowsView.setAlpha((float) 1.0);
-            btn_check_done.show();
-            startPart();
-
-//            recreate();
-        }
-
-        @Override
-        protected void onPreExecute() {
-            // Things to be done before execution of long running operation. For
-            // example showing ProgessDialog
-        }
-
-        @Override
-        protected void onProgressUpdate(String... text) {
-//            finalResult.setText(text[0]);
-            // Things to be done while execution of long running operation is in
-            // progress. For example updating ProgessDialog
-        }
-    }
-
-    private class AsyncTaskLoadBitmapFromDataBase extends AsyncTask<String, String, String> {
-
-        private String resp;
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            String db_title_A = "prob" + problem_number + "_part" + "A" + "_arrows";
-            String db_title_B = "prob" + problem_number + "_part" + "B" + "_arrows";
-
-            if (part_letter.toUpperCase().equals("B")) {
                 bm_A = cache.OpenBitmap(db_title_A);
+                bm_B = bm;
             }
 
-            if (part_letter.toUpperCase().equals("C")) {
+            // part_letter: C
+            if (previous_part_letter.toUpperCase().equals("A")) {
+                // loads Bitmap of finished Part A & B
+//                cache.SaveBitmap(db_title_B, bm);
                 bm_A = cache.OpenBitmap(db_title_A);
                 bm_B = cache.OpenBitmap(db_title_B);
             }
+
             return resp;
         }
 
         @Override
         protected void onPostExecute(String result) {
-            if (enable_peek_a) {
+            if (previous_part_letter.toUpperCase().equals("A")) {
                 IV_peek_parta_arrows.setImageBitmap(bm_A);
                 btn_peek_parta_arrows.setImageBitmap(bm_A);
-                if (bm_A != null) {
-//                    bm_A.recycle();
-                    bm_A = null;
-                }
             }
 
-            if (enable_peek_b) {
+            if (previous_part_letter.toUpperCase().equals("B")) {
                 IV_peek_parta_arrows.setImageBitmap(bm_A);
                 btn_peek_parta_arrows.setImageBitmap(bm_A);
-                if (bm_A != null) {
-//                    bm_A.recycle();
-                    bm_A = null;
-                }
-
                 IV_peek_partb_arrows.setImageBitmap(bm_B);
                 btn_peek_partb_arrows.setImageBitmap(bm_B);
-                if (bm_B != null) {
-//                    bm_B.recycle();
-                    bm_B = null;
+            }
+
+            // shows peek images as defined by enable_peek_a and enable_peek_b
+            showPeekImages();
+        }
+    }
+
+    private void showPeekImages() {
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                getEnablePeek();
+
+                if (tinydb.getString("part_letter").equals("A")) {
+                    btn_peek_probMain.startAnimation(scaleIn);
+                    btn_peek_probMain.setAlpha((float) 1.0);
+                } else if (!tinydb.getString("part_letter").equals("A")) {
+                    // shows appropriate peek buttons
+
+                    btn_peek_probMain.startAnimation(scaleIn);
+                    btn_peek_probMain.setAlpha((float) 1.0);
+
+                    if (enable_peek_a) {
+                        btn_peek_parta.startAnimation(scaleIn);
+                        btn_peek_parta_arrows.startAnimation(scaleIn);
+                        btn_peek_parta.setAlpha((float) 1.0);
+                        btn_peek_parta_arrows.setAlpha((float) 1.0);
+                    } else {
+                        btn_peek_parta.setAlpha((float) 0.0);
+                        btn_peek_parta_arrows.setAlpha((float) 0.0);
+                    }
+
+                    if (enable_peek_b) {
+                        btn_peek_parta.startAnimation(scaleIn);
+                        btn_peek_parta_arrows.startAnimation(scaleIn);
+                        btn_peek_parta.setAlpha((float) 1.0);
+                        btn_peek_parta_arrows.setAlpha((float) 1.0);
+
+                        btn_peek_partb.startAnimation(scaleIn);
+                        btn_peek_partb_arrows.startAnimation(scaleIn);
+                        btn_peek_partb.setAlpha((float) 1.0);
+                        btn_peek_partb_arrows.setAlpha((float) 1.0);
+                    } else {
+                        btn_peek_partb.setAlpha((float) 0.0);
+                        btn_peek_partb_arrows.setAlpha((float) 0.0);
+                    }
                 }
             }
-        }
-
-        @Override
-        protected void onPreExecute() {
-            // Things to be done before execution of long running operation. For
-            // example showing ProgessDialog
-        }
-
-        @Override
-        protected void onProgressUpdate(String... text) {
-//            finalResult.setText(text[0]);
-            // Things to be done while execution of long running operation is in
-            // progress. For example updating ProgessDialog
-        }
+        }, 750);
     }
 
     private void updateTextView() {
@@ -1090,7 +1046,6 @@ public class ThirdActivity extends AppCompatActivity {
                 byte[] byteArray = stream.toByteArray();
                 Filestream.write(byteArray);
                 Filestream.close();
-//                bmp.recycle();
                 bmp = null;
             } catch (Exception e) {
                 e.printStackTrace();

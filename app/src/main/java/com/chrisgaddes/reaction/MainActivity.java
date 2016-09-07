@@ -33,7 +33,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.github.florent37.viewanimator.ViewAnimator;
-import com.squareup.leakcanary.LeakCanary;
 
 import java.util.concurrent.TimeUnit;
 
@@ -71,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
 
-        LeakCanary.install(getApplication());
+//        LeakCanary.install(getApplication());
 
 
         // loads tinydb database
@@ -166,9 +165,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 problem_number = 1;
-                part_letter = "A";
+//                part_letter = "A";
                 tinydb.putInt("problem_number", problem_number);
-                tinydb.putString("part_letter", part_letter);
+//                tinydb.putString("part_letter", part_letter);
 
                 ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this);
                 Intent intent = new Intent(MainActivity.this, SecondActivity.class);
@@ -183,9 +182,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 problem_number = 2;
-                part_letter = "A";
+//                part_letter = "A";
                 tinydb.putInt("problem_number", problem_number);
-                tinydb.putString("part_letter", part_letter);
+//                tinydb.putString("part_letter", part_letter);
 
                 ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this);
                 Intent intent = new Intent(MainActivity.this, SecondActivity.class);
@@ -199,9 +198,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 problem_number = 3;
-                part_letter = "A";
+//                part_letter = "A";
                 tinydb.putInt("problem_number", problem_number);
-                tinydb.putString("part_letter", part_letter);
+//                tinydb.putString("part_letter", part_letter);
 
                 ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this);
                 Intent intent = new Intent(MainActivity.this, SecondActivity.class);
@@ -238,30 +237,6 @@ public class MainActivity extends AppCompatActivity {
         card_load_prob_2.setVisibility(View.VISIBLE);
         card_load_prob_3.setVisibility(View.VISIBLE);
 
-//        mHandler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                card_load_prob_1.startAnimation(slideUp);
-//                card_load_prob_1.setVisibility(View.VISIBLE);
-//            }
-//        }, 50);
-//
-//        mHandler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                card_load_prob_2.startAnimation(slideUp);
-//                card_load_prob_2.setVisibility(View.VISIBLE);
-//            }
-//        }, 150);
-//
-//        mHandler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                card_load_prob_3.startAnimation(slideUp);
-//                card_load_prob_3.setVisibility(View.VISIBLE);
-//            }
-//        }, 200);
-
     }
 
     private void updateTextView() {
@@ -289,11 +264,6 @@ public class MainActivity extends AppCompatActivity {
         tinydb.putLong("TotalForegroundTime", totalForgroundTime);
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        finish();
-    }
 
     @Override
     protected void onResume() {

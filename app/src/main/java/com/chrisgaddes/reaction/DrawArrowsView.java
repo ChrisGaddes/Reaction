@@ -231,11 +231,6 @@ public class DrawArrowsView extends ImageView {
     private Double val6;
     private Double val7;
 
-    // Using these caused a memory leak
-    private Context mContext;
-    private ThirdActivity thirdActivity;
-
-
     /**
      * Description of what this Constructor does/is used for...
      *
@@ -244,10 +239,6 @@ public class DrawArrowsView extends ImageView {
      */
     public DrawArrowsView(Context context, AttributeSet attrs) {
         super(context, attrs);
-
-        // The next two lines cause a memory leak..
-        // mContext = context;
-        // thirdActivity = (ThirdActivity) context;
 
         pointList = new ArrayList<>();
         checkMatrix = new ArrayList<>();
