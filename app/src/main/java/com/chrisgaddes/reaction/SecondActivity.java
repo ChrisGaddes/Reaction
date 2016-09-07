@@ -35,6 +35,7 @@ import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
 import com.github.javiersantos.materialstyleddialogs.enums.Style;
 
 import java.lang.reflect.Field;
+import java.util.concurrent.TimeUnit;
 
 
 public class SecondActivity extends AppCompatActivity {
@@ -56,8 +57,8 @@ public class SecondActivity extends AppCompatActivity {
 
     private FloatingActionButton btn_start_part;
 
-    public TinyDB tinydb;
-    public Context context;
+    private TinyDB tinydb;
+    private Context context;
 
     private Toolbar toolbar;
     private ImageView IV_problem;
@@ -76,12 +77,38 @@ public class SecondActivity extends AppCompatActivity {
 
     private boolean rc_run_yet;
 
+    private TextView TV_time_display;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setupWindowAnimations();
         setContentView(R.layout.activity_second);
+
+        TV_time_display = (TextView) findViewById(R.id.time_display);
+
+//        // Thread which updates timer
+//        Thread t = new Thread() {
+//
+//            @Override
+//            public void run() {
+//                try {
+//                    while (!isInterrupted()) {
+//                        Thread.sleep(100);
+//                        runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                updateTextView();
+//                            }
+//                        });
+//                    }
+//                } catch (InterruptedException e) {
+//                }
+//            }
+//        };
+//        t.start();
+
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
 
@@ -209,8 +236,7 @@ public class SecondActivity extends AppCompatActivity {
                 .show();
     }
 
-    public static int getResId(String variableName, Class<?> c) {
-
+    private int getResId(String variableName, Class<?> c) {
         try {
             Field idField = c.getDeclaredField(variableName);
             return idField.getInt(idField);
@@ -281,7 +307,6 @@ public class SecondActivity extends AppCompatActivity {
         }
     }
 
-    // TODO fix this onPause on Stop nonsense
     @Override
     protected void onPause() {
         super.onPause();
@@ -290,15 +315,6 @@ public class SecondActivity extends AppCompatActivity {
         totalForgroundTime = tinydb.getLong("TotalForegroundTime", 0) + (pauseTime - resumeTime);
         tinydb.putLong("TotalForegroundTime", totalForgroundTime);
     }
-
-//    @Override
-//    protected void onStop() {
-//        super.onStop();
-//        rc.stop();
-//        pauseTime = System.currentTimeMillis();
-//        totalForgroundTime = tinydb.getLong("TotalForegroundTime", 0) + (pauseTime - resumeTime);
-//        tinydb.putLong("TotalForegroundTime", totalForgroundTime);
-//    }
 
     @Override
     protected void onResume() {
@@ -309,7 +325,30 @@ public class SecondActivity extends AppCompatActivity {
             rc.run();
         }
 
-//        IV_problem.startAnimation(scaleIn);
+        //update foreground time
         resumeTime = System.currentTimeMillis();
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG + "onDestroy", "Destroyed");
+    }
+
+    private void updateTextView() {
+        pauseTime = System.currentTimeMillis();
+        long time_string = TimeUnit.MILLISECONDS.toSeconds(tinydb.getLong("TotalForegroundTime", 0) + (pauseTime - resumeTime));
+
+        long days = time_string / 86400;
+        long hours = (time_string % 86400) / 3600;
+        long minutes = ((time_string % 86400) % 3600) / 60;
+        long seconds = ((time_string % 86400) % 3600) % 60;
+
+        pauseTime = System.currentTimeMillis();
+
+        if (TV_time_display != null) {
+            TV_time_display.setText(String.format("%d:%02d:%02d", hours, minutes, seconds));
+        }
+    }
+
 }

@@ -9,11 +9,21 @@
     android:background="@color/material_light_white"
     tools:context="com.chrisgaddes.reaction.MainActivity">
 
-    <TextView
+
+    <ImageButton
         android:id="@+id/top_view"
         android:layout_width="match_parent"
         android:layout_height="100dp"
+        android:elevation="24dp"
+        android:src="@drawable/ic_rate_review" />
+
+    <ImageButton
+        android:id="@+id/reset_timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_refresh"
         android:elevation="24dp" />
+
 
 
     <ScrollView
@@ -313,31 +323,18 @@
         </LinearLayout>
 
     </ScrollView>
-    <!--Note: if the toolbar is placed in an AppBarLayout it cannot be transparent strangely-->
-    <!--<android.support.v7.widget.Toolbar-->
-    <!--android:id="@+id/toolbar"-->
-    <!--android:background="@android:color/transparent"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="?attr/actionBarSize"-->
-    <!--app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"-->
-    <!--app:popupTheme="@style/ThemeOverlay.AppCompat.Light"-->
 
-    <!--/>-->
-
+    <TextView
+        android:id="@+id/time_display"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:elevation="24dp"
+        android:alpha="0.7"
+        android:textSize="20sp"
+        android:layout_margin="8dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="@color/material_orange_600" />
 
 </RelativeLayout>
-
-
-    <!--<android.support.percent.PercentRelativeLayout--><!--android:layout_width="match_parent"--><!--android:layout_height="wrap_content"--><!--&gt;-->
-
-    <!--<ImageView--><!--android:layout_height="0dp"--><!--android:layout_width="0dp"--><!--app:layout_widthPercent="25%"--><!--app:layout_aspectRatio="100%"--><!--android:scaleType="centerCrop"--><!--android:src="@drawable/prob1"--><!--android:layout_alignParentLeft="true"--><!--android:padding="12dp"--><!--android:background="@color/colorGrayBackground"--><!--/>-->
-
-    <!--<android.support.percent.PercentRelativeLayout--><!--android:layout_height="0dp"--><!--android:layout_width="0dp"--><!--app:layout_widthPercent="75%"--><!--app:layout_aspectRatio="300%"--><!--android:scaleType="centerCrop"--><!--android:layout_alignParentRight="true"--><!--&gt;-->
-
-    <!--<TextView--><!--android:layout_width="wrap_content"--><!--android:layout_height="wrap_content"--><!--android:text="Problem 1"--><!--android:layout_centerHorizontal="true"--><!--android:textSize="24sp"--><!--android:layout_margin="16dp"/>-->
-
-
-    <!--</android.support.percent.PercentRelativeLayout>-->
-
-
-    <!--</android.support.percent.PercentRelativeLayout>-->

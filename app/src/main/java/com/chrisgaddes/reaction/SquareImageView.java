@@ -26,4 +26,5 @@ public class SquareImageView extends ImageView {
         setMeasuredDimension(width, width);
     }
 
+
 }

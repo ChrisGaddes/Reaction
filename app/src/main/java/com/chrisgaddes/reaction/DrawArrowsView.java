@@ -791,7 +791,7 @@ public class DrawArrowsView extends ImageView {
 
             case MotionEvent.ACTION_UP:
 
-                callSomeFuntionOnMyMainActivityClass();
+                runFromMainActivityClass();
 
 //                new MaterialIntroView.Builder(thirdActivity)
 //                        .enableDotAnimation(true)
@@ -1678,7 +1678,7 @@ public class DrawArrowsView extends ImageView {
     }
 
     // here be the magic
-    private void callSomeFuntionOnMyMainActivityClass() {
+    private void runFromMainActivityClass() {
         if (mObserver != null) {
             mObserver.callback();
         }

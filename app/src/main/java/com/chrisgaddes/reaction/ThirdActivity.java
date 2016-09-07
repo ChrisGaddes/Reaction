@@ -26,9 +26,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -42,13 +44,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.lang.reflect.Field;
+import java.util.concurrent.TimeUnit;
 
 
 public class ThirdActivity extends AppCompatActivity {
 
     private static final String TAG = "ThirdActivity";
     private DrawArrowsView mDrawArrowsView;
-    private ImageView IV_peek;
     private ImageView IV_peek_probMain_view;
     private ImageView IV_peek_parta;
     private ImageView IV_peek_partb;
@@ -58,6 +60,8 @@ public class ThirdActivity extends AppCompatActivity {
 
     private String description;
     private String strDialogNextButton;
+
+    private TextView TV_time_display;
 
     private TextView tv_statement;
 
@@ -70,7 +74,7 @@ public class ThirdActivity extends AppCompatActivity {
     private String str_parta_statement[];
     private String str_partb_statement[];
 
-    public static FloatingActionButton btn_check_done;
+    private FloatingActionButton btn_check_done;
     private SquareImageView btn_peek_probMain;
     private SquareImageView btn_peek_parta;
     private SquareImageView btn_peek_partb;
@@ -78,7 +82,7 @@ public class ThirdActivity extends AppCompatActivity {
     private SquareImageView btn_peek_parta_arrows;
     private SquareImageView btn_peek_partb_arrows;
 
-    public TinyDB tinydb;
+    private TinyDB tinydb;
     private int eventaction;
 
     private Toolbar toolbar;
@@ -92,7 +96,7 @@ public class ThirdActivity extends AppCompatActivity {
     private String str_partb_title;
     private String str_partc_title;
 
-    private String DiretoryName;
+    private String DirectoryName;
 
     private String str_toolbar_problem_title;
 
@@ -135,6 +139,29 @@ public class ThirdActivity extends AppCompatActivity {
         setupWindowAnimations();
         setContentView(R.layout.activity_third);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        TV_time_display = (TextView) findViewById(R.id.time_display);
+
+//        // Thread which updates timer
+//        Thread t = new Thread() {
+//
+//            @Override
+//            public void run() {
+//                try {
+//                    while (!isInterrupted()) {
+//                        Thread.sleep(100);
+//                        runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                updateTextView();
+//                            }
+//                        });
+//                    }
+//                } catch (InterruptedException e) {
+//                }
+//            }
+//        };
+//        t.start();
 
         asyncSaveToBitmap = new AsyncTaskSaveViewToBitmap();
         asyncLoadBitmap = new AsyncTaskLoadBitmapFromDataBase();
@@ -306,17 +333,12 @@ public class ThirdActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(str_toolbar_partCurrent_title);
-//        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-//        getSupportActionBar().setCustomView(R.layout.actionbar_custom_view_home);
-
 
         mDrawArrowsView = (DrawArrowsView) findViewById(R.id.idDrawArrowsView);
 
         mDrawArrowsView.setObserver(new TheObserver() {
                                         public void callback() {
-                                            // here you call something inside your activity, for instance
-//                                            methodOnYourActivity();
-                                            Log.d("Clicked", "Woo Hoo!");
+//                                            Log.d("Clicked", "Woo Hoo!");
                                         }
                                     }
         );
@@ -605,6 +627,52 @@ public class ThirdActivity extends AppCompatActivity {
         resumeTime = System.currentTimeMillis();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG + "onDestroy", "Destroyed");
+//        RefWatcher refWatcher = ExampleApplication.getRefWatcher(ThirdActivity.this);
+
+//        Glide.clear(IV_peek_probMain_view);
+//        GLide.clear(IV_peek_parta
+//        IV_peek_partb
+//        IV_peek_parta_arrows
+//        IV_peek_partb_arrows
+//        IV_peek_probMain_view
+
+        unbindDrawables(findViewById(R.id.relativeLayout_Main));
+//        System.gc();
+
+
+//        if (refWatcher != null) {
+//            refWatcher.watch(this);
+////            refWatcher.watch(IV_peek, "IV_peek");
+//            refWatcher.watch(IV_peek_parta);
+//            refWatcher.watch(IV_peek_partb);
+//            refWatcher.watch(IV_peek_parta_arrows);
+//            refWatcher.watch(IV_peek_partb_arrows);
+//            refWatcher.watch(IV_peek_probMain_view);
+//            refWatcher.watch(bm_A);
+//            refWatcher.watch(bm_B);
+//        }
+
+
+//        if (bm_A != null && ! bm_A.isRecycled()) {
+//            bm_A.recycle();
+//        }
+//
+//        if (bm_B != null && ! bm_B.isRecycled()) {
+//            bm_B.recycle();
+//        }
+//
+//        IV_peek_parta.setImageDrawable(null);
+//        IV_peek_partb.setImageDrawable(null);
+//        IV_peek_parta_arrows.setImageDrawable(null);
+//        IV_peek_partb_arrows.setImageDrawable(null);
+//        IV_peek_probMain_view.setImageDrawable(null);
+
+    }
+
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void setupWindowAnimations() {
         Slide slide = new Slide();
@@ -705,6 +773,7 @@ public class ThirdActivity extends AppCompatActivity {
                                 tinydb.putBoolean("prob" + problem_number + "_completed", true);
                                 Intent mainIntent = new Intent(ThirdActivity.this, MainActivity.class);
                                 startActivity(mainIntent, options.toBundle());
+                                finish();
                             }
                         }
                     })
@@ -733,21 +802,10 @@ public class ThirdActivity extends AppCompatActivity {
 
                             switch (part_letter.toUpperCase()) {
                                 case "A":
-//                                    tinydb.putString("part_letter", "B");
-//
-//                                    tinydb.putString("previous_part_letter", "A");
-
                                     asyncSaveToBitmap.execute();
-
-//                                    recreate();
                                     break;
                                 case "B":
-//                                    tinydb.putString("part_letter", "C");
-//                                    tinydb.putString("previous_part_letter", "B");
-
                                     asyncSaveToBitmap.execute();
-
-//                                    recreate();
                                     break;
                                 case "C":
                                     tinydb.putString("part_letter", "A");
@@ -755,6 +813,7 @@ public class ThirdActivity extends AppCompatActivity {
                                     tinydb.putInt("problem_number", problem_number++);
                                     Intent mainIntent = new Intent(ThirdActivity.this, MainActivity.class);
                                     startActivity(mainIntent, options.toBundle());
+                                    finish();
                                     break;
                             }
                         }
@@ -780,7 +839,7 @@ public class ThirdActivity extends AppCompatActivity {
                 .show();
     }
 
-    public static int getResId(String variableName, Class<?> c) {
+    private int getResId(String variableName, Class<?> c) {
         try {
             Field idField = c.getDeclaredField(variableName);
             return idField.getInt(idField);
@@ -793,10 +852,10 @@ public class ThirdActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.third_menu, menu);
-        Long tmpTime = tinydb.getLong("TotalForegroundTime", 0);
-        if (tmpTime == 0) {
-            tinydb.putLong("TotalForegroundTime", System.currentTimeMillis());
-        }
+//        Long tmpTime = tinydb.getLong("TotalForegroundTime", 0);
+//        if (tmpTime == 0) {
+//            tinydb.putLong("TotalForegroundTime", System.currentTimeMillis());
+//        }
         startTimer(menu);
         return super.onCreateOptionsMenu(menu);
     }
@@ -840,7 +899,7 @@ public class ThirdActivity extends AppCompatActivity {
         }
     }
 
-    public Bitmap getBitmapFromView(View view) {
+    private Bitmap getBitmapFromView(View view) {
         // defines a bitmap with the same size as the view
         Bitmap returnedBitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
         // binds a canvas to it
@@ -854,7 +913,7 @@ public class ThirdActivity extends AppCompatActivity {
     }
 
     // converts dp to pixels
-    public int dpToPx(int dp) {
+    private int dpToPx(int dp) {
         DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
         return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
@@ -872,18 +931,21 @@ public class ThirdActivity extends AppCompatActivity {
 
             if (part_letter.toUpperCase().equals("A")) {
                 cache.SaveBitmap(db_title_A, bm);
+                tinydb.putString("part_letter", "B");
+                if (bm != null) {
+//                    bm.recycle();
+                    bm = null;
+                }
             }
 
             if (part_letter.toUpperCase().equals("B")) {
                 cache.SaveBitmap(db_title_B, bm);
-            }
-
-            if (part_letter.toUpperCase().equals("A")) {
-                tinydb.putString("part_letter", "B");
-            }
-
-            if (part_letter.toUpperCase().equals("B")) {
                 tinydb.putString("part_letter", "C");
+                if (bm != null) {
+//                    bm.recycle();
+                    bm = null;
+                }
+
             }
 
             return resp;
@@ -894,6 +956,9 @@ public class ThirdActivity extends AppCompatActivity {
             // execution of result of Long time consuming operation
 //            finalResult.setText(result);
             tinydb.putBoolean("finished_saving_bitmaps", true);
+//            myBitmap.recycle();
+//            myBitmap = null;
+
             recreate();
         }
 
@@ -937,14 +1002,26 @@ public class ThirdActivity extends AppCompatActivity {
             if (enable_peek_a) {
                 IV_peek_parta_arrows.setImageBitmap(bm_A);
                 btn_peek_parta_arrows.setImageBitmap(bm_A);
+                if (bm_A != null) {
+//                    bm_A.recycle();
+                    bm_A = null;
+                }
             }
 
             if (enable_peek_b) {
                 IV_peek_parta_arrows.setImageBitmap(bm_A);
                 btn_peek_parta_arrows.setImageBitmap(bm_A);
+                if (bm_A != null) {
+//                    bm_A.recycle();
+                    bm_A = null;
+                }
 
                 IV_peek_partb_arrows.setImageBitmap(bm_B);
                 btn_peek_partb_arrows.setImageBitmap(bm_B);
+                if (bm_B != null) {
+//                    bm_B.recycle();
+                    bm_B = null;
+                }
             }
         }
 
@@ -962,11 +1039,40 @@ public class ThirdActivity extends AppCompatActivity {
         }
     }
 
-    public class MyCache {
+    private void updateTextView() {
+        pauseTime = System.currentTimeMillis();
+        long time_string = TimeUnit.MILLISECONDS.toSeconds(tinydb.getLong("TotalForegroundTime", 0) + (pauseTime - resumeTime));
+
+        long days = time_string / 86400;
+        long hours = (time_string % 86400) / 3600;
+        long minutes = ((time_string % 86400) % 3600) / 60;
+        long seconds = ((time_string % 86400) % 3600) % 60;
+
+        pauseTime = System.currentTimeMillis();
+
+        if (TV_time_display != null) {
+            TV_time_display.setText(String.format("%d:%02d:%02d", hours, minutes, seconds));
+        }
+    }
+
+
+    private void unbindDrawables(View view) {
+        if (view.getBackground() != null) {
+            view.getBackground().setCallback(null);
+        }
+        if (view instanceof ViewGroup && !(view instanceof AdapterView)) {
+            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
+                unbindDrawables(((ViewGroup) view).getChildAt(i));
+            }
+            ((ViewGroup) view).removeAllViews();
+        }
+    }
+
+    private class MyCache {
 
         private String DiretoryName;
 
-        public void OpenOrCreateCache(Context _context, String _directoryName) {
+        private void OpenOrCreateCache(Context _context, String _directoryName) {
             File file = new File(_context.getCacheDir().getAbsolutePath() + "/" + _directoryName);
             if (!file.exists()) {
                 file.mkdir();
@@ -974,7 +1080,7 @@ public class ThirdActivity extends AppCompatActivity {
             DiretoryName = file.getAbsolutePath();
         }
 
-        public void SaveBitmap(String fileName, Bitmap bmp) {
+        private void SaveBitmap(String fileName, Bitmap bmp) {
             try {
                 File file = new File(DiretoryName + "/" + fileName);
                 if (file.exists()) {
@@ -986,13 +1092,14 @@ public class ThirdActivity extends AppCompatActivity {
                 byte[] byteArray = stream.toByteArray();
                 Filestream.write(byteArray);
                 Filestream.close();
-                bmp.recycle();
+//                bmp.recycle();
+                bmp = null;
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
-        public Bitmap OpenBitmap(String name) {
+        private Bitmap OpenBitmap(String name) {
             try {
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inPreferredConfig = Bitmap.Config.ARGB_8888;
@@ -1008,35 +1115,7 @@ public class ThirdActivity extends AppCompatActivity {
             }
             return null;
         }
-
-//        public void CleanCacheBitMap(){
-//            File file = new File(Diretorio);
-//            if(file.exists()){
-//                file.delete();
-//            }
     }
 
 }
-
-//    public Bitmap replaceColor(Bitmap src,int fromColor, int targetColor) {
-//        if(src == null) {
-//            return null;
-//        }
-//        // Source image size
-//        int width = src.getWidth();
-//        int height = src.getHeight();
-//        int[] pixels = new int[width * height];
-//        //get pixels
-//        src.getPixels(pixels, 0, width, 0, 0, width, height);
-//
-//        for(int x = 0; x < pixels.length; ++x) {
-//            pixels[x] = (pixels[x] == fromColor) ? targetColor : pixels[x];
-//        }
-//        // create result bitmap output
-//        Bitmap result = Bitmap.createBitmap(width, height, src.getConfig());
-//        //set pixels
-//        result.setPixels(pixels, 0, width, 0, 0, width, height);
-//
-//        return result;
-//    }
 

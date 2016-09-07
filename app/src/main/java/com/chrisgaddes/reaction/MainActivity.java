@@ -1,11 +1,14 @@
 package com.chrisgaddes.reaction;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.customtabs.CustomTabsIntent;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -13,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.transition.Explode;
 import android.transition.Fade;
 import android.transition.Slide;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,24 +27,33 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.github.florent37.viewanimator.ViewAnimator;
+import com.squareup.leakcanary.LeakCanary;
 
-import java.lang.reflect.Field;
+import java.util.concurrent.TimeUnit;
 
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    public TinyDB tinydb;
+    private TinyDB tinydb;
     private int problem_number;
     private String part_letter;
 
+    private long pauseTime;
+    private long resumeTime;
+    private long totalForgroundTime;
+
     private Toolbar toolbar;
     private boolean first_launch;
+    private ImageButton top_view;
+    private ImageButton reset_timer;
     private CardView card_load_prob_1;
     private CardView card_load_prob_2;
     private CardView card_load_prob_3;
@@ -48,21 +61,52 @@ public class MainActivity extends AppCompatActivity {
     private Animation slideUp;
     private Animation slideDown;
 
+    private TextView TV_time_display;
+
     private Handler mHandler = new Handler();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+        LeakCanary.install(getApplication());
+
+
         // loads tinydb database
         tinydb = new TinyDB(this);
-        tinydb.remove("TotalForegroundTime"); //TODO: remove this
+
 
         // checks if first run or upgrade
         checkFirstRun();
 
         setupWindowAnimations();
         setContentView(R.layout.activity_main);
+
+
+        TV_time_display = (TextView) findViewById(R.id.time_display);
+
+//        // Thread which updates timer
+//        Thread t = new Thread() {
+//
+//            @Override
+//            public void run() {
+//                try {
+//                    while (!isInterrupted()) {
+//                        Thread.sleep(100);
+//                        runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                updateTextView();
+//                            }
+//                        });
+//                    }
+//                } catch (InterruptedException e) {
+//                }
+//            }
+//        };
+//        t.start();
 
         // enables overscroll animation like in IOS
         ScrollView scrollView = (ScrollView) findViewById(R.id.scrollview_main_activity);
@@ -86,9 +130,39 @@ public class MainActivity extends AppCompatActivity {
 //        setSupportActionBar(toolbar);
 //        getSupportActionBar().setTitle("");
 
+
+        top_view = (ImageButton) findViewById(R.id.top_view);
+//        top_view.setVisibility(View.VISIBLE);
+        top_view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String stringYouExtracted = Long.toString(tinydb.getLong("TotalForegroundTime", 0));
+
+                setClipboard(stringYouExtracted);
+                String url = "https://goo.gl/forms/0wl3LGhqtNYC4oyA2";
+                CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+                CustomTabsIntent customTabsIntent = builder.build();
+                customTabsIntent.launchUrl(MainActivity.this, Uri.parse(url));
+
+//                Intent openSurveyUrl= new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+//                startActivity(openSurveyUrl);
+
+            }
+        });
+
+        reset_timer = (ImageButton) findViewById(R.id.reset_timer);
+        reset_timer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tinydb.putLong("TotalForegroundTime", 0L);
+                resumeTime = System.currentTimeMillis();
+            }
+        });
+
+
         card_load_prob_1 = (CardView) findViewById(R.id.card_load_prob_1);
         card_load_prob_1.setVisibility(View.INVISIBLE);
-        findViewById(R.id.card_load_prob_1).setOnClickListener(new View.OnClickListener() {
+        card_load_prob_1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 problem_number = 1;
@@ -105,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
 
         card_load_prob_2 = (CardView) findViewById(R.id.card_load_prob_2);
         card_load_prob_2.setVisibility(View.INVISIBLE);
-        findViewById(R.id.card_load_prob_2).setOnClickListener(new View.OnClickListener() {
+        card_load_prob_2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 problem_number = 2;
@@ -121,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
 
         card_load_prob_3 = (CardView) findViewById(R.id.card_load_prob_3);
         card_load_prob_3.setVisibility(View.INVISIBLE);
-        findViewById(R.id.card_load_prob_3).setOnClickListener(new View.OnClickListener() {
+        card_load_prob_3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 problem_number = 3;
@@ -188,6 +262,45 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        }, 200);
 
+    }
+
+    private void updateTextView() {
+        pauseTime = System.currentTimeMillis();
+        long time_string = TimeUnit.MILLISECONDS.toSeconds(tinydb.getLong("TotalForegroundTime", 0) + (pauseTime - resumeTime));
+
+        long days = time_string / 86400;
+        long hours = (time_string % 86400) / 3600;
+        long minutes = ((time_string % 86400) % 3600) / 60;
+        long seconds = ((time_string % 86400) % 3600) % 60;
+
+        pauseTime = System.currentTimeMillis();
+
+        if (TV_time_display != null) {
+            TV_time_display.setText(String.format("%d:%02d:%02d", hours, minutes, seconds));
+        }
+    }
+
+    // TODO fix this onPause on Stop nonsense
+    @Override
+    protected void onPause() {
+        super.onPause();
+        pauseTime = System.currentTimeMillis();
+        totalForgroundTime = tinydb.getLong("TotalForegroundTime", 0) + (pauseTime - resumeTime);
+        tinydb.putLong("TotalForegroundTime", totalForgroundTime);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        //update foreground time
+        resumeTime = System.currentTimeMillis();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG + "onDestroy", "Destroyed");
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -261,16 +374,6 @@ public class MainActivity extends AppCompatActivity {
         return v.findViewById(resId);
     }
 
-    public static int getResId(String variableName, Class<?> c) {
-
-        try {
-            Field idField = c.getDeclaredField(variableName);
-            return idField.getInt(idField);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return -1;
-        }
-    }
 
     private void checkFirstRun() {
         final String PREFS_NAME = "MyPrefsFile";
@@ -297,6 +400,8 @@ public class MainActivity extends AppCompatActivity {
             ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this);
             Intent intent = new Intent(MainActivity.this, CanteenIntroActivity.class);
             startActivity(intent, options.toBundle());
+
+//            tinydb.remove("TotalForegroundTime"); //TODO: remove this
 
             // TODO This is a new install (or the user cleared the shared preferences)
         } else if (currentVersionCode > savedVersionCode) {
@@ -346,5 +451,17 @@ public class MainActivity extends AppCompatActivity {
 
         img.startAnimation(fadeIn);
     }
+
+    private void setClipboard(String text) {
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
+            android.text.ClipboardManager clipboard = (android.text.ClipboardManager) MainActivity.this.getSystemService(Context.CLIPBOARD_SERVICE);
+            clipboard.setText(text);
+        } else {
+            android.content.ClipboardManager clipboard = (android.content.ClipboardManager) MainActivity.this.getSystemService(Context.CLIPBOARD_SERVICE);
+            android.content.ClipData clip = android.content.ClipData.newPlainText("Text : ", text);
+            clipboard.setPrimaryClip(clip);
+        }
+    }
+
 
 }

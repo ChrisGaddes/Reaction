@@ -7,8 +7,19 @@
     android:layout_height="match_parent"
     android:background="@color/material_light_white"
     android:clipToPadding="false"
-
     android:outlineProvider="bounds">
+
+    <TextView
+        android:id="@+id/time_display"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:elevation="24dp"
+        android:alpha="0.7"
+        android:textSize="20sp"
+        android:layout_margin="8dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBarLayout"
