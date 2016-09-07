@@ -96,8 +96,6 @@ public class ThirdActivity extends AppCompatActivity {
     private String str_partb_title;
     private String str_partc_title;
 
-    private String DirectoryName;
-
     private String str_toolbar_problem_title;
 
     private String str_probCurrent_file_name;
@@ -124,13 +122,14 @@ public class ThirdActivity extends AppCompatActivity {
 
     private Bitmap bm_A;
     private Bitmap bm_B;
-    private Boolean finished_saving_bitmaps;
 
     private Handler mHandler = new Handler();
 
-    private AsyncTaskLoadBitmapFromDataBase asyncLoadBitmap;
+    private AsyncTaskLoadBitmapFromDataBase asyncLoadBitmapPartA;
+    private AsyncTaskLoadBitmapFromDataBase asyncLoadBitmapPartB;
 
-    private AsyncTaskSaveViewToBitmap asyncSaveToBitmap;
+    private AsyncTaskSaveViewToBitmap asyncSaveToBitmapPartA;
+    private AsyncTaskSaveViewToBitmap asyncSaveToBitmapPartB;
     private MyCache cache;
 
     @Override
@@ -163,8 +162,11 @@ public class ThirdActivity extends AppCompatActivity {
 //        };
 //        t.start();
 
-        asyncSaveToBitmap = new AsyncTaskSaveViewToBitmap();
-        asyncLoadBitmap = new AsyncTaskLoadBitmapFromDataBase();
+        asyncSaveToBitmapPartA = new AsyncTaskSaveViewToBitmap();
+        asyncLoadBitmapPartA = new AsyncTaskLoadBitmapFromDataBase();
+
+        asyncSaveToBitmapPartB = new AsyncTaskSaveViewToBitmap();
+        asyncLoadBitmapPartB = new AsyncTaskLoadBitmapFromDataBase();
 
         fadeIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fadein);
         fadeOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fadeout);
@@ -183,156 +185,9 @@ public class ThirdActivity extends AppCompatActivity {
         cache = new MyCache();
         cache.OpenOrCreateCache(this, "ArrowBitmaps");
 
-        // Loads problem information
-        problem_number = tinydb.getInt("problem_number");
-        part_letter = tinydb.getString("part_letter");
+        // Loads method to (re)startPart
+        startPart();
 
-        if (part_letter.equals("A")) {
-            tinydb.putBoolean("finished_saving_bitmaps", false);
-        }
-
-
-        // resets booleans to false (hidden)
-        enable_peek_a = false;
-        enable_peek_b = false;
-
-        // shows peek image buttons once previous part is finished
-        if (part_letter.toUpperCase().equals("A")) {
-            enable_peek_a = false;
-            enable_peek_b = false;
-        }
-
-        if (part_letter.toUpperCase().equals("B")) {
-            enable_peek_a = true;
-            enable_peek_b = false;
-        }
-
-        if (part_letter.toUpperCase().equals("C")) {
-            enable_peek_a = true;
-            enable_peek_b = true;
-        }
-
-        // load problem statement and part statement
-        str_problem_statement = getResources().getStringArray(getResId("mainProblemStatement_" + "prob" + problem_number + "_part" + part_letter, R.array.class));
-
-        str_part_statement = getResources().getStringArray(getResId("problemStatement_" + "prob" + problem_number + "_part" + part_letter, R.array.class));
-        str_parta_statement = getResources().getStringArray(getResId("problemStatement_" + "prob" + problem_number + "_part" + "A", R.array.class));
-        str_partb_statement = getResources().getStringArray(getResId("problemStatement_" + "prob" + problem_number + "_part" + "B", R.array.class));
-
-
-        // converts to lower case
-        part_letter = part_letter.toLowerCase();
-
-        // Generates strings from problem information
-        str_toolbar_partCurrent_title = "#" + problem_number + " - Part " + part_letter.toUpperCase();
-        str_partCurrent_file_name = "prob" + problem_number + "_part" + part_letter;
-        str_parta_file_name = "prob" + problem_number + "_part" + "a";
-        str_partb_file_name = "prob" + problem_number + "_part" + "b";
-        str_partc_file_name = "prob" + problem_number + "_part" + "c";
-
-        str_probCurrent_file_name = "prob" + problem_number;
-        str_toolbar_problem_title = "Problem #" + problem_number;
-        str_parta_title = "#" + problem_number + " - Part " + "A";
-        str_partb_title = "#" + problem_number + " - Part " + "B";
-        str_partc_title = "#" + problem_number + " - Part " + "C";
-
-        // Sets text for problem statement
-        tv_statement = (TextView) this.findViewById(R.id.tv_statement);
-        tv_statement.setText(str_part_statement[0]);
-
-        // Sets image for part
-        IV_problem_part = (ImageView) findViewById(R.id.problem_part);
-        Glide.with(this)
-                .load(getResources().getIdentifier(str_partCurrent_file_name, "drawable", getPackageName()))
-                .into(IV_problem_part);
-
-        // Sets image for Main problem and sets "invisible"
-        IV_peek_probMain_view = (ImageView) findViewById(R.id.peek_probCurrent_view);
-        IV_peek_probMain_view.setAlpha((float) 0.0);
-        btn_peek_probMain = (SquareImageView) findViewById(R.id.btn_peek_prob);
-        btn_peek_probMain.setAlpha((float) 0.0);
-        Glide.with(this)
-                .load(getResources().getIdentifier(str_probCurrent_file_name, "drawable", getPackageName()))
-                .load(getResources().getIdentifier(str_probCurrent_file_name, "drawable", getPackageName()))
-                .into(IV_peek_probMain_view);
-        Glide.with(this)
-                .load(getResources().getIdentifier(str_probCurrent_file_name, "drawable", getPackageName()))
-                .into(btn_peek_probMain);
-
-        // Sets image for part a
-        IV_peek_parta = (ImageView) findViewById(R.id.peek_parta);
-        IV_peek_parta_arrows = (ImageView) findViewById(R.id.peek_parta_arrows);
-        IV_peek_parta.setAlpha((float) 0.0);
-        IV_peek_parta_arrows.setAlpha((float) 0.0);
-        btn_peek_parta = (SquareImageView) findViewById(R.id.btn_peek_parta);
-        btn_peek_parta_arrows = (SquareImageView) findViewById(R.id.btn_peek_parta_arrows);
-        btn_peek_parta.setAlpha((float) 0.0);
-        btn_peek_parta_arrows.setAlpha((float) 0.0);
-        Glide.with(this)
-                .load(getResources().getIdentifier(str_parta_file_name, "drawable", getPackageName()))
-                .into(IV_peek_parta);
-        Glide.with(this)
-                .load(getResources().getIdentifier(str_parta_file_name, "drawable", getPackageName()))
-                .into(btn_peek_parta);
-
-        // Sets image for part b
-        IV_peek_partb = (ImageView) findViewById(R.id.peek_partb);
-        IV_peek_partb_arrows = (ImageView) findViewById(R.id.peek_partb_arrows);
-        IV_peek_partb.setAlpha((float) 0.0);
-        IV_peek_partb_arrows.setAlpha((float) 0.0);
-        btn_peek_partb = (SquareImageView) findViewById(R.id.btn_peek_partb);
-        btn_peek_partb_arrows = (SquareImageView) findViewById(R.id.btn_peek_partb_arrows);
-        btn_peek_partb.setAlpha((float) 0.0);
-        btn_peek_partb_arrows.setAlpha((float) 0.0);
-        Glide.with(this)
-                .load(getResources().getIdentifier(str_partb_file_name, "drawable", getPackageName()))
-                .into(IV_peek_partb);
-        Glide.with(this)
-                .load(getResources().getIdentifier(str_partb_file_name, "drawable", getPackageName()))
-                .into(btn_peek_partb);
-
-        if (part_letter.toUpperCase().equals("B")) {
-            asyncLoadBitmap.execute();
-        }
-
-        if (part_letter.toUpperCase().equals("C")) {
-            asyncLoadBitmap.execute();
-        }
-
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                btn_peek_probMain.startAnimation(scaleIn);
-                btn_peek_probMain.setAlpha((float) 1.0);
-
-                // shows appropriate peek buttons
-                if (enable_peek_a) {
-                    btn_peek_parta.startAnimation(scaleIn);
-                    btn_peek_parta_arrows.startAnimation(scaleIn);
-                    btn_peek_parta.setAlpha((float) 1.0);
-                    btn_peek_parta_arrows.setAlpha((float) 1.0);
-                } else {
-                    btn_peek_parta.setAlpha((float) 0.0);
-                    btn_peek_parta_arrows.setAlpha((float) 0.0);
-                }
-
-                if (enable_peek_b) {
-                    btn_peek_parta.startAnimation(scaleIn);
-                    btn_peek_parta_arrows.startAnimation(scaleIn);
-                    btn_peek_partb.setAlpha((float) 1.0);
-                    btn_peek_partb_arrows.setAlpha((float) 1.0);
-                } else {
-                    btn_peek_partb.setAlpha((float) 0.0);
-                    btn_peek_partb_arrows.setAlpha((float) 0.0);
-                }
-            }
-        }, 750);
-
-
-        // Sets toolbar title
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(str_toolbar_partCurrent_title);
 
         mDrawArrowsView = (DrawArrowsView) findViewById(R.id.idDrawArrowsView);
 
@@ -598,19 +453,154 @@ public class ThirdActivity extends AppCompatActivity {
             }
         });
 
-//        new MaterialIntroView.Builder(this)
-//                .enableDotAnimation(true)
-//                .enableIcon(false)
-//                .setFocusGravity(FocusGravity.CENTER)
-//                .setFocusType(Focus.MINIMUM)
-//                .setDelayMillis(500)
-//                .enableFadeAnimation(true)
-//                .performClick(true)
-//                .setInfoText("Hi There! Welcome to Reaction!")
-//                .setTarget()
-//                .setUsageId("2") //THIS SHOULD BE UNIQUE ID
-//                .show();
+    }
 
+    private void startPart() {
+        // Loads problem information
+        problem_number = tinydb.getInt("problem_number");
+        part_letter = tinydb.getString("part_letter");
+
+        // resets booleans to false (hidden)
+        enable_peek_a = false;
+        enable_peek_b = false;
+
+        // shows peek image buttons once previous part is finished
+        if (part_letter.toUpperCase().equals("A")) {
+            enable_peek_a = false;
+            enable_peek_b = false;
+        }
+
+        if (part_letter.toUpperCase().equals("B")) {
+            enable_peek_a = true;
+            enable_peek_b = false;
+        }
+
+        if (part_letter.toUpperCase().equals("C")) {
+            enable_peek_a = true;
+            enable_peek_b = true;
+        }
+
+        // load problem statement and part statement
+        str_problem_statement = getResources().getStringArray(getResId("mainProblemStatement_" + "prob" + problem_number + "_part" + part_letter, R.array.class));
+
+        str_part_statement = getResources().getStringArray(getResId("problemStatement_" + "prob" + problem_number + "_part" + part_letter, R.array.class));
+        str_parta_statement = getResources().getStringArray(getResId("problemStatement_" + "prob" + problem_number + "_part" + "A", R.array.class));
+        str_partb_statement = getResources().getStringArray(getResId("problemStatement_" + "prob" + problem_number + "_part" + "B", R.array.class));
+
+
+        // converts to lower case
+        part_letter = part_letter.toLowerCase();
+
+        // Generates strings from problem information
+        str_toolbar_partCurrent_title = "#" + problem_number + " - Part " + part_letter.toUpperCase();
+        str_partCurrent_file_name = "prob" + problem_number + "_part" + part_letter;
+        str_parta_file_name = "prob" + problem_number + "_part" + "a";
+        str_partb_file_name = "prob" + problem_number + "_part" + "b";
+        str_partc_file_name = "prob" + problem_number + "_part" + "c";
+
+        str_probCurrent_file_name = "prob" + problem_number;
+        str_toolbar_problem_title = "Problem #" + problem_number;
+        str_parta_title = "#" + problem_number + " - Part " + "A";
+        str_partb_title = "#" + problem_number + " - Part " + "B";
+        str_partc_title = "#" + problem_number + " - Part " + "C";
+
+        // Sets text for problem statement
+        tv_statement = (TextView) this.findViewById(R.id.tv_statement);
+        tv_statement.setText(str_part_statement[0]);
+
+        // Sets image for part
+        IV_problem_part = (ImageView) findViewById(R.id.problem_part);
+        Glide.with(this)
+                .load(getResources().getIdentifier(str_partCurrent_file_name, "drawable", getPackageName()))
+                .into(IV_problem_part);
+
+        // Sets image for Main problem and sets "invisible"
+        IV_peek_probMain_view = (ImageView) findViewById(R.id.peek_probCurrent_view);
+        IV_peek_probMain_view.setAlpha((float) 0.0);
+        btn_peek_probMain = (SquareImageView) findViewById(R.id.btn_peek_prob);
+        btn_peek_probMain.setAlpha((float) 0.0);
+        Glide.with(this)
+                .load(getResources().getIdentifier(str_probCurrent_file_name, "drawable", getPackageName()))
+                .load(getResources().getIdentifier(str_probCurrent_file_name, "drawable", getPackageName()))
+                .into(IV_peek_probMain_view);
+        Glide.with(this)
+                .load(getResources().getIdentifier(str_probCurrent_file_name, "drawable", getPackageName()))
+                .into(btn_peek_probMain);
+
+        // Sets image for part a
+        IV_peek_parta = (ImageView) findViewById(R.id.peek_parta);
+        IV_peek_parta_arrows = (ImageView) findViewById(R.id.peek_parta_arrows);
+        IV_peek_parta.setAlpha((float) 0.0);
+        IV_peek_parta_arrows.setAlpha((float) 0.0);
+        btn_peek_parta = (SquareImageView) findViewById(R.id.btn_peek_parta);
+        btn_peek_parta_arrows = (SquareImageView) findViewById(R.id.btn_peek_parta_arrows);
+        btn_peek_parta.setAlpha((float) 0.0);
+        btn_peek_parta_arrows.setAlpha((float) 0.0);
+        Glide.with(this)
+                .load(getResources().getIdentifier(str_parta_file_name, "drawable", getPackageName()))
+                .into(IV_peek_parta);
+        Glide.with(this)
+                .load(getResources().getIdentifier(str_parta_file_name, "drawable", getPackageName()))
+                .into(btn_peek_parta);
+
+        // Sets image for part b
+        IV_peek_partb = (ImageView) findViewById(R.id.peek_partb);
+        IV_peek_partb_arrows = (ImageView) findViewById(R.id.peek_partb_arrows);
+        IV_peek_partb.setAlpha((float) 0.0);
+        IV_peek_partb_arrows.setAlpha((float) 0.0);
+        btn_peek_partb = (SquareImageView) findViewById(R.id.btn_peek_partb);
+        btn_peek_partb_arrows = (SquareImageView) findViewById(R.id.btn_peek_partb_arrows);
+        btn_peek_partb.setAlpha((float) 0.0);
+        btn_peek_partb_arrows.setAlpha((float) 0.0);
+        Glide.with(this)
+                .load(getResources().getIdentifier(str_partb_file_name, "drawable", getPackageName()))
+                .into(IV_peek_partb);
+        Glide.with(this)
+                .load(getResources().getIdentifier(str_partb_file_name, "drawable", getPackageName()))
+                .into(btn_peek_partb);
+
+        if (part_letter.toUpperCase().equals("B")) {
+            asyncLoadBitmapPartA.execute();
+        }
+
+        if (part_letter.toUpperCase().equals("C")) {
+            asyncLoadBitmapPartB.execute();
+        }
+
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                btn_peek_probMain.startAnimation(scaleIn);
+                btn_peek_probMain.setAlpha((float) 1.0);
+
+                // shows appropriate peek buttons
+                if (enable_peek_a) {
+                    btn_peek_parta.startAnimation(scaleIn);
+                    btn_peek_parta_arrows.startAnimation(scaleIn);
+                    btn_peek_parta.setAlpha((float) 1.0);
+                    btn_peek_parta_arrows.setAlpha((float) 1.0);
+                } else {
+                    btn_peek_parta.setAlpha((float) 0.0);
+                    btn_peek_parta_arrows.setAlpha((float) 0.0);
+                }
+
+                if (enable_peek_b) {
+                    btn_peek_parta.startAnimation(scaleIn);
+                    btn_peek_parta_arrows.startAnimation(scaleIn);
+                    btn_peek_partb.setAlpha((float) 1.0);
+                    btn_peek_partb_arrows.setAlpha((float) 1.0);
+                } else {
+                    btn_peek_partb.setAlpha((float) 0.0);
+                    btn_peek_partb_arrows.setAlpha((float) 0.0);
+                }
+            }
+        }, 750);
+
+
+        // Sets toolbar title
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(str_toolbar_partCurrent_title);
     }
 
     @Override
@@ -802,10 +792,10 @@ public class ThirdActivity extends AppCompatActivity {
 
                             switch (part_letter.toUpperCase()) {
                                 case "A":
-                                    asyncSaveToBitmap.execute();
+                                    asyncSaveToBitmapPartA.execute();
                                     break;
                                 case "B":
-                                    asyncSaveToBitmap.execute();
+                                    asyncSaveToBitmapPartB.execute();
                                     break;
                                 case "C":
                                     tinydb.putString("part_letter", "A");
@@ -889,6 +879,7 @@ public class ThirdActivity extends AppCompatActivity {
 
             case R.id.action_startover:
                 // User chose the "Start over" action, resets all arrows
+                mDrawArrowsView.setAllToUnused();
                 mDrawArrowsView.resetAllValues();
                 return true;
 
@@ -959,7 +950,14 @@ public class ThirdActivity extends AppCompatActivity {
 //            myBitmap.recycle();
 //            myBitmap = null;
 
-            recreate();
+            mDrawArrowsView.resetForNextPart();
+//            mDrawArrowsView.resetAllValues();
+            mDrawArrowsView.loadArrowCheckLocations();
+            mDrawArrowsView.setAlpha((float) 1.0);
+            btn_check_done.show();
+            startPart();
+
+//            recreate();
         }
 
         @Override

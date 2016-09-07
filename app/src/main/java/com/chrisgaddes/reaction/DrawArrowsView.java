@@ -231,11 +231,10 @@ public class DrawArrowsView extends ImageView {
     private Double val6;
     private Double val7;
 
+    // Using these caused a memory leak
     private Context mContext;
-
     private ThirdActivity thirdActivity;
 
-//    public FloatingActionButton btn_check_done;
 
     /**
      * Description of what this Constructor does/is used for...
@@ -246,24 +245,9 @@ public class DrawArrowsView extends ImageView {
     public DrawArrowsView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        mContext = context;
-
-        thirdActivity = (ThirdActivity) context;
-//
-//
-//
-//
-//        thirdActivity.showFloatingActionButton();
-
-        // Sets image for problem
-//        IV_problem = (ImageView) findViewById(R.id.problem);
-//        Glide.with(this)
-//                .load(getResources().getIdentifier(str_prob_file_name, "drawable", getPackageName()))
-//                .into(mGrayedImage);
-
-        // TODO replace depreciated "getDrawable" with something else
-//        mFocusedImage = context.getResources().getDrawable(R.drawable.prob1_parta);
-//        mGrayedImage = context.getResources().getDrawable(R.drawable.prob1_parta);
+        // The next two lines cause a memory leak..
+        // mContext = context;
+        // thirdActivity = (ThirdActivity) context;
 
         pointList = new ArrayList<>();
         checkMatrix = new ArrayList<>();
@@ -329,7 +313,7 @@ public class DrawArrowsView extends ImageView {
     }
 
     // TODO put this on a runnable so it doesn't slow down UI thread
-    private void loadArrowCheckLocations() {
+    public void loadArrowCheckLocations() {
 
         // Load problem number and part letter
         problem_number = tinydb.getInt("problem_number");
@@ -1625,7 +1609,7 @@ public class DrawArrowsView extends ImageView {
         }
     }
 
-    private void setAllToUnused() {
+    public void setAllToUnused() {
         for (int btn = 0; btn < checkMatrix.size(); btn++) {
             for (int ang = 0; ang < checkMatrix.get(btn).get(0).size(); ang++) {
                 // resets used_row to all zeros
@@ -1642,8 +1626,33 @@ public class DrawArrowsView extends ImageView {
         invalidateNow = true;
     }
 
+    public void resetForNextPart() {
+        pointListArrowHead.clear();
+        pointList.clear();
+        rectListButtons.clear();
+        rectListArrowHead.clear();
+        pathList.clear();
+        pathListCorrect.clear();
+        checkMatrix.clear();
+        angleListArrowHead.clear();
+        linkList.clear();
+        linkList2.clear();
+        // Initializes linkList2 to have three rows
+        linkList2.add(new ArrayList<Integer>());
+        linkList2.add(new ArrayList<Integer>());
+        linkList2.add(new ArrayList<Integer>());
+        isMomentList.clear();
+        isClockwiseList.clear();
+
+        able_to_click = true;
+
+        problem_image_bitmap.recycle();
+        problem_image_bitmap = null;
+        invalidate();
+    }
+
     public void resetAllValues() {
-        setAllToUnused();
+//        setAllToUnused();
 
         // resets variables to zero (this may not be necessary)
         value = 0;
