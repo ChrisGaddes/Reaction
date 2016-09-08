@@ -38,74 +38,80 @@
     </android.support.design.widget.AppBarLayout>
 
     <android.support.percent.PercentRelativeLayout
-            android:id="@+id/id_third_activity"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
+        android:id="@+id/id_third_activity"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
         android:layout_alignParentBottom="true"
         android:layout_below="@id/appBarLayout"
         android:background="@color/material_light_white"
         android:outlineProvider="bounds">
 
-            <ScrollView
-                android:id="@+id/scrollView"
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout_Third"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                app:layout_heightPercent="15%"
+            app:layout_heightPercent="20%"
                 android:layout_alignParentTop="true"
                 android:elevation="8dp">
 
-                <TextView
+
+            <com.chrisgaddes.reaction.AutoResizeTextView
                     android:id="@+id/tv_statement"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="20dp" />
-            </ScrollView>
-
-            <com.chrisgaddes.reaction.SquareImageView
-                android:id="@+id/problem_part"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/scrollView"
-                android:clipChildren="false"
-                android:background="@color/transparent" />
+                android:layout_height="match_parent"
+                android:textSize="100sp"
+                android:paddingTop="10dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp" />
 
-            <com.chrisgaddes.reaction.DrawArrowsView
-                android:id="@+id/idDrawArrowsView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/scrollView"
-                android:clipChildren="false" />
-
-            <com.chrisgaddes.reaction.SquareImageView
-                android:id="@+id/peek_probCurrent_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/scrollView"
-                android:clipChildren="false"
-                android:background="@color/transparent" />
-
-            <com.chrisgaddes.reaction.SquareImageView
-                android:id="@+id/peek_parta"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/scrollView"
-                android:clipChildren="false"
-                android:background="@color/transparent" />
-
-            <com.chrisgaddes.reaction.SquareImageView
-                android:id="@+id/peek_parta_arrows"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/scrollView"
-                android:clipChildren="false"
-                android:background="@color/transparent" />
+        </RelativeLayout>
 
         <com.chrisgaddes.reaction.SquareImageView
-                android:id="@+id/peek_partb"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/scrollView"
+            android:id="@+id/problem_part"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/relativeLayout_Third"
+            android:clipChildren="false"
+            android:background="@color/transparent" />
+
+        <com.chrisgaddes.reaction.DrawArrowsView
+            android:id="@+id/idDrawArrowsView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/relativeLayout_Third"
+            android:clipChildren="false" />
+
+        <com.chrisgaddes.reaction.SquareImageView
+            android:id="@+id/peek_probCurrent_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/relativeLayout_Third"
+            android:clipChildren="false"
+            android:background="@color/transparent" />
+
+        <com.chrisgaddes.reaction.SquareImageView
+            android:id="@+id/peek_parta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/relativeLayout_Third"
+            android:clipChildren="false"
+            android:background="@color/transparent" />
+
+        <com.chrisgaddes.reaction.SquareImageView
+            android:id="@+id/peek_parta_arrows"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/relativeLayout_Third"
+            android:clipChildren="false"
+            android:background="@color/transparent" />
+
+        <com.chrisgaddes.reaction.SquareImageView
+            android:id="@+id/peek_partb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/relativeLayout_Third"
             android:clipChildren="false"
             android:background="@color/transparent" />
 
@@ -113,7 +119,7 @@
             android:id="@+id/peek_partb_arrows"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/scrollView"
+            android:layout_below="@id/relativeLayout_Third"
             android:clipChildren="false"
             android:background="@color/transparent" />
 

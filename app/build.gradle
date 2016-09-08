@@ -58,6 +58,7 @@ dependencies {
     compile 'com.github.florent37:viewanimator:1.0.4'
     compile 'com.github.ivbaranov:materiallettericon:0.2.2'
     compile 'hanks.xyz:smallbang-library:0.1.2'
+//    compile 'com.github.AndroidDeveloperLB:AutoFitTextView:3'
 
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'

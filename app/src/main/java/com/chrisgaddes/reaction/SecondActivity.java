@@ -3,7 +3,6 @@ package com.chrisgaddes.reaction;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -46,7 +45,7 @@ public class SecondActivity extends AppCompatActivity {
 
     private DrawArrowsView mDrawArrowsView;
 
-    private TextView tv_problem_statement;
+    private AutoResizeTextView tv_problem_statement;
 
     private int problem_number;
     private String str_prob_file_name;
@@ -137,8 +136,10 @@ public class SecondActivity extends AppCompatActivity {
 
 
         // Sets text for problem statement
-        tv_problem_statement = (TextView) this.findViewById(R.id.tv_problem_statement2);
+        tv_problem_statement = (AutoResizeTextView) this.findViewById(R.id.tv_problem_statement2);
         tv_problem_statement.setText(str_problem_statement[0]);
+        // set max text size
+        tv_problem_statement.setMaxTextSize(60);
 
         // Loads image for problem
         IV_problem = (ImageView) findViewById(R.id.problem);
@@ -270,11 +271,10 @@ public class SecondActivity extends AppCompatActivity {
                 .findItem(R.id.timer)
                 .getActionView();
 
-        rc.setBeginTime(tinydb.getLong("TotalForegroundTime", 0));
+        rc.setBeginTime(tinydb.getLong("TotalForegroundTime", 0L));
         rc.setOverallDuration(2 * 60);
         rc.setWarningDuration(90);
         rc.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
-        rc.setTextColor(Color.WHITE);
         rc.reset();
         rc.run();
 

@@ -37,29 +37,31 @@
         android:background="@color/material_light_white"
         android:id="@+id/id_2ndRelativeLayout">
 
-
-            <ScrollView
-                android:id="@+id/scrollView"
+            <RelativeLayout
+                android:id="@+id/relativeLayout_Second2"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                app:layout_heightPercent="15%"
+                app:layout_heightPercent="20%"
                 android:layout_alignParentTop="true"
                 android:elevation="8dp">
 
-                <TextView
-                    android:id="@+id/tv_problem_statement2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="20dp" />
-            </ScrollView>
 
+                <com.chrisgaddes.reaction.AutoResizeTextView
+                    android:id="@+id/tv_problem_statement2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textSize="100sp"
+                    android:paddingTop="10dp"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp" />
+
+            </RelativeLayout>
 
             <ImageView
                 android:id="@+id/problem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:background="@color/material_light_white" />
+                android:layout_below="@id/relativeLayout_Second2" />
 
         </android.support.percent.PercentRelativeLayout>
 
@@ -76,7 +78,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
             android:layout_marginBottom="20dp"
-            android:layout_gravity="bottom|right|end"
+            android:layout_gravity="bottom|end"
             android:src="@drawable/ic_send"
             android:transitionGroup="false" />
 
@@ -88,7 +90,7 @@
         android:layout_height="wrap_content"
         android:padding="5dp"
         android:elevation="24dp"
-        android:alpha="0.7"
+        android:alpha="0.0"
         android:textSize="20sp"
         android:layout_margin="8dp"
         android:layout_alignParentTop="true"

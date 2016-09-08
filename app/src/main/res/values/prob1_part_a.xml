@@ -3,12 +3,12 @@
 
     <!--Main Problem Statement-->
     <string-array name="mainProblemStatement_prob1_partA">
-        <item>The lever with the red handle is pin supported at C and connected to a short link AB as shown. Draw the free-body diagram of a) the whole system b) member AB and c) member BC. Ignore the weight of the members.</item>
+        <item>The lever with the red handle is pin supported at C and connected to a short link AB as shown. Draw the free-body diagram of a) the whole system b) member AB and c) the handle. Assume all members are massless and neglect friction.</item>
     </string-array>
 
     <!--Part Problem Statement-->
     <string-array name="problemStatement_prob1_partA">
-        <item>Draw the free-body diagram of the highlighted system. Correctly placed arrows turn blue. Incorrectly placed arrows are greyed out and must be removed or relocated. Press the red button when finished to check your work.</item>
+        <item>Draw the appropriate free-body diagrams of the highlighted system. Each free-body diagram is dependent on the previous onces  </item>
     </string-array>
 
     <!--Number of Buttons-->

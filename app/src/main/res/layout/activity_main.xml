@@ -9,22 +9,6 @@
     android:background="@color/colorGrayBackground"
     tools:context="com.chrisgaddes.reaction.MainActivity">
 
-    <ImageButton
-        android:id="@+id/top_view"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:elevation="0dp"
-        android:src="@drawable/ic_rate_review"
-        android:alpha="0.0" />
-
-    <ImageButton
-        android:id="@+id/reset_timer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:elevation="0dp"
-        android:src="@drawable/ic_refresh"
-        android:alpha="0.0" />
-
     <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/card_header"
@@ -88,6 +72,15 @@
                     android:textSize="14sp"
                     android:textStyle="normal" />
 
+                <ImageButton
+                    android:id="@+id/load_survey"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:src="@drawable/ic_rate_review"
+                    android:layout_alignParentEnd="true"
+                    android:hint="Take survey" />
 
             </RelativeLayout>
 
@@ -98,7 +91,6 @@
                 android:layout_alignParentEnd="true"
                 android:padding="28dp"
                 android:src="@drawable/ic_check" />
-
 
             <View
                 android:id="@+id/top_divider_current"

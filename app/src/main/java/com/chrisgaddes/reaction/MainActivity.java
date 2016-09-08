@@ -22,7 +22,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -76,6 +75,10 @@ public class MainActivity extends AppCompatActivity {
         // loads tinydb database
         tinydb = new TinyDB(this);
 
+        // initializes part_letter on first run
+//        if (tinydb.getString("part_letter") == null) {
+//            tinydb.putString("part_letter", "A");
+//        }
 
         // checks if first run or upgrade
         checkFirstRun();
@@ -112,17 +115,17 @@ public class MainActivity extends AppCompatActivity {
         OverScrollDecoratorHelper.setUpOverScroll(scrollView);
 
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            View decor = getWindow().getDecorView();
-            decor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-        }
-
-        if (Build.VERSION.SDK_INT >= 21) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryLight));
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            View decor = getWindow().getDecorView();
+//            decor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+//        }
+//
+//        if (Build.VERSION.SDK_INT >= 21) {
+//            Window window = getWindow();
+//            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+//            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+//            window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryLight));
+//        }
 
 //        // Sets toolbar title
 //        toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -130,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
 //        getSupportActionBar().setTitle("");
 
 
-        top_view = (ImageButton) findViewById(R.id.top_view);
+        top_view = (ImageButton) findViewById(R.id.load_survey);
 //        top_view.setVisibility(View.VISIBLE);
         top_view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -149,14 +152,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        reset_timer = (ImageButton) findViewById(R.id.reset_timer);
-        reset_timer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                tinydb.putLong("TotalForegroundTime", 0L);
-                resumeTime = System.currentTimeMillis();
-            }
-        });
+//        reset_timer = (ImageButton) findViewById(R.id.reset_timer);
+//        reset_timer.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                tinydb.putLong("TotalForegroundTime", 0L);
+//                resumeTime = System.currentTimeMillis();
+//            }
+//        });
 
 
         card_load_prob1 = (CardView) findViewById(R.id.card_load_prob1);
@@ -165,13 +168,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 problem_number = 1;
-//                part_letter = "A";
+                part_letter = "A";
                 tinydb.putInt("problem_number", problem_number);
-//                tinydb.putString("part_letter", part_letter);
+
+                tinydb.putString("part_letter", part_letter);
 
                 ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this);
                 Intent intent = new Intent(MainActivity.this, SecondActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+//                intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
                 startActivity(intent, options.toBundle());
             }
         });
@@ -182,9 +186,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 problem_number = 2;
-//                part_letter = "A";
+                part_letter = "A";
                 tinydb.putInt("problem_number", problem_number);
-//                tinydb.putString("part_letter", part_letter);
+                tinydb.putString("part_letter", part_letter);
 
                 ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this);
                 Intent intent = new Intent(MainActivity.this, SecondActivity.class);
@@ -198,9 +202,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 problem_number = 3;
-//                part_letter = "A";
+                part_letter = "A";
                 tinydb.putInt("problem_number", problem_number);
-//                tinydb.putString("part_letter", part_letter);
+                tinydb.putString("part_letter", part_letter);
 
                 ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this);
                 Intent intent = new Intent(MainActivity.this, SecondActivity.class);

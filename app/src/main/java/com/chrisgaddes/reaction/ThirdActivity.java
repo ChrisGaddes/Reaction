@@ -63,7 +63,7 @@ public class ThirdActivity extends AppCompatActivity {
 
     private TextView TV_time_display;
 
-    private TextView tv_statement;
+    private AutoResizeTextView tv_statement;
 
     private int problem_number;
     private String part_letter;
@@ -278,6 +278,7 @@ public class ThirdActivity extends AppCompatActivity {
                         mDrawArrowsView.setAlpha((float) 0.0);
                         tv_statement.setText(str_problem_statement[0]);
 
+
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                             btn_peek_probMain.setElevation(dpToPx(8));
                         }
@@ -479,8 +480,10 @@ public class ThirdActivity extends AppCompatActivity {
         str_partc_title = "#" + problem_number + " - Part " + "C";
 
         // Sets text for problem statement
-        tv_statement = (TextView) this.findViewById(R.id.tv_statement);
+        tv_statement = (AutoResizeTextView) this.findViewById(R.id.tv_statement);
         tv_statement.setText(str_part_statement[0]);
+        // set max text size
+        tv_statement.setMaxTextSize(60);
 
         // Sets image for part
         IV_problem_part = (ImageView) findViewById(R.id.problem_part);
@@ -942,9 +945,6 @@ public class ThirdActivity extends AppCompatActivity {
                 IV_peek_partb_arrows.setImageBitmap(bm_B);
                 btn_peek_partb_arrows.setImageBitmap(bm_B);
             }
-
-            // shows peek images as defined by enable_peek_a and enable_peek_b
-            showPeekImages();
         }
     }
 
