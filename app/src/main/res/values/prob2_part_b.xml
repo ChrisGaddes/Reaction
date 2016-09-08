@@ -3,12 +3,12 @@
 
     <!--Main Problem Statement-->
     <string-array name="mainProblemStatement_prob2_partB">
-        <item>Draw the free-body diagram of the highlighted member. The member has mass m and gravity is downward. Correctly placed arrows turn blue. Incorrectly placed arrows are greyed out and must be removed.</item>
+        <item>The spring-loaded contraption is shown below. Draw the free-body diagram of a) the whole system b) member CD and c) the wheel and member ABD. All members are massless except the wheel which has a mass m. Gravity is downward. Neglect friction.</item>
     </string-array>
 
     <!--Part Problem Statement-->
     <string-array name="problemStatement_prob2_partB">
-        <item>Draw the free-body diagram of the highlighted member. The member has mass m and gravity is downward. Correctly placed arrows turn blue. Incorrectly placed arrows are greyed out and must be removed</item>
+        <item>Draw the appropriate free-body diagram of the highlighted system which includes member CD, but NOT the pins at C and D. </item>
     </string-array>
 
     <!--Number of Buttons-->

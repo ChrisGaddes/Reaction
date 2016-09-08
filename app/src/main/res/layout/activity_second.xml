@@ -81,7 +81,6 @@
             android:layout_gravity="bottom|end"
             android:src="@drawable/ic_send"
             android:transitionGroup="false" />
-
     </android.support.design.widget.CoordinatorLayout>
 
     <TextView
