@@ -53,9 +53,9 @@ public class MainActivity extends AppCompatActivity {
     private boolean first_launch;
     private ImageButton top_view;
     private ImageButton reset_timer;
-    private CardView card_load_prob_1;
-    private CardView card_load_prob_2;
-    private CardView card_load_prob_3;
+    private CardView card_load_prob1;
+    private CardView card_load_prob2;
+    private CardView card_load_prob3;
 
     private Animation slideUp;
     private Animation slideDown;
@@ -159,9 +159,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        card_load_prob_1 = (CardView) findViewById(R.id.card_load_prob_1);
-        card_load_prob_1.setVisibility(View.INVISIBLE);
-        card_load_prob_1.setOnClickListener(new View.OnClickListener() {
+        card_load_prob1 = (CardView) findViewById(R.id.card_load_prob1);
+        card_load_prob1.setVisibility(View.INVISIBLE);
+        card_load_prob1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 problem_number = 1;
@@ -176,9 +176,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        card_load_prob_2 = (CardView) findViewById(R.id.card_load_prob_2);
-        card_load_prob_2.setVisibility(View.INVISIBLE);
-        card_load_prob_2.setOnClickListener(new View.OnClickListener() {
+        card_load_prob2 = (CardView) findViewById(R.id.card_load_prob2);
+        card_load_prob2.setVisibility(View.INVISIBLE);
+        card_load_prob2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 problem_number = 2;
@@ -192,9 +192,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        card_load_prob_3 = (CardView) findViewById(R.id.card_load_prob_3);
-        card_load_prob_3.setVisibility(View.INVISIBLE);
-        card_load_prob_3.setOnClickListener(new View.OnClickListener() {
+        card_load_prob3 = (CardView) findViewById(R.id.card_load_prob3);
+        card_load_prob3.setVisibility(View.INVISIBLE);
+        card_load_prob3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 problem_number = 3;
@@ -213,29 +213,29 @@ public class MainActivity extends AppCompatActivity {
 
 
         ViewAnimator
-                .animate(card_load_prob_1)
+                .animate(card_load_prob1)
                 .dp().translationY(200, 0)
                 .duration(500)
                 .accelerate()
                 .start();
 
         ViewAnimator
-                .animate(card_load_prob_2)
+                .animate(card_load_prob2)
                 .dp().translationY(250, 0)
                 .duration(500)
                 .accelerate()
                 .start();
 
         ViewAnimator
-                .animate(card_load_prob_3)
+                .animate(card_load_prob3)
                 .dp().translationY(300, 0)
                 .duration(500)
                 .accelerate()
                 .start();
 
-        card_load_prob_1.setVisibility(View.VISIBLE);
-        card_load_prob_2.setVisibility(View.VISIBLE);
-        card_load_prob_3.setVisibility(View.VISIBLE);
+        card_load_prob1.setVisibility(View.VISIBLE);
+        card_load_prob2.setVisibility(View.VISIBLE);
+        card_load_prob3.setVisibility(View.VISIBLE);
 
     }
 
