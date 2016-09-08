@@ -79,7 +79,7 @@
 
         <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/card_header"
+            android:id="@+id/card_choose_problem_below"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="0dp"
@@ -100,7 +100,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:id="@+id/image_current"
+                    android:id="@+id/image_header"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:padding="16dp"
@@ -111,7 +111,7 @@
                     android:layout_height="match_parent">
 
                     <TextView
-                        android:id="@+id/problem_title_current"
+                        android:id="@+id/problem_title_header"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="18dp"
@@ -122,7 +122,7 @@
                         android:textStyle="normal" />
 
                     <TextView
-                        android:id="@+id/current_part_current"
+                        android:id="@+id/subtitle_header"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentBottom="true"
@@ -290,7 +290,7 @@
                             android:textStyle="normal" />
 
                         <TextView
-                            android:id="@+id/current_part_prob1"
+                            android:id="@+id/subtitle_prob1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignBottom="@id/dot_prob1"
@@ -299,7 +299,6 @@
                             android:gravity="start|bottom"
                             android:maxLines="2"
                             android:paddingBottom="18dp"
-                            android:text="Haven't started yet"
                             android:textSize="14sp"
                             android:textStyle="normal" />
                     </RelativeLayout>
@@ -429,7 +428,7 @@
                             android:textStyle="normal" />
 
                         <TextView
-                            android:id="@+id/current_part_prob2"
+                            android:id="@+id/subtitle_prob2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignBottom="@id/dot_prob2"
@@ -438,7 +437,6 @@
                             android:gravity="start|bottom"
                             android:maxLines="2"
                             android:paddingBottom="18dp"
-                            android:text="Haven't started yet"
                             android:textSize="14sp"
                             android:textStyle="normal" />
                     </RelativeLayout>
@@ -572,13 +570,13 @@
                             android:layout_toEndOf="@id/dot_prob3"
                             android:maxLines="1"
                             android:paddingTop="18dp"
-                            android:text="Problem 1"
+                            android:text="Problem 3"
                             android:textColor="@color/colorPrimaryText"
                             android:textSize="18sp"
                             android:textStyle="normal" />
 
                         <TextView
-                            android:id="@+id/current_part_prob3"
+                            android:id="@+id/subtitle_prob3"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignBottom="@id/dot_prob3"
@@ -587,7 +585,6 @@
                             android:gravity="start|bottom"
                             android:maxLines="2"
                             android:paddingBottom="18dp"
-                            android:text="Haven't started yet"
                             android:textSize="14sp"
                             android:textStyle="normal" />
                     </RelativeLayout>
@@ -658,6 +655,66 @@
                         <!--android:text="Get Started" />-->
 
                     </RelativeLayout>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/card_reset_everything_always_shown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:stateListAnimator="@xml/lift_up"
+                card_view:cardCornerRadius="2dp"
+                card_view:cardElevation="2dp"
+                card_view:cardPreventCornerOverlap="false"
+                card_view:cardUseCompatPadding="true">
+
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/image_reset_everything_always_shown"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:padding="16dp"
+                        android:src="@drawable/ic_replay" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/problem_title_reset_everything_always_shown"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="18dp"
+                            android:maxLines="1"
+                            android:text="Reset"
+                            android:textColor="@color/colorPrimaryText"
+                            android:textSize="18sp"
+                            android:textStyle="normal" />
+
+                        <TextView
+                            android:id="@+id/text_reset_everything_always_shown"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_marginBottom="18dp"
+                            android:fontFamily="sans-serif-condensed"
+                            android:maxLines="2"
+                            android:text="Reset for new user"
+                            android:textSize="14sp"
+                            android:textStyle="normal" />
+
+                    </RelativeLayout>
+
                 </LinearLayout>
             </android.support.v7.widget.CardView>
 

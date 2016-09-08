@@ -449,6 +449,7 @@ public class ThirdActivity extends AppCompatActivity {
         // Loads problem information
         problem_number = tinydb.getInt("problem_number");
         part_letter = tinydb.getString("part_letter");
+        tinydb.putString("prob" + problem_number + "_part_letter", part_letter);
 
         getEnablePeek();
 
@@ -660,6 +661,10 @@ public class ThirdActivity extends AppCompatActivity {
     }
 
     private void setDialogArrowsCorrect() {
+
+        // marks problem as complete
+        tinydb.putBoolean("prob" + problem_number + "_completed", true);
+
         // stop counter
         rc.stop();
         long timer_time = rc.getCurrentTime();
@@ -677,6 +682,7 @@ public class ThirdActivity extends AppCompatActivity {
             case "A":
                 previous_part_letter = tinydb.getString("part_letter");
                 tinydb.putString("part_letter", "B");
+                tinydb.putString("part_letter_prob" + problem_number, "B");
 //                part_letter = "B";
                 asyncSaveToBitmapPartA.execute();
                 showDialogCorrectPartA();
@@ -684,11 +690,16 @@ public class ThirdActivity extends AppCompatActivity {
             case "B":
                 previous_part_letter = tinydb.getString("part_letter");
                 tinydb.putString("part_letter", "C");
+                tinydb.putString("part_letter_prob" + problem_number, "C");
 //                part_letter = "C";
                 asyncSaveToBitmapPartB.execute();
                 showDialogCorrectPartB();
                 break;
             case "C":
+                tinydb.putString("part_letter_prob" + problem_number, "Done");
+
+                tinydb.putBoolean("prob" + problem_number + "_completed", true);
+
                 if (problem_number == 3) {
                     tinydb.putBoolean("survey_allowed", true);
 
@@ -712,9 +723,10 @@ public class ThirdActivity extends AppCompatActivity {
                     showDialogCorrectSurvey();
 
                 } else {
-                    previous_part_letter = tinydb.getString("part_letter");
-                    tinydb.putString("part_letter", "A");
+//                    previous_part_letter = tinydb.getString("part_letter");
+//                    tinydb.putString("part_letter", "A");
 //                part_letter = "A";
+
                     showDialogCorrectPartC();
                     break;
                 }
@@ -728,10 +740,6 @@ public class ThirdActivity extends AppCompatActivity {
         btn_peek_partb_arrows.startAnimation(scaleOut);
         btn_check_done.hide();
 
-        // resets DrawArrowsView
-        mDrawArrowsView.resetForNextPart();
-        mDrawArrowsView.loadArrowCheckLocations();
-//        mDrawArrowsView.setAlpha((float) 0.0);
     }
 
     private void showDialogCorrectPartA() {
@@ -749,6 +757,11 @@ public class ThirdActivity extends AppCompatActivity {
                     public void onClick(MaterialDialog dialog, DialogAction which) {
                         mDrawArrowsView.setAlpha((float) 0.0);
                         btn_check_done.show();
+
+                        // resets DrawArrowsView
+                        mDrawArrowsView.resetForNextPart();
+                        mDrawArrowsView.loadArrowCheckLocations();
+
                         startPart();
                             }
                         }
@@ -770,6 +783,10 @@ public class ThirdActivity extends AppCompatActivity {
                     public void onClick(MaterialDialog dialog, DialogAction which) {
                         mDrawArrowsView.setAlpha((float) 0.0);
                         btn_check_done.show();
+
+                        // resets DrawArrowsView
+                        mDrawArrowsView.resetForNextPart();
+                        mDrawArrowsView.loadArrowCheckLocations();
 
                         startPart();
                             }
@@ -793,13 +810,13 @@ public class ThirdActivity extends AppCompatActivity {
                         mDrawArrowsView.setAlpha((float) 0.0);
                         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(ThirdActivity.this);
                         // TODO put logic in here so it knows how many problems there are
-                        tinydb.putBoolean("prob" + problem_number + "_completed", true);
+
                         // put code here that redirects them to survey if they finish all 3 problems
-                        if (problem_number < 3) {
-                            tinydb.putBoolean("prob" + problem_number + "_completed", true);
-                            problem_number++;
-                            tinydb.putInt("problem_number", problem_number);
-                        }
+//                        if (problem_number < 3) {
+////                            tinydb.putBoolean("prob" + problem_number + "_completed", true);
+//                            problem_number++;
+//                            tinydb.putInt("problem_number", problem_number);
+//                        }
                         Intent mainIntent = new Intent(ThirdActivity.this, SecondActivity.class);
                         startActivity(mainIntent, options.toBundle());
                         finish();
@@ -810,7 +827,7 @@ public class ThirdActivity extends AppCompatActivity {
                     public void onClick(MaterialDialog dialog, DialogAction which) {
                         mDrawArrowsView.setAlpha((float) 0.0);
                         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(ThirdActivity.this);
-                        part_letter = tinydb.getString("part_letter");
+//                        part_letter = tinydb.getString("part_letter");
 
                         // TODO put logic in here so it knows how many problems there are instead of hard coding in 3
                         if (problem_number < 3) {
@@ -825,8 +842,6 @@ public class ThirdActivity extends AppCompatActivity {
     }
 
     private void showDialogCorrectSurvey() {
-
-
         description = "All forces placed correctly! You finished in " + time_string_for_dialog + "Problem " + problem_number + " is now complete.";
         strDialogNextButton = "Main Menu";
         new MaterialStyledDialog(this)
