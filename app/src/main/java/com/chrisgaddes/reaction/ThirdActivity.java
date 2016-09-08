@@ -6,10 +6,12 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -483,7 +485,7 @@ public class ThirdActivity extends AppCompatActivity {
         tv_statement = (AutoResizeTextView) this.findViewById(R.id.tv_statement);
         tv_statement.setText(str_part_statement[0]);
         // set max text size
-        tv_statement.setMaxTextSize(60);
+        tv_statement.setMaxTextSize(56);
 
         // Sets image for part
         IV_problem_part = (ImageView) findViewById(R.id.problem_part);
@@ -687,11 +689,35 @@ public class ThirdActivity extends AppCompatActivity {
                 showDialogCorrectPartB();
                 break;
             case "C":
-                previous_part_letter = tinydb.getString("part_letter");
-                tinydb.putString("part_letter", "A");
+                if (problem_number == 3) {
+                    tinydb.putBoolean("survey_allowed", true);
+
+                    // gets total app time usage
+                    pauseTime = System.currentTimeMillis();
+                    totalForgroundTime = tinydb.getLong("TotalForegroundTime", 0) + (pauseTime - resumeTime);
+                    tinydb.putLong("TotalForegroundTime", totalForgroundTime);
+
+                    // puts final time the app was used into this variable
+                    tinydb.putLong("time_for_survey", totalForgroundTime);
+
+                    // sets finish time value to Clipboard
+                    String stringYouExtracted = Long.toString(tinydb.getLong("time_for_survey", 0));
+                    setClipboard(stringYouExtracted);
+
+                    // TODO delete these two as needed
+                    previous_part_letter = tinydb.getString("part_letter");
+                    tinydb.putString("part_letter", "A");
+
+                    // show Dialog correct which includes link to survey
+                    showDialogCorrectSurvey();
+
+                } else {
+                    previous_part_letter = tinydb.getString("part_letter");
+                    tinydb.putString("part_letter", "A");
 //                part_letter = "A";
-                showDialogCorrectPartC();
-                break;
+                    showDialogCorrectPartC();
+                    break;
+                }
         }
 
         // animate buttons out
@@ -796,6 +822,63 @@ public class ThirdActivity extends AppCompatActivity {
                     }
                 })
                 .show();
+    }
+
+    private void showDialogCorrectSurvey() {
+
+
+        description = "All forces placed correctly! You finished in " + time_string_for_dialog + "Problem " + problem_number + " is now complete.";
+        strDialogNextButton = "Main Menu";
+        new MaterialStyledDialog(this)
+                .setTitle("Correct! Problem " + problem_number + " finished!")
+                .setDescription(description)
+                .setIcon(R.drawable.ic_check)
+                .setStyle(Style.HEADER_WITH_ICON)
+                .setScrollable(true)
+                .setCancelable(false)
+                .setPositive("Take Survey", new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(MaterialDialog dialog, DialogAction which) {
+
+
+                        String url = "https://goo.gl/forms/0wl3LGhqtNYC4oyA2";
+                        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+                        CustomTabsIntent customTabsIntent = builder.build();
+                        customTabsIntent.launchUrl(ThirdActivity.this, Uri.parse(url));
+
+//                Intent openSurveyUrl= new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+//                startActivity(openSurveyUrl);
+
+                        mDrawArrowsView.setAlpha((float) 0.0);
+                        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(ThirdActivity.this);
+                        // TODO put logic in here so it knows how many problems there are
+                        tinydb.putBoolean("prob" + problem_number + "_completed", true);
+                        // put code here that redirects them to survey if they finish all 3 problems
+
+
+                        Intent mainIntent = new Intent(ThirdActivity.this, SecondActivity.class);
+                        startActivity(mainIntent, options.toBundle());
+                        finish();
+                    }
+                })
+                .setNegative("Main Menu", new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(MaterialDialog dialog, DialogAction which) {
+                        mDrawArrowsView.setAlpha((float) 0.0);
+                        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(ThirdActivity.this);
+                        part_letter = tinydb.getString("part_letter");
+
+                        // TODO put logic in here so it knows how many problems there are instead of hard coding in 3
+                        if (problem_number < 3) {
+                            tinydb.putBoolean("prob" + problem_number + "_completed", true);
+                            Intent mainIntent = new Intent(ThirdActivity.this, MainActivity.class);
+                            startActivity(mainIntent, options.toBundle());
+                            finish();
+                        }
+                    }
+                })
+                .show();
+
 
     }
 
@@ -1067,6 +1150,17 @@ public class ThirdActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             return null;
+        }
+    }
+
+    private void setClipboard(String text) {
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
+            android.text.ClipboardManager clipboard = (android.text.ClipboardManager) ThirdActivity.this.getSystemService(Context.CLIPBOARD_SERVICE);
+            clipboard.setText(text);
+        } else {
+            android.content.ClipboardManager clipboard = (android.content.ClipboardManager) ThirdActivity.this.getSystemService(Context.CLIPBOARD_SERVICE);
+            android.content.ClipData clip = android.content.ClipData.newPlainText("Text : ", text);
+            clipboard.setPrimaryClip(clip);
         }
     }
 

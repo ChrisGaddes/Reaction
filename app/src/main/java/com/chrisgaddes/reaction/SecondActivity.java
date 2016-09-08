@@ -139,7 +139,7 @@ public class SecondActivity extends AppCompatActivity {
         tv_problem_statement = (AutoResizeTextView) this.findViewById(R.id.tv_problem_statement2);
         tv_problem_statement.setText(str_problem_statement[0]);
         // set max text size
-        tv_problem_statement.setMaxTextSize(60);
+        tv_problem_statement.setMaxTextSize(56);
 
         // Loads image for problem
         IV_problem = (ImageView) findViewById(R.id.problem);

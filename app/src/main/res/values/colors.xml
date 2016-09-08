@@ -21,6 +21,7 @@
     <color name="colorSecondaryText">#ff9f9f9f</color>
     <color name="colorIcons">#FFFFFF</color>
     <color name="colorDivider">#ffeeeeee</color>
+    <color name="colorCardGray">#f9f9f9</color>
 
 
     <color name="orange">#ff5500</color>

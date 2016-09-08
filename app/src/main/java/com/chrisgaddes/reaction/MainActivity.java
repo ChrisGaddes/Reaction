@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.customtabs.CustomTabsIntent;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -26,12 +27,15 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.florent37.viewanimator.ViewAnimator;
+import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
+import com.github.javiersantos.materialstyleddialogs.enums.Style;
 
 import java.util.concurrent.TimeUnit;
 
@@ -50,11 +54,12 @@ public class MainActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private boolean first_launch;
-    private ImageButton top_view;
-    private ImageButton reset_timer;
+
     private CardView card_load_prob1;
     private CardView card_load_prob2;
     private CardView card_load_prob3;
+    private CardView card_survey;
+    private CardView card_reset_everything;
 
     private Animation slideUp;
     private Animation slideDown;
@@ -74,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
 
         // loads tinydb database
         tinydb = new TinyDB(this);
+
 
         // initializes part_letter on first run
 //        if (tinydb.getString("part_letter") == null) {
@@ -133,9 +139,19 @@ public class MainActivity extends AppCompatActivity {
 //        getSupportActionBar().setTitle("");
 
 
-        top_view = (ImageButton) findViewById(R.id.load_survey);
+//        reset_everything = (ImageButton) findViewById(R.id.reset_everything);
+//        reset_everything.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                resetEverything();
+//            }
+//        });
+
+
+        card_survey = (CardView) findViewById(R.id.card_survey);
+        card_survey.setVisibility(View.GONE);
 //        top_view.setVisibility(View.VISIBLE);
-        top_view.setOnClickListener(new View.OnClickListener() {
+        card_survey.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String stringYouExtracted = Long.toString(tinydb.getLong("TotalForegroundTime", 0));
@@ -148,18 +164,39 @@ public class MainActivity extends AppCompatActivity {
 
 //                Intent openSurveyUrl= new Intent(Intent.ACTION_VIEW, Uri.parse(url));
 //                startActivity(openSurveyUrl);
-
             }
         });
 
-//        reset_timer = (ImageButton) findViewById(R.id.reset_timer);
-//        reset_timer.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                tinydb.putLong("TotalForegroundTime", 0L);
-//                resumeTime = System.currentTimeMillis();
-//            }
-//        });
+
+        card_reset_everything = (CardView) findViewById(R.id.card_reset_everything);
+//        card_reset_everything.setVisibility(View.GONE);
+//        top_view.setVisibility(View.VISIBLE);
+        card_reset_everything.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new MaterialStyledDialog(MainActivity.this)
+                        .setTitle("Reset App?")
+                        .setDescription("Are you sure you want to reset this app?")
+                        .setIcon(R.drawable.ic_replay_light)
+                        .setStyle(Style.HEADER_WITH_ICON)
+                        .setScrollable(true)
+                        .setCancelable(true)
+                        .setPositive("yes", new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(MaterialDialog dialog, DialogAction which) {
+                                resetEverything();
+                            }
+                        })
+
+                        .setNegative("no", new MaterialDialog.SingleButtonCallback() {
+                                    @Override
+                                    public void onClick(MaterialDialog dialog, DialogAction which) {
+
+                                    }
+                                }
+                        ).show();
+            }
+        });
 
 
         card_load_prob1 = (CardView) findViewById(R.id.card_load_prob1);
@@ -418,7 +455,6 @@ public class MainActivity extends AppCompatActivity {
 
         fadeIn.setAnimationListener(new Animation.AnimationListener() {
             public void onAnimationEnd(Animation animation) {
-
             }
 
             public void onAnimationRepeat(Animation animation) {
@@ -443,5 +479,25 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void enableSurveyButton() {
+        tinydb.putBoolean("survey_allowed", true);
+    }
+
+    private void resetEverything() {
+
+        Snackbar.make(findViewById(R.id.main_activity_Relative_Layout), "App was reset successfully", Snackbar.LENGTH_LONG).show();
+
+        tinydb.clear();
+
+        // TODO: add stuff that resets everything for another user
+//        tinydb.putBoolean("survey_allowed", false);
+//        tinydb.remove("time_for_survey");
+//
+//        tinydb.putLong("TotalForegroundTime", 0L);
+        resumeTime = System.currentTimeMillis();
+
+        // TODO consider tinydb.clear()
+
+    }
 
 }
