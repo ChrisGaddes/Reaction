@@ -4,11 +4,9 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -171,17 +169,6 @@ public class MainActivity extends AppCompatActivity {
         card_choose_problem_below.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                String stringYouExtracted = Long.toString(tinydb.getLong("TotalForegroundTime", 0));
-
-                setClipboard(stringYouExtracted);
-                String url = "https://goo.gl/forms/0wl3LGhqtNYC4oyA2";
-                CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
-                CustomTabsIntent customTabsIntent = builder.build();
-                customTabsIntent.launchUrl(MainActivity.this, Uri.parse(url));
-
-//                Intent openSurveyUrl= new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-//                startActivity(openSurveyUrl);
             }
         });
 
@@ -192,16 +179,8 @@ public class MainActivity extends AppCompatActivity {
         card_survey.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String stringYouExtracted = Long.toString(tinydb.getLong("TotalForegroundTime", 0));
-
-                setClipboard(stringYouExtracted);
-                String url = "https://goo.gl/forms/0wl3LGhqtNYC4oyA2";
-                CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
-                CustomTabsIntent customTabsIntent = builder.build();
-                customTabsIntent.launchUrl(MainActivity.this, Uri.parse(url));
-
-//                Intent openSurveyUrl= new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-//                startActivity(openSurveyUrl);
+                // asks if student is taking MECH 2110 Statics and Dynamics at Auburn University
+                queryTakingCourse();
             }
         });
 
@@ -386,6 +365,55 @@ public class MainActivity extends AppCompatActivity {
         card_load_prob2.setVisibility(View.VISIBLE);
         card_load_prob3.setVisibility(View.VISIBLE);
 
+    }
+
+    private void queryTakingCourse() {
+        new MaterialStyledDialog(MainActivity.this)
+                .setDescription("Are you an Auburn student taking Statics & Dynamics (MECH 2110)? ")
+                .setStyle(Style.HEADER_WITH_ICON)
+                .setTitle("Extra Credit!")
+                .setIcon(R.drawable.ic_spellcheck)
+                .setScrollable(true)
+                .setCancelable(true)
+                .setPositive("yes", new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(MaterialDialog dialog, DialogAction which) {
+//                        resetEverything();
+                        showSurveyPrompt();
+                    }
+                })
+
+                .setNegative("no", new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(MaterialDialog dialog, DialogAction which) {
+
+                            }
+                        }
+                ).show();
+    }
+
+    private void showSurveyPrompt() {
+        new MaterialStyledDialog(MainActivity.this)
+                .setTitle("Extra credit!")
+                .setDescription("Are you an Auburn student taking Statics & Dynamics (MECH 2110)? ")
+                .setIcon(R.drawable.ic_spellcheck)
+                .setStyle(Style.HEADER_WITH_ICON)
+                .setScrollable(true)
+                .setCancelable(true)
+                .setPositive("yes", new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(MaterialDialog dialog, DialogAction which) {
+//                        resetEverything();
+                    }
+                })
+
+                .setNegative("no", new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(MaterialDialog dialog, DialogAction which) {
+
+                            }
+                        }
+                ).show();
     }
 
     private void clickLoadProb3() {
@@ -758,11 +786,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void resetEverything() {
-        Snackbar.make(findViewById(R.id.main_activity_Relative_Layout), "App was reset successfully", Snackbar.LENGTH_LONG).show();
-        tinydb.clear();
-        resumeTime = System.currentTimeMillis();
-        tinydb = new TinyDB(this);
-        setCardValues();
+//        Snackbar.make(findViewById(R.id.main_activity_Relative_Layout), "App was reset successfully", Snackbar.LENGTH_LONG).show();
+//        tinydb.clear();
+//        resumeTime = System.currentTimeMillis();
+//        tinydb = new TinyDB(this);
+//        setCardValues();
     }
 
     private void showDialogProblemAlreadyFinished(final int mproblem_number) {

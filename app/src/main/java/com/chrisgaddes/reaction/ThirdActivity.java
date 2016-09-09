@@ -12,7 +12,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -896,9 +895,14 @@ public class ThirdActivity extends AppCompatActivity {
 
 
                         String url = "https://goo.gl/forms/0wl3LGhqtNYC4oyA2";
-                        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
-                        CustomTabsIntent customTabsIntent = builder.build();
-                        customTabsIntent.launchUrl(ThirdActivity.this, Uri.parse(url));
+
+                        // CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+//                CustomTabsIntent customTabsIntent = builder.build();
+//                customTabsIntent.launchUrl(MainActivity.this, Uri.parse(url));
+
+                        Intent openSurveyUrl = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                        startActivity(openSurveyUrl);
+
 
 //                Intent openSurveyUrl= new Intent(Intent.ACTION_VIEW, Uri.parse(url));
 //                startActivity(openSurveyUrl);
