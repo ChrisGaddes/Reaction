@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -64,6 +65,7 @@ public class ThirdActivity extends AppCompatActivity {
     private String strDialogNextButton;
 
     private TextView TV_time_display;
+    private Boolean flip;
 
     private AutoResizeTextView tv_statement;
 
@@ -107,6 +109,8 @@ public class ThirdActivity extends AppCompatActivity {
     private long resumeTime;
     private long totalForgroundTime;
 
+    private long paused_timer_time;
+
     private ChronometerView rc;
     private String time_string_for_dialog;
 
@@ -145,6 +149,8 @@ public class ThirdActivity extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         TV_time_display = (TextView) findViewById(R.id.time_display);
+
+        flip = true;
 
 //        // Thread which updates timer
 //        Thread t = new Thread() {
@@ -203,10 +209,23 @@ public class ThirdActivity extends AppCompatActivity {
         btn_check_done.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 boolean mrunCheckIfFinished = mDrawArrowsView.runCheckIfFinished();
+
+
+//                if (flip) {
+//                    paused_timer_time = SystemClock.elapsedRealtime();
+//                    rc.stop();
+//                    flip = !flip;
+//                } else {
+//                    rc.setPauseTimeOffset(SystemClock.elapsedRealtime() - paused_timer_time);
+//                    rc.run();
+//                    flip = !flip;
+//                }
+
+
                 if (mrunCheckIfFinished) {
                     setDialogArrowsCorrect();
                 } else {
-                    Snackbar.make(findViewById(R.id.coordinatorLayout), "Not Finished Yet...", Snackbar.LENGTH_SHORT).setCallback(new Snackbar.Callback() {
+                    Snackbar.make(findViewById(R.id.coordinatorLayout), "Not Finished Yet...", Snackbar.LENGTH_LONG).setCallback(new Snackbar.Callback() {
                         @Override
                         public void onDismissed(Snackbar snackbar, int event) {
                             switch (event) {
@@ -251,6 +270,7 @@ public class ThirdActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
                             Log.d(TAG, "Put hint here");
+
 
 //                            btn_peek_probMain.setAlpha((float) 1.0);
 //                            if (enable_peek_a) {
@@ -597,6 +617,10 @@ public class ThirdActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+
+        paused_timer_time = SystemClock.elapsedRealtime();
+        rc.stop();
+
         pauseTime = System.currentTimeMillis();
         totalForgroundTime = tinydb.getLong("TotalForegroundTime", 0) + (pauseTime - resumeTime);
         tinydb.putLong("TotalForegroundTime", totalForgroundTime);
@@ -605,6 +629,13 @@ public class ThirdActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+
+        if (rc != null) {
+            rc.setPauseTimeOffset(SystemClock.elapsedRealtime() - paused_timer_time);
+            rc.run();
+        }
+
         resumeTime = System.currentTimeMillis();
         Log.d(TAG, "onResume run");
     }
@@ -667,6 +698,7 @@ public class ThirdActivity extends AppCompatActivity {
 
         // stop counter
         rc.stop();
+
         long timer_time = rc.getCurrentTime();
         long minutes = timer_time / 60;
         long seconds = timer_time - (60 * minutes);
@@ -945,7 +977,7 @@ public class ThirdActivity extends AppCompatActivity {
         rc = (ChronometerView) menu
                 .findItem(R.id.timer)
                 .getActionView();
-        rc.setBeginTime(tinydb.getLong("TotalForegroundTime", 0));
+        rc.setPauseTimeOffset(tinydb.getLong("TotalForegroundTime", 0));
         rc.setOverallDuration(2 * 600);
         rc.setWarningDuration(90);
         rc.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);

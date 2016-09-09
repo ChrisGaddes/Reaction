@@ -14,7 +14,6 @@ import android.transition.Explode;
 import android.transition.Fade;
 import android.transition.Slide;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -179,7 +178,7 @@ public class SecondActivity extends AppCompatActivity {
         btn_start_part = (FloatingActionButton) findViewById(R.id.btn_start_part);
         btn_start_part.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                rc.stop();
+//                rc.stop();
                 startThirdActivity();
             }
         });
@@ -276,25 +275,28 @@ public class SecondActivity extends AppCompatActivity {
         startover.setVisible(false);
 
 
-        startTimer(menu);
+        MenuItem timer = menu.findItem(R.id.timer);
+        timer.setVisible(false);
+
+//        startTimer(menu);
 
         return super.onCreateOptionsMenu(menu);
     }
 
-    private void startTimer(Menu menu) {
-        rc = (ChronometerView) menu
-                .findItem(R.id.timer)
-                .getActionView();
-
-        rc.setBeginTime(tinydb.getLong("TotalForegroundTime", 0L));
-        rc.setOverallDuration(2 * 60);
-        rc.setWarningDuration(90);
-        rc.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
-        rc.reset();
-        rc.run();
-
-        rc_run_yet = true;
-    }
+//    private void startTimer(Menu menu) {
+//        rc = (ChronometerView) menu
+//                .findItem(R.id.timer)
+//                .getActionView();
+//
+//        rc.setPauseTimeOffset(tinydb.getLong("TotalForegroundTime", 0L));
+//        rc.setOverallDuration(2 * 60);
+//        rc.setWarningDuration(90);
+//        rc.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
+//        rc.reset();
+//        rc.run();
+//
+//        rc_run_yet = true;
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -326,12 +328,12 @@ public class SecondActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-        if (rc != null) {
-            rc.stop();
+//        if (rc != null) {
+//            rc.stop();
             pauseTime = System.currentTimeMillis();
             totalForgroundTime = tinydb.getLong("TotalForegroundTime", 0) + (pauseTime - resumeTime);
             tinydb.putLong("TotalForegroundTime", totalForgroundTime);
-        }
+//        }
     }
 
     @Override
@@ -346,10 +348,10 @@ public class SecondActivity extends AppCompatActivity {
 //            startThirdActivity();
 //        }
 
-        if (rc_run_yet) {
-            // prevents rc from running before startTimer begins
-            rc.run();
-        }
+//        if (rc_run_yet) {
+//            // prevents rc from running before startTimer begins
+//            rc.run();
+//        }
 
 
     }

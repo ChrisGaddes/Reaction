@@ -30,9 +30,9 @@ public class ChronometerView extends TextView implements Runnable {
     public void run() {
         isRunning = true;
 
-        elapsedSeconds = (SystemClock.elapsedRealtime() - startTime + beginTime) / 1000;
+        elapsedSeconds = (SystemClock.elapsedRealtime() - startTime - beginTime) / 1000;
 
-        if (elapsedSeconds <= overallDuration) {
+//        if (elapsedSeconds <= overallDuration) {
             long remainingSeconds = elapsedSeconds;
             long minutes = remainingSeconds / 60;
             long seconds = remainingSeconds - (60 * minutes);
@@ -46,12 +46,12 @@ public class ChronometerView extends TextView implements Runnable {
             }
 
             postDelayed(this, 1000);
-        } else {
-//            setText("0:00");
-            setText("Overtime");
-            setTextColor(Color.WHITE);
-            isRunning = false;
-        }
+//        } else {
+////            setText("0:00");
+//            setText("Overtime");
+//            setTextColor(Color.WHITE);
+//            isRunning = false;
+//        }
     }
 
     public void reset() {
@@ -60,10 +60,9 @@ public class ChronometerView extends TextView implements Runnable {
         setTextColor(Color.WHITE);
     }
 
-    public void setBeginTime(long beginTime) {
-        startTime = beginTime;
-        setText("--:--");
-        setTextColor(Color.WHITE);
+    //
+    public void setPauseTimeOffset(long pause_time_offset) {
+        startTime = startTime + pause_time_offset;
     }
 
     public void stop() {
