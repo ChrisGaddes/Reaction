@@ -79,6 +79,67 @@
 
         <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/card_survey"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:stateListAnimator="@xml/lift_up"
+            card_view:cardCornerRadius="2dp"
+            card_view:cardElevation="2dp"
+            card_view:cardPreventCornerOverlap="false"
+            card_view:cardUseCompatPadding="true">
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/image_survey_card"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:padding="16dp"
+                    android:src="@drawable/ic_assignment" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/problem_title_survey_card"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="18dp"
+                        android:maxLines="1"
+                        android:text="Take Survey"
+                        android:textColor="@color/colorPrimaryText"
+                        android:textSize="18sp"
+                        android:textStyle="normal" />
+
+                    <TextView
+                        android:id="@+id/survey_card_part_survey_card"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginBottom="18dp"
+                        android:fontFamily="sans-serif-condensed"
+                        android:maxLines="2"
+                        android:text="Please help me out by taking this brief survey"
+                        android:textSize="14sp"
+                        android:textStyle="normal" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:id="@+id/card_choose_problem_below"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -130,67 +191,6 @@
                         android:fontFamily="sans-serif-condensed"
                         android:maxLines="2"
                         android:text="Choose a problem below"
-                        android:textSize="14sp"
-                        android:textStyle="normal" />
-
-                </RelativeLayout>
-
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
-
-        <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/card_survey"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="0dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="8dp"
-            android:clickable="true"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:stateListAnimator="@xml/lift_up"
-            card_view:cardCornerRadius="2dp"
-            card_view:cardElevation="2dp"
-            card_view:cardPreventCornerOverlap="false"
-            card_view:cardUseCompatPadding="true">
-
-            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/image_survey_card"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:padding="16dp"
-                    android:src="@drawable/ic_assignment" />
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <TextView
-                        android:id="@+id/problem_title_survey_card"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="18dp"
-                        android:maxLines="1"
-                        android:text="Take Survey"
-                        android:textColor="@color/colorPrimaryText"
-                        android:textSize="18sp"
-                        android:textStyle="normal" />
-
-                    <TextView
-                        android:id="@+id/survey_card_part_survey_card"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:layout_marginBottom="18dp"
-                        android:fontFamily="sans-serif-condensed"
-                        android:maxLines="2"
-                        android:text="Please help me out by taking this breif survey"
                         android:textSize="14sp"
                         android:textStyle="normal" />
 
@@ -334,31 +334,31 @@
                         android:layout_height="1dp"
                         android:background="@color/colorDivider" />
 
-                    <RelativeLayout
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
                         <Button
+                            android:id="@+id/btn_prob1_start"
                             style="?android:attr/borderlessButtonStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="?android:attr/selectableItemBackground"
                             android:paddingEnd="20dp"
                             android:paddingStart="20dp"
-                            android:text="Startover" />
+                            android:text="Get Started" />
 
-                        <!--<Button-->
-                        <!--style="?android:attr/borderlessButtonStyle"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_alignParentEnd="true"-->
-                        <!--android:background="?android:attr/selectableItemBackground"-->
-                        <!--android:paddingEnd="20dp"-->
-                        <!--android:paddingStart="20dp"-->
-                        <!--android:text="Get Started" />-->
+                        <Button
+                            android:id="@+id/btn_prob1_startover"
+                            style="?android:attr/borderlessButtonStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="?android:attr/selectableItemBackground"
 
-                    </RelativeLayout>
+                            android:text="Restart" />
+
+                    </LinearLayout>
                 </LinearLayout>
             </android.support.v7.widget.CardView>
 
@@ -469,9 +469,9 @@
                                 android:layout_width="200dp"
                                 android:layout_height="200dp"
                                 android:layout_centerHorizontal="true"
-                                android:src="@drawable/ic_lock_outline"
+                                android:background="@color/colorCardGray"
                                 android:padding="28dp"
-                                android:background="@color/colorCardGray" />
+                                android:src="@drawable/ic_lock_outline" />
                         </RelativeLayout>
                     </RelativeLayout>
 
@@ -481,31 +481,31 @@
                         android:layout_height="1dp"
                         android:background="@color/colorDivider" />
 
-                    <RelativeLayout
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
                         <Button
+                            android:id="@+id/btn_prob2_start"
                             style="?android:attr/borderlessButtonStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="?android:attr/selectableItemBackground"
                             android:paddingEnd="20dp"
                             android:paddingStart="20dp"
-                            android:text="Startover" />
+                            android:text="Get Started" />
 
-                        <!--<Button-->
-                        <!--style="?android:attr/borderlessButtonStyle"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_alignParentEnd="true"-->
-                        <!--android:background="?android:attr/selectableItemBackground"-->
-                        <!--android:paddingEnd="20dp"-->
-                        <!--android:paddingStart="20dp"-->
-                        <!--android:text="Get Started" />-->
+                        <Button
+                            android:id="@+id/btn_prob2_startover"
+                            style="?android:attr/borderlessButtonStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="?android:attr/selectableItemBackground"
 
-                    </RelativeLayout>
+                            android:text="Restart" />
+
+                    </LinearLayout>
                 </LinearLayout>
             </android.support.v7.widget.CardView>
 
@@ -617,9 +617,9 @@
                                 android:layout_width="200dp"
                                 android:layout_height="200dp"
                                 android:layout_centerHorizontal="true"
-                                android:src="@drawable/ic_lock_outline"
+                                android:background="@color/colorCardGray"
                                 android:padding="28dp"
-                                android:background="@color/colorCardGray" />
+                                android:src="@drawable/ic_lock_outline" />
 
                         </RelativeLayout>
                     </RelativeLayout>
@@ -630,31 +630,31 @@
                         android:layout_height="1dp"
                         android:background="@color/colorDivider" />
 
-                    <RelativeLayout
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
                         <Button
+                            android:id="@+id/btn_prob3_start"
+                            style="?android:attr/borderlessButtonStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:background="?android:attr/selectableItemBackground"
+                            android:paddingEnd="20dp"
+                            android:paddingStart="20dp"
+                            android:text="Get Started" />
+
+                        <Button
+                            android:id="@+id/btn_prob3_startover"
                             style="?android:attr/borderlessButtonStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="?android:attr/selectableItemBackground"
-                            android:paddingEnd="20dp"
-                            android:paddingStart="20dp"
-                            android:text="Startover" />
+                            android:text="Restart" />
 
-                        <!--<Button-->
-                        <!--style="?android:attr/borderlessButtonStyle"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_alignParentEnd="true"-->
-                        <!--android:background="?android:attr/selectableItemBackground"-->
-                        <!--android:paddingEnd="20dp"-->
-                        <!--android:paddingStart="20dp"-->
-                        <!--android:text="Get Started" />-->
-
-                    </RelativeLayout>
+                    </LinearLayout>
                 </LinearLayout>
             </android.support.v7.widget.CardView>
 
@@ -663,9 +663,9 @@
                 android:id="@+id/card_reset_everything_always_shown"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
-                android:layout_marginBottom="8dp"
                 android:clickable="true"
                 android:foreground="?android:attr/selectableItemBackground"
                 android:stateListAnimator="@xml/lift_up"

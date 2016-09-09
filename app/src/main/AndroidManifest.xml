@@ -52,6 +52,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".SecondActivity"
+
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait" />
         <activity

@@ -67,6 +67,7 @@ public class SecondActivity extends AppCompatActivity {
     private long resumeTime;
     private long totalForgroundTime;
     private Handler mHandler = new Handler();
+    private Handler mHandler2 = new Handler();
 
     private Animation fadeIn;
     private Animation fadeOut;
@@ -84,6 +85,7 @@ public class SecondActivity extends AppCompatActivity {
 
         setupWindowAnimations();
         setContentView(R.layout.activity_second);
+
 
         TV_time_display = (TextView) findViewById(R.id.time_display);
 
@@ -122,9 +124,15 @@ public class SecondActivity extends AppCompatActivity {
         // Sets database
         tinydb = new TinyDB(this);
 
+
         // Loads problem information
         problem_number = tinydb.getInt("problem_number");
         part_letter = tinydb.getString("part_letter");
+
+        // skips second activity if not part A
+//        if (!part_letter.equals("A")) {
+//            startThirdActivity();
+
 
         // Generates strings from problem information
 
@@ -173,9 +181,7 @@ public class SecondActivity extends AppCompatActivity {
         btn_start_part.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 rc.stop();
-                Intent intent = new Intent(getApplicationContext(), ThirdActivity.class);
-                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(SecondActivity.this);
-                startActivity(intent, options.toBundle());
+                startThirdActivity();
             }
         });
 
@@ -188,6 +194,14 @@ public class SecondActivity extends AppCompatActivity {
             }
         }, 350);
 
+
+    }
+
+    private void startThirdActivity() {
+        Intent intent = new Intent(getApplicationContext(), ThirdActivity.class);
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(SecondActivity.this);
+        startActivity(intent, options.toBundle());
+//        finish();
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -310,23 +324,33 @@ public class SecondActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        rc.stop();
-        pauseTime = System.currentTimeMillis();
-        totalForgroundTime = tinydb.getLong("TotalForegroundTime", 0) + (pauseTime - resumeTime);
-        tinydb.putLong("TotalForegroundTime", totalForgroundTime);
+
+        if (rc != null) {
+            rc.stop();
+            pauseTime = System.currentTimeMillis();
+            totalForgroundTime = tinydb.getLong("TotalForegroundTime", 0) + (pauseTime - resumeTime);
+            tinydb.putLong("TotalForegroundTime", totalForgroundTime);
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
+        //update foreground time
+        resumeTime = System.currentTimeMillis();
+
+//        // skips second activity if not part A
+//        if (!part_letter.equals("A")) {
+//            startThirdActivity();
+//        }
+
         if (rc_run_yet) {
             // prevents rc from running before startTimer begins
             rc.run();
         }
 
-        //update foreground time
-        resumeTime = System.currentTimeMillis();
+
     }
 
     @Override

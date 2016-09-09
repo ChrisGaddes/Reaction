@@ -47,8 +47,9 @@ public class ChronometerView extends TextView implements Runnable {
 
             postDelayed(this, 1000);
         } else {
-            setText("0:00");
-            setTextColor(Color.RED);
+//            setText("0:00");
+            setText("Overtime");
+            setTextColor(Color.WHITE);
             isRunning = false;
         }
     }

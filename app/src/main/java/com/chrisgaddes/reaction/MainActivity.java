@@ -27,6 +27,7 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -62,6 +63,14 @@ public class MainActivity extends AppCompatActivity {
     private CardView card_reset_everything;
     private CardView card_reset_everything_always_shown;
     private CardView card_choose_problem_below;
+
+    private Button btn_prob1_start;
+    private Button btn_prob2_start;
+    private Button btn_prob3_start;
+
+    private Button btn_prob1_startover;
+    private Button btn_prob2_startover;
+    private Button btn_prob3_startover;
 
     private TextView subtitle_prob1;
     private TextView subtitle_prob2;
@@ -202,8 +211,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 new MaterialStyledDialog(MainActivity.this)
-                        .setTitle("Reset App?")
-                        .setDescription("Are you sure you want to reset this app?")
+                        .setTitle("Reset App for new user?")
+                        .setDescription("Are you sure you want to reset this app? ")
                         .setIcon(R.drawable.ic_replay_light)
                         .setStyle(Style.HEADER_WITH_ICON)
                         .setScrollable(true)
@@ -261,88 +270,90 @@ public class MainActivity extends AppCompatActivity {
         card_load_prob1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                problem_number = 1;
-                // no need to check if this problem is unlocked. It is always unlocked
-                tinydb.putInt("problem_number", problem_number);
-                String str = tinydb.getString("part_letter_prob" + problem_number);
-                if (str == null || str.equals("")) {
-                    part_letter = "A";
-                    tinydb.putString("part_letter_prob1", part_letter);
-                    tinydb.putString("part_letter", part_letter);
-                    loadSecondActivity();
-                } else if (tinydb.getString("part_letter_prob1").equals("Done")) {
-                    showDialogProblemAlreadyFinished(problem_number);
-                } else {
-                    part_letter = tinydb.getString("part_letter_prob1");
-                    tinydb.putString("part_letter", part_letter);
-                    loadSecondActivity();
-                }
+                clickLoadProb1();
             }
         });
 
-        image_prob2_lock = (ImageView) findViewById(R.id.image_prob2_lock);
-//        image_prob2_lock.setVisibility(View.VISIBLE);
+        btn_prob1_startover = (Button) findViewById(R.id.btn_prob1_startover);
+        btn_prob1_startover.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialogStartover(1);
+            }
+        });
 
+        btn_prob1_start = (Button) findViewById(R.id.btn_prob1_start);
+        btn_prob1_start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clickLoadProb1();
+            }
+        });
+
+
+        image_prob2_lock = (ImageView) findViewById(R.id.image_prob2_lock);
         subtitle_prob2 = (TextView) findViewById(R.id.subtitle_prob2);
         card_load_prob2 = (CardView) findViewById(R.id.card_load_prob2);
         card_load_prob2.setVisibility(View.INVISIBLE);
         card_load_prob2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                problem_number = 2;
-                //checks if problem is unlocked yet
-                if (tinydb.getBoolean("prob" + problem_number + "_completed")) {
-                    tinydb.putInt("problem_number", problem_number);
-                    String str = tinydb.getString("part_letter_prob" + problem_number);
-                    if (str == null || str.equals("")) {
-                        part_letter = "A";
-                        tinydb.putString("part_letter_prob1", part_letter);
-                        tinydb.putString("part_letter", part_letter);
-                        loadSecondActivity();
-                    } else if (tinydb.getString("part_letter_prob1").equals("Done")) {
-                        showDialogProblemAlreadyFinished(problem_number);
-                    } else {
-                        part_letter = tinydb.getString("part_letter_prob1");
-                        tinydb.putString("part_letter", part_letter);
-                        loadSecondActivity();
-                    }
+                clickLoadProb2();
+            }
+        });
+
+        btn_prob2_startover = (Button) findViewById(R.id.btn_prob2_startover);
+        btn_prob2_startover.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (tinydb.getBoolean("prob1_completed")) {
+                    showDialogStartover(2);
                 } else {
+                    problem_number = 3;
                     int previous_prob_num = problem_number - 1;
                     Snackbar.make(findViewById(R.id.main_activity_Relative_Layout), "Problem " + problem_number + " is locked. Complete problem " + previous_prob_num + " first.", Snackbar.LENGTH_LONG).show();
                 }
             }
         });
 
-        image_prob3_lock = (ImageView) findViewById(R.id.image_prob2_lock);
-//        image_prob3_lock.setVisibility(View.VISIBLE);
+        btn_prob2_start = (Button) findViewById(R.id.btn_prob2_start);
+        btn_prob2_start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clickLoadProb2();
+            }
+        });
 
+
+        image_prob3_lock = (ImageView) findViewById(R.id.image_prob3_lock);
         subtitle_prob3 = (TextView) findViewById(R.id.subtitle_prob3);
         card_load_prob3 = (CardView) findViewById(R.id.card_load_prob3);
         card_load_prob3.setVisibility(View.INVISIBLE);
         card_load_prob3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                problem_number = 3;
-                //checks if problem is unlocked yet
-                if (tinydb.getBoolean("prob" + problem_number + "_completed")) {
-                    tinydb.putInt("problem_number", problem_number);
-                    String str = tinydb.getString("part_letter_prob" + problem_number);
-                    if (str == null || str.equals("")) {
-                        part_letter = "A";
-                        tinydb.putString("part_letter_prob1", part_letter);
-                        tinydb.putString("part_letter", part_letter);
-                        loadSecondActivity();
-                    } else if (tinydb.getString("part_letter_prob1").equals("Done")) {
-                        showDialogProblemAlreadyFinished(problem_number);
-                    } else {
-                        part_letter = tinydb.getString("part_letter_prob1");
-                        tinydb.putString("part_letter", part_letter);
-                        loadSecondActivity();
-                    }
+                clickLoadProb3();
+            }
+        });
+
+        btn_prob3_startover = (Button) findViewById(R.id.btn_prob3_startover);
+        btn_prob3_startover.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (tinydb.getBoolean("prob2_completed")) {
+                    showDialogStartover(3);
                 } else {
                     int previous_prob_num = problem_number - 1;
                     Snackbar.make(findViewById(R.id.main_activity_Relative_Layout), "Problem " + problem_number + " is locked. Complete problem " + previous_prob_num + " first.", Snackbar.LENGTH_LONG).show();
-                }
+                    }
+            }
+        });
+
+        btn_prob3_start = (Button) findViewById(R.id.btn_prob3_start);
+        btn_prob3_start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clickLoadProb3();
             }
         });
 
@@ -377,9 +388,83 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void clickLoadProb3() {
+        problem_number = 3;
+        //checks if problem is unlocked yet
+        if (tinydb.getBoolean("prob2_completed")) {
+            tinydb.putInt("problem_number", problem_number);
+            String str = tinydb.getString("part_letter_prob" + problem_number);
+            if (str == null || str.equals("")) {
+                part_letter = "A";
+                tinydb.putString("part_letter_prob1", part_letter);
+                tinydb.putString("part_letter", part_letter);
+                loadSecondActivity();
+            } else if (tinydb.getString("part_letter_prob1").equals("Done")) {
+                showDialogProblemAlreadyFinished(problem_number);
+            } else {
+                part_letter = tinydb.getString("part_letter_prob1");
+                tinydb.putString("part_letter", part_letter);
+                loadThirdActivity();
+            }
+        } else {
+            int previous_prob_num = problem_number - 1;
+            Snackbar.make(findViewById(R.id.main_activity_Relative_Layout), "Problem " + problem_number + " is locked. Complete problem " + previous_prob_num + " first.", Snackbar.LENGTH_LONG).show();
+        }
+    }
+
+    private void clickLoadProb2() {
+        problem_number = 2;
+        //checks if problem is unlocked yet
+        if (tinydb.getBoolean("prob1_completed")) {
+            tinydb.putInt("problem_number", problem_number);
+            String str = tinydb.getString("part_letter_prob" + problem_number);
+            if (str == null || str.equals("")) {
+                part_letter = "A";
+                tinydb.putString("part_letter_prob1", part_letter);
+                tinydb.putString("part_letter", part_letter);
+                loadSecondActivity();
+            } else if (tinydb.getString("part_letter_prob1").equals("Done")) {
+                showDialogProblemAlreadyFinished(problem_number);
+            } else {
+                part_letter = tinydb.getString("part_letter_prob1");
+                tinydb.putString("part_letter", part_letter);
+                loadThirdActivity();
+            }
+        } else {
+            problem_number = 2;
+            int previous_prob_num = problem_number - 1;
+            Snackbar.make(findViewById(R.id.main_activity_Relative_Layout), "Problem " + problem_number + " is locked. Complete problem " + previous_prob_num + " first.", Snackbar.LENGTH_LONG).show();
+        }
+    }
+
+    private void clickLoadProb1() {
+        problem_number = 1;
+        // no need to check if this problem is unlocked. It is always unlocked
+        tinydb.putInt("problem_number", problem_number);
+        String str = tinydb.getString("part_letter_prob" + problem_number);
+        if (str == null || str.equals("")) {
+            part_letter = "A";
+            tinydb.putString("part_letter_prob1", part_letter);
+            tinydb.putString("part_letter", part_letter);
+            loadSecondActivity();
+        } else if (tinydb.getString("part_letter_prob1").equals("Done")) {
+            showDialogProblemAlreadyFinished(problem_number);
+        } else {
+            part_letter = tinydb.getString("part_letter_prob1");
+            tinydb.putString("part_letter", part_letter);
+            loadThirdActivity();
+        }
+    }
+
     private void loadSecondActivity() {
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this);
         Intent intent = new Intent(MainActivity.this, SecondActivity.class);
+        startActivity(intent, options.toBundle());
+    }
+
+    private void loadThirdActivity() {
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this);
+        Intent intent = new Intent(MainActivity.this, ThirdActivity.class);
         startActivity(intent, options.toBundle());
     }
 
@@ -424,57 +509,70 @@ public class MainActivity extends AppCompatActivity {
         // TODO remove hardcoded problem number here
 
 
-//        if (tinydb.getBoolean("prob1_completed")) {
-//            image_prob2_lock.setVisibility(View.GONE);
-//        } else {
-//            subtitle_prob2.setText("Locked");
-//            image_prob2_lock.setVisibility(View.VISIBLE);
-//        }
-//
-//        if (tinydb.getBoolean("prob2_completed")) {
-//            image_prob3_lock.setVisibility(View.GONE);
-//        } else {
-//            subtitle_prob3.setText("Locked");
-//            image_prob3_lock.setVisibility(View.VISIBLE);
-//        }
-
-
         String str = tinydb.getString("prob1_part_letter");
-        if (str != null && !str.equals("")) {
+        if (tinydb.getString("prob1_part_letter").equals("Done")) {
+            subtitle_prob1.setText("Finished");
+            btn_prob1_start.setVisibility(View.GONE);
+            btn_prob1_startover.setVisibility(View.VISIBLE);
+        } else if (str != null && !str.equals("")) {
             String text_to_set = "Working on Part " + tinydb.getString("prob1_part_letter");
             subtitle_prob1.setText(text_to_set);
-        } else if (tinydb.getString("prob1_part_letter").equals("Done")) {
-            subtitle_prob1.setText("Finished");
-        } else {
-            subtitle_prob1.setText("Click here to start problem");
+            btn_prob1_start.setText("Continue");
+        } else if (tinydb.getString("prob1_part_letter").equals("A") || str.equals("")) {
+            subtitle_prob1.setText("Click to start problem");
+            btn_prob1_startover.setVisibility(View.GONE);
+            btn_prob1_start.setText("Start");
         }
 
         str = tinydb.getString("prob2_part_letter");
-        if (str != null && !str.equals("")) {
+        if (tinydb.getString("prob2_part_letter").equals("Done")) {
+            subtitle_prob2.setText("Finished");
+            btn_prob2_start.setVisibility(View.GONE);
+            btn_prob2_startover.setVisibility(View.VISIBLE);
+        } else if (str != null && !str.equals("")) {
             String text_to_set = "Working on Part " + tinydb.getString("prob2_part_letter");
             subtitle_prob2.setText(text_to_set);
-        } else if (tinydb.getString("prob2_part_letter").equals("Done")) {
-            subtitle_prob2.setText("Finished");
+            btn_prob2_start.setText("Continue");
+            image_prob2_lock.setVisibility(ImageView.GONE);
+            btn_prob2_start.setVisibility(View.VISIBLE);
+            btn_prob2_startover.setVisibility(View.VISIBLE);
         } else if (!tinydb.getBoolean("prob1_completed")) {
             subtitle_prob2.setText("Locked");
-            image_prob3_lock.setVisibility(View.VISIBLE);
-        } else {
-            subtitle_prob2.setText("Click here to start problem");
-            image_prob2_lock.setVisibility(View.GONE);
+            image_prob2_lock.setVisibility(ImageView.VISIBLE);
+            btn_prob2_start.setVisibility(View.GONE);
+            btn_prob2_startover.setVisibility(View.GONE);
+        } else if (tinydb.getString("prob2_part_letter").equals("A") || str.equals("")) {
+            subtitle_prob2.setText("Click to start problem");
+            btn_prob2_start.setText("Start");
+            image_prob2_lock.setVisibility(ImageView.GONE);
+            btn_prob2_startover.setVisibility(View.GONE);
+            btn_prob2_start.setVisibility(View.VISIBLE);
         }
 
-        str = tinydb.getString("prob_part_letter");
-        if (str != null && !str.equals("")) {
+
+        str = tinydb.getString("prob3_part_letter");
+        if (tinydb.getString("prob3_part_letter").equals("Done")) {
+            subtitle_prob3.setText("Finished");
+            btn_prob3_start.setVisibility(View.GONE);
+            btn_prob3_startover.setVisibility(View.VISIBLE);
+        } else if (str != null && !str.equals("")) {
             String text_to_set = "Working on Part " + tinydb.getString("prob3_part_letter");
             subtitle_prob3.setText(text_to_set);
-        } else if (tinydb.getString("prob3_part_letter").equals("Done")) {
-            subtitle_prob3.setText("Finished");
-        } else if (!tinydb.getBoolean("prob1_completed")) {
+            btn_prob3_start.setText("Continue");
+            image_prob3_lock.setVisibility(ImageView.GONE);
+            btn_prob3_start.setVisibility(View.VISIBLE);
+            btn_prob3_startover.setVisibility(View.VISIBLE);
+        } else if (!tinydb.getBoolean("prob2_completed")) {
             subtitle_prob3.setText("Locked");
-            image_prob3_lock.setVisibility(View.VISIBLE);
-        } else {
-            subtitle_prob3.setText("Click here to start problem");
-            image_prob3_lock.setVisibility(View.GONE);
+            image_prob3_lock.setVisibility(ImageView.VISIBLE);
+            btn_prob3_start.setVisibility(View.GONE);
+            btn_prob3_startover.setVisibility(View.GONE);
+        } else if (tinydb.getString("prob3_part_letter").equals("A") || str.equals("")) {
+            subtitle_prob3.setText("Click to start problem");
+            btn_prob3_start.setText("Start");
+            image_prob3_lock.setVisibility(ImageView.GONE);
+            btn_prob3_startover.setVisibility(View.GONE);
+            btn_prob3_start.setVisibility(View.VISIBLE);
         }
 
 
@@ -482,8 +580,13 @@ public class MainActivity extends AppCompatActivity {
             // sets survey button to visible
             card_survey.setVisibility(View.VISIBLE);
             card_reset_everything.setVisibility(View.VISIBLE);
-            card_choose_problem_below.setVisibility(View.INVISIBLE);
+//            card_choose_problem_below.setVisibility(View.INVISIBLE);
+        } else {
+            card_survey.setVisibility(View.GONE);
+            card_reset_everything.setVisibility(View.GONE);
         }
+
+
     }
 
     @Override
@@ -702,5 +805,33 @@ public class MainActivity extends AppCompatActivity {
                         }
                 ).show();
     }
+
+    private void showDialogStartover(final int mproblem_number) {
+        new MaterialStyledDialog(MainActivity.this)
+                .setTitle("Startover")
+                .setDescription("Would you like to restart this problem?")
+                .setIcon(R.drawable.ic_replay_light)
+                .setStyle(Style.HEADER_WITH_ICON)
+                .setScrollable(true)
+                .setCancelable(true)
+                .setPositive("yes", new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(MaterialDialog dialog, DialogAction which) {
+                        part_letter = "A";
+                        tinydb.putString("part_letter", part_letter);
+                        tinydb.putString("part_letter_prob" + mproblem_number, part_letter);
+                        loadSecondActivity();
+                    }
+                })
+
+                .setNegative("no", new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(MaterialDialog dialog, DialogAction which) {
+                                // returns to main menu
+                            }
+                        }
+                ).show();
+    }
+
 }
 

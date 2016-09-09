@@ -682,7 +682,10 @@ public class ThirdActivity extends AppCompatActivity {
             case "A":
                 previous_part_letter = tinydb.getString("part_letter");
                 tinydb.putString("part_letter", "B");
-                tinydb.putString("part_letter_prob" + problem_number, "B");
+
+                tinydb.putString("prob" + problem_number + "_part_letter", "B");
+
+//                tinydb.putString("part_letter_prob" + problem_number, "B");
 //                part_letter = "B";
                 asyncSaveToBitmapPartA.execute();
                 showDialogCorrectPartA();
@@ -690,15 +693,17 @@ public class ThirdActivity extends AppCompatActivity {
             case "B":
                 previous_part_letter = tinydb.getString("part_letter");
                 tinydb.putString("part_letter", "C");
-                tinydb.putString("part_letter_prob" + problem_number, "C");
+
+                tinydb.putString("prob" + problem_number + "_part_letter", "C");
+
+//                tinydb.putString("part_letter_prob" + problem_number, "C");
 //                part_letter = "C";
                 asyncSaveToBitmapPartB.execute();
                 showDialogCorrectPartB();
                 break;
             case "C":
-                tinydb.putString("part_letter_prob" + problem_number, "Done");
-
-                tinydb.putBoolean("prob" + problem_number + "_completed", true);
+                tinydb.putString("prob" + problem_number + "_part_letter", "Done");
+//                tinydb.putBoolean("prob" + problem_number + "_completed", true);
 
                 if (problem_number == 3) {
                     tinydb.putBoolean("survey_allowed", true);
@@ -812,11 +817,11 @@ public class ThirdActivity extends AppCompatActivity {
                         // TODO put logic in here so it knows how many problems there are
 
                         // put code here that redirects them to survey if they finish all 3 problems
-//                        if (problem_number < 3) {
-////                            tinydb.putBoolean("prob" + problem_number + "_completed", true);
-//                            problem_number++;
-//                            tinydb.putInt("problem_number", problem_number);
-//                        }
+                        if (problem_number < 3) {
+//                            tinydb.putBoolean("prob" + problem_number + "_completed", true);
+                            int new_problem_number = problem_number + 1;
+                            tinydb.putInt("problem_number", new_problem_number);
+                        }
                         Intent mainIntent = new Intent(ThirdActivity.this, SecondActivity.class);
                         startActivity(mainIntent, options.toBundle());
                         finish();
@@ -939,7 +944,7 @@ public class ThirdActivity extends AppCompatActivity {
                 .findItem(R.id.timer)
                 .getActionView();
         rc.setBeginTime(tinydb.getLong("TotalForegroundTime", 0));
-        rc.setOverallDuration(2 * 60);
+        rc.setOverallDuration(2 * 600);
         rc.setWarningDuration(90);
         rc.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
 //        rc.setTextColor(Color.WHITE);
