@@ -821,6 +821,8 @@ public class ThirdActivity extends AppCompatActivity {
 //                            tinydb.putBoolean("prob" + problem_number + "_completed", true);
                             int new_problem_number = problem_number + 1;
                             tinydb.putInt("problem_number", new_problem_number);
+                            tinydb.putString("part_letter", "A");
+                            tinydb.putString("prob" + new_problem_number + "_part_letter", "A");
                         }
                         Intent mainIntent = new Intent(ThirdActivity.this, SecondActivity.class);
                         startActivity(mainIntent, options.toBundle());

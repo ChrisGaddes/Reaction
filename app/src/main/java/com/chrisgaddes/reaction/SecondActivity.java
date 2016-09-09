@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.transition.Explode;
@@ -199,9 +198,11 @@ public class SecondActivity extends AppCompatActivity {
 
     private void startThirdActivity() {
         Intent intent = new Intent(getApplicationContext(), ThirdActivity.class);
-        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(SecondActivity.this);
-        startActivity(intent, options.toBundle());
-//        finish();
+//        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(SecondActivity.this);
+//        startActivity(intent, options.toBundle());
+        startActivity(intent);//, options.toBundle());
+        finish();
+//        overridePendingTransition(0,0);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -231,7 +232,7 @@ public class SecondActivity extends AppCompatActivity {
         getWindow().setEnterTransition(explode);
         getWindow().setReturnTransition(explode);
         getWindow().setAllowEnterTransitionOverlap(false);
-        getWindow().setAllowReturnTransitionOverlap(false);
+//        getWindow().setAllowReturnTransitionOverlap(false);
     }
 
     private void helpDialog() {
