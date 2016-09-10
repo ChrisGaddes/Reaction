@@ -34,7 +34,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -46,30 +45,32 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.lang.reflect.Field;
-import java.util.concurrent.TimeUnit;
-
 
 public class ThirdActivity extends AppCompatActivity {
-
     private static final String TAG = "ThirdActivity";
+
     private DrawArrowsView mDrawArrowsView;
     private ImageView IV_peek_probMain_view;
     private ImageView IV_peek_parta;
     private ImageView IV_peek_partb;
-
     private ImageView IV_peek_parta_arrows;
     private ImageView IV_peek_partb_arrows;
+    private ImageView IV_problem_part;
+
+    private SquareImageView btn_peek_probMain;
+    private SquareImageView btn_peek_parta;
+    private SquareImageView btn_peek_partb;
+    private SquareImageView btn_peek_parta_arrows;
+    private SquareImageView btn_peek_partb_arrows;
 
     private String description;
     private String strDialogNextButton;
-
-    private TextView TV_time_display;
-    private Boolean flip;
+    private String part_letter;
 
     private AutoResizeTextView tv_statement;
 
     private int problem_number;
-    private String part_letter;
+    private int eventaction;
 
     private String str_toolbar_partCurrent_title;
     private String[] str_part_statement;
@@ -77,37 +78,22 @@ public class ThirdActivity extends AppCompatActivity {
     private String str_parta_statement[];
     private String str_partb_statement[];
 
-    private FloatingActionButton btn_check_done;
-    private SquareImageView btn_peek_probMain;
-    private SquareImageView btn_peek_parta;
-    private SquareImageView btn_peek_partb;
-
-    private SquareImageView btn_peek_parta_arrows;
-    private SquareImageView btn_peek_partb_arrows;
+    private FloatingActionButton fab_check_done;
 
     private TinyDB tinydb;
-    private int eventaction;
-    private String previous_part_letter;
 
-    private Toolbar toolbar;
-    private ImageView IV_problem_part;
+    private String previous_part_letter;
+    private String str_probCurrent_file_name;
     private String str_partCurrent_file_name;
     private String str_parta_file_name;
     private String str_partb_file_name;
-    private String str_partc_file_name;
-
     private String str_parta_title;
     private String str_partb_title;
-    private String str_partc_title;
-
     private String str_toolbar_problem_title;
-
-    private String str_probCurrent_file_name;
 
     private long pauseTime;
     private long resumeTime;
     private long totalForgroundTime;
-
     private long paused_timer_time;
 
     private ChronometerView rc;
@@ -115,24 +101,14 @@ public class ThirdActivity extends AppCompatActivity {
 
     private Boolean enable_peek_a;
     private Boolean enable_peek_b;
-    private Snackbar snackbar;
 
     private Animation scaleIn;
     private Animation scaleOut;
-
-    private Animation scaleInFast;
-    private Animation scaleOutFast;
-
-    private Animation fadeIn;
-    private Animation fadeOut;
 
     private Bitmap bm_A;
     private Bitmap bm_B;
 
     private Handler mHandler = new Handler();
-
-//    private AsyncTaskLoadBitmapFromDataBase asyncLoadBitmapPartA;
-//    private AsyncTaskLoadBitmapFromDataBase asyncLoadBitmapPartB;
 
     private AsyncTaskSaveViewToBitmap asyncSaveToBitmapPartA;
     private AsyncTaskSaveViewToBitmap asyncSaveToBitmapPartB;
@@ -142,56 +118,24 @@ public class ThirdActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Log.d(TAG, "onCreate run");
         setupWindowAnimations();
         setContentView(R.layout.activity_third);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        TV_time_display = (TextView) findViewById(R.id.time_display);
-
-        flip = true;
-
-//        // Thread which updates timer
-//        Thread t = new Thread() {
-//
-//            @Override
-//            public void run() {
-//                try {
-//                    while (!isInterrupted()) {
-//                        Thread.sleep(100);
-//                        runOnUiThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                updateTextView();
-//                            }
-//                        });
-//                    }
-//                } catch (InterruptedException e) {
-//                }
-//            }
-//        };
-//        t.start();
-
         asyncSaveToBitmapPartA = new AsyncTaskSaveViewToBitmap();
-//        asyncLoadBitmapPartA = new AsyncTaskLoadBitmapFromDataBase();
-
         asyncSaveToBitmapPartB = new AsyncTaskSaveViewToBitmap();
-//        asyncLoadBitmapPartB = new AsyncTaskLoadBitmapFromDataBase();
 
-        fadeIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fadein);
-        fadeOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fadeout);
+        // initializes animations
+        scaleIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.scale_in);
+        scaleOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.scale_out);
 
-        scaleIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.scale_fab_in);
-        scaleOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.scale_fab_out);
-        scaleInFast = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.scale_in_fast);
-        scaleOutFast = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.scale_out_fast);
-
-        btn_check_done = (FloatingActionButton) findViewById(R.id.btn_check_done);
-//        btn_check_done.hide();
+        // initializes floating action button
+        fab_check_done = (FloatingActionButton) findViewById(R.id.fab_check_done);
 
         // Sets database
         tinydb = new TinyDB(this);
 
+        // initializes cache to store bitmaps in
         cache = new MyCache();
         cache.OpenOrCreateCache(this, "ArrowBitmaps");
 
@@ -200,26 +144,14 @@ public class ThirdActivity extends AppCompatActivity {
 
         mDrawArrowsView.setObserver(new TheObserver() {
                                         public void callback() {
-//                                            Log.d("Clicked", "Woo Hoo!");
+                                            // Log.d("Clicked", "Woo Hoo!");
                                         }
                                     }
         );
 
-        btn_check_done.setOnClickListener(new View.OnClickListener() {
+        fab_check_done.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 boolean mrunCheckIfFinished = mDrawArrowsView.runCheckIfFinished();
-
-
-//                if (flip) {
-//                    paused_timer_time = SystemClock.elapsedRealtime();
-//                    rc.stop();
-//                    flip = !flip;
-//                } else {
-//                    rc.setPauseTimeOffset(SystemClock.elapsedRealtime() - paused_timer_time);
-//                    rc.run();
-//                    flip = !flip;
-//                }
-
 
                 if (mrunCheckIfFinished) {
                     setDialogArrowsCorrect();
@@ -270,15 +202,6 @@ public class ThirdActivity extends AppCompatActivity {
                         public void onClick(View v) {
                             Log.d(TAG, "Put hint here");
 
-
-//                            btn_peek_probMain.setAlpha((float) 1.0);
-//                            if (enable_peek_a) {
-//                                btn_peek_parta.setAlpha((float) 1.0);
-//                            }
-//                            if (enable_peek_b) {
-//                                btn_peek_partb.setAlpha((float) 1.0);
-//                            }
-//                            mDrawArrowsView.resetAllValues();
                         }
                     }).show();
                 }
@@ -293,12 +216,13 @@ public class ThirdActivity extends AppCompatActivity {
                     // TODO add if currently touched to
 
                     case MotionEvent.ACTION_DOWN:
-                        getSupportActionBar().setTitle(str_toolbar_problem_title);
+                        if (getSupportActionBar() != null) {
+                            getSupportActionBar().setTitle(str_toolbar_problem_title);
+                        }
                         IV_peek_probMain_view.setAlpha((float) 1.0);
                         IV_problem_part.setAlpha((float) 0.0);
                         mDrawArrowsView.setAlpha((float) 0.0);
                         tv_statement.setText(str_problem_statement[0]);
-
 
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                             btn_peek_probMain.setElevation(dpToPx(8));
@@ -314,11 +238,13 @@ public class ThirdActivity extends AppCompatActivity {
                             btn_peek_partb_arrows.startAnimation(scaleOut);
                         }
 
-                        btn_check_done.hide();
+                        fab_check_done.hide();
                         break;
 
                     case MotionEvent.ACTION_UP:
-                        getSupportActionBar().setTitle(str_toolbar_partCurrent_title);
+                        if (getSupportActionBar() != null) {
+                            getSupportActionBar().setTitle(str_toolbar_partCurrent_title);
+                        }
                         IV_peek_probMain_view.setAlpha((float) 0.0);
                         IV_problem_part.setAlpha((float) 1.0);
 
@@ -328,34 +254,20 @@ public class ThirdActivity extends AppCompatActivity {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                             btn_peek_probMain.setElevation(dpToPx(4));
                         }
-//                        btn_peek_probMain.setAlpha((float) 1.0);
                         if (enable_peek_a) {
-
-//                            YoYo.with(Techniques.SlideInUp)
-//                                    .duration(200)
-//                                    .playOn(btn_peek_parta);
                             btn_peek_parta.startAnimation(scaleIn);
                             btn_peek_parta_arrows.startAnimation(scaleIn);
                         }
                         if (enable_peek_b) {
                             btn_peek_partb.startAnimation(scaleIn);
                             btn_peek_partb_arrows.startAnimation(scaleIn);
-//                            YoYo.with(Techniques.SlideInUp)
-//                                    .duration(200)
-//                                    .playOn(btn_peek_partb);
                         }
-
-//                        YoYo.with(Techniques.SlideInRight)
-//                                .duration(200)
-//                                .playOn(btn_check_done);
-                        btn_check_done.show();
+                        fab_check_done.show();
                         break;
                 }
-
                 return true;
             }
         });
-
 
         // clicked on part a button
         btn_peek_parta.setOnTouchListener(new View.OnTouchListener() {
@@ -365,7 +277,9 @@ public class ThirdActivity extends AppCompatActivity {
                 if (enable_peek_a) {
                     switch (eventaction) {
                         case MotionEvent.ACTION_DOWN:
-                            getSupportActionBar().setTitle(str_parta_title);
+                            if (getSupportActionBar() != null) {
+                                getSupportActionBar().setTitle(str_parta_title);
+                            }
                             IV_peek_parta.setAlpha((float) 1.0);
                             IV_peek_parta_arrows.setAlpha((float) 1.0);
                             IV_problem_part.setAlpha((float) 0.0);
@@ -379,11 +293,13 @@ public class ThirdActivity extends AppCompatActivity {
                             btn_peek_probMain.startAnimation(scaleOut);
                             btn_peek_partb.startAnimation(scaleOut);
                             btn_peek_partb_arrows.startAnimation(scaleOut);
-                            btn_check_done.hide();
+                            fab_check_done.hide();
                             break;
 
                         case MotionEvent.ACTION_UP:
-                            getSupportActionBar().setTitle(str_toolbar_partCurrent_title);
+                            if (getSupportActionBar() != null) {
+                                getSupportActionBar().setTitle(str_toolbar_partCurrent_title);
+                            }
                             IV_peek_parta.setAlpha((float) 0.0);
                             IV_peek_parta_arrows.setAlpha((float) 0.0);
                             IV_problem_part.setAlpha((float) 1.0);
@@ -394,14 +310,13 @@ public class ThirdActivity extends AppCompatActivity {
                                 btn_peek_parta.setElevation(dpToPx(4));
                                 btn_peek_parta_arrows.setElevation(dpToPx(4));
                             }
-//                            btn_peek_probMain.setAlpha((float) 1.0);
 
                             btn_peek_probMain.startAnimation(scaleIn);
                             if (enable_peek_b) {
                                 btn_peek_partb.startAnimation(scaleIn);
                                 btn_peek_partb_arrows.startAnimation(scaleIn);
                             }
-                            btn_check_done.show();
+                            fab_check_done.show();
                             break;
                     }
                 }
@@ -418,8 +333,9 @@ public class ThirdActivity extends AppCompatActivity {
                 if (enable_peek_b) {
                     switch (eventaction) {
                         case MotionEvent.ACTION_DOWN:
-
-                            getSupportActionBar().setTitle(str_partb_title);
+                            if (getSupportActionBar() != null) {
+                                getSupportActionBar().setTitle(str_partb_title);
+                            }
                             IV_peek_partb.setAlpha((float) 1.0);
                             IV_peek_partb_arrows.setAlpha((float) 1.0);
                             IV_problem_part.setAlpha((float) 0.0);
@@ -433,12 +349,13 @@ public class ThirdActivity extends AppCompatActivity {
                             btn_peek_probMain.startAnimation(scaleOut);
                             btn_peek_parta.startAnimation(scaleOut);
                             btn_peek_parta_arrows.startAnimation(scaleOut);
-                            btn_check_done.hide();
-
+                            fab_check_done.hide();
                             break;
 
                         case MotionEvent.ACTION_UP:
-                            getSupportActionBar().setTitle(str_toolbar_partCurrent_title);
+                            if (getSupportActionBar() != null) {
+                                getSupportActionBar().setTitle(str_toolbar_partCurrent_title);
+                            }
                             IV_peek_partb.setAlpha((float) 0.0);
                             IV_peek_partb_arrows.setAlpha((float) 0.0);
                             IV_problem_part.setAlpha((float) 1.0);
@@ -452,15 +369,13 @@ public class ThirdActivity extends AppCompatActivity {
                             btn_peek_probMain.startAnimation(scaleIn);
                             btn_peek_parta.startAnimation(scaleIn);
                             btn_peek_parta_arrows.startAnimation(scaleIn);
-                            btn_check_done.show();
-
+                            fab_check_done.show();
                             break;
                     }
                 }
                 return true;
             }
         });
-
     }
 
     private void startPart() {
@@ -472,18 +387,14 @@ public class ThirdActivity extends AppCompatActivity {
 
         getEnablePeek();
 
-
         mDrawArrowsView = (DrawArrowsView) findViewById(R.id.idDrawArrowsView);
-
         mDrawArrowsView.setAlpha((float) 1.0);
 
         // load problem statement and part statement
         str_problem_statement = getResources().getStringArray(getResId("mainProblemStatement_" + "prob" + problem_number + "_part" + part_letter, R.array.class));
-
         str_part_statement = getResources().getStringArray(getResId("problemStatement_" + "prob" + problem_number + "_part" + part_letter, R.array.class));
         str_parta_statement = getResources().getStringArray(getResId("problemStatement_" + "prob" + problem_number + "_part" + "A", R.array.class));
         str_partb_statement = getResources().getStringArray(getResId("problemStatement_" + "prob" + problem_number + "_part" + "B", R.array.class));
-
 
         // converts to lower case
         part_letter = part_letter.toLowerCase();
@@ -493,13 +404,11 @@ public class ThirdActivity extends AppCompatActivity {
         str_partCurrent_file_name = "prob" + problem_number + "_part" + part_letter;
         str_parta_file_name = "prob" + problem_number + "_part" + "a";
         str_partb_file_name = "prob" + problem_number + "_part" + "b";
-        str_partc_file_name = "prob" + problem_number + "_part" + "c";
 
         str_probCurrent_file_name = "prob" + problem_number;
         str_toolbar_problem_title = "Problem #" + problem_number;
         str_parta_title = "#" + problem_number + " - Part " + "A";
         str_partb_title = "#" + problem_number + " - Part " + "B";
-        str_partc_title = "#" + problem_number + " - Part " + "C";
 
         // Sets text for problem statement
         tv_statement = (AutoResizeTextView) this.findViewById(R.id.tv_statement);
@@ -558,12 +467,13 @@ public class ThirdActivity extends AppCompatActivity {
                 .load(getResources().getIdentifier(str_partb_file_name, "drawable", getPackageName()))
                 .into(btn_peek_partb);
 
-
         // Sets toolbar title
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(str_toolbar_partCurrent_title);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(str_toolbar_partCurrent_title);
+        }
         // reloads peek images from files if activity destroyed and recreated
         insertPeekIfDestroyed();
 
@@ -612,11 +522,11 @@ public class ThirdActivity extends AppCompatActivity {
         }
     }
 
-
     @Override
     protected void onPause() {
         super.onPause();
 
+        // pauses timer
         paused_timer_time = SystemClock.elapsedRealtime();
         rc.stop();
 
@@ -629,7 +539,7 @@ public class ThirdActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-
+        // resumes timer
         if (rc != null) {
             rc.setPauseTimeOffset(SystemClock.elapsedRealtime() - paused_timer_time);
             rc.run();
@@ -643,23 +553,9 @@ public class ThirdActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         Log.d(TAG + "onDestroy", "Destroyed");
-//        RefWatcher refWatcher = ExampleApplication.getRefWatcher(ThirdActivity.this);
 
-// TODO remove this unbindDrawables if safe
+        // TODO remove this unbindDrawables if safe
         unbindDrawables(findViewById(R.id.relativeLayout_Main));
-
-//        if (refWatcher != null) {
-//            refWatcher.watch(this);
-////            refWatcher.watch(IV_peek, "IV_peek");
-//            refWatcher.watch(IV_peek_parta);
-//            refWatcher.watch(IV_peek_partb);
-//            refWatcher.watch(IV_peek_parta_arrows);
-//            refWatcher.watch(IV_peek_partb_arrows);
-//            refWatcher.watch(IV_peek_probMain_view);
-//            refWatcher.watch(bm_A);
-//            refWatcher.watch(bm_B);
-//        }
-
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -674,20 +570,12 @@ public class ThirdActivity extends AppCompatActivity {
         Explode explode = new Explode();
         explode.setDuration(250);
 
-////exclude toolbar
+        //exclude toolbar
         explode.excludeTarget(R.id.toolbar, true);
-//exclude status bar
+        //exclude status bar
         explode.excludeTarget(android.R.id.statusBarBackground, true);
-//exclude navigation bar
+        //exclude navigation bar
         explode.excludeTarget(android.R.id.navigationBarBackground, true);
-//
-////        explode.excludeTarget(MainActivity), true);
-
-//        getWindow();
-//        getWindow().setEnterTransition(explode);
-//        getWindow().setReturnTransition(explode);
-//        getWindow().setAllowEnterTransitionOverlap(false);
-//        getWindow().setAllowReturnTransitionOverlap(false);
     }
 
     private void setDialogArrowsCorrect() {
@@ -713,28 +601,19 @@ public class ThirdActivity extends AppCompatActivity {
             case "A":
                 previous_part_letter = tinydb.getString("part_letter");
                 tinydb.putString("part_letter", "B");
-
                 tinydb.putString("prob" + problem_number + "_part_letter", "B");
-
-//                tinydb.putString("part_letter_prob" + problem_number, "B");
-//                part_letter = "B";
                 asyncSaveToBitmapPartA.execute();
                 showDialogCorrectPartA();
                 break;
             case "B":
                 previous_part_letter = tinydb.getString("part_letter");
                 tinydb.putString("part_letter", "C");
-
                 tinydb.putString("prob" + problem_number + "_part_letter", "C");
-
-//                tinydb.putString("part_letter_prob" + problem_number, "C");
-//                part_letter = "C";
                 asyncSaveToBitmapPartB.execute();
                 showDialogCorrectPartB();
                 break;
             case "C":
                 tinydb.putString("prob" + problem_number + "_part_letter", "Done");
-//                tinydb.putBoolean("prob" + problem_number + "_completed", true);
 
                 if (problem_number == 3) {
                     tinydb.putBoolean("survey_allowed", true);
@@ -759,10 +638,6 @@ public class ThirdActivity extends AppCompatActivity {
                     showDialogCorrectSurvey();
 
                 } else {
-//                    previous_part_letter = tinydb.getString("part_letter");
-//                    tinydb.putString("part_letter", "A");
-//                part_letter = "A";
-
                     showDialogCorrectPartC();
                     break;
                 }
@@ -774,8 +649,7 @@ public class ThirdActivity extends AppCompatActivity {
         btn_peek_parta_arrows.startAnimation(scaleOut);
         btn_peek_partb.startAnimation(scaleOut);
         btn_peek_partb_arrows.startAnimation(scaleOut);
-        btn_check_done.hide();
-
+        fab_check_done.hide();
     }
 
     private void showDialogCorrectPartA() {
@@ -792,7 +666,7 @@ public class ThirdActivity extends AppCompatActivity {
                     @Override
                     public void onClick(MaterialDialog dialog, DialogAction which) {
                         mDrawArrowsView.setAlpha((float) 0.0);
-                        btn_check_done.show();
+                        fab_check_done.show();
 
                         // resets DrawArrowsView
                         mDrawArrowsView.resetForNextPart();
@@ -818,7 +692,7 @@ public class ThirdActivity extends AppCompatActivity {
                     @Override
                     public void onClick(MaterialDialog dialog, DialogAction which) {
                         mDrawArrowsView.setAlpha((float) 0.0);
-                        btn_check_done.show();
+                        fab_check_done.show();
 
                         // resets DrawArrowsView
                         mDrawArrowsView.resetForNextPart();
@@ -893,30 +767,12 @@ public class ThirdActivity extends AppCompatActivity {
                     @Override
                     public void onClick(MaterialDialog dialog, DialogAction which) {
 
-
                         String url = "https://goo.gl/forms/0wl3LGhqtNYC4oyA2";
-
-                        // CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
-//                CustomTabsIntent customTabsIntent = builder.build();
-//                customTabsIntent.launchUrl(MainActivity.this, Uri.parse(url));
 
                         Intent openSurveyUrl = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                         startActivity(openSurveyUrl);
-
-
-//                Intent openSurveyUrl= new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-//                startActivity(openSurveyUrl);
-
-                        mDrawArrowsView.setAlpha((float) 0.0);
-                        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(ThirdActivity.this);
-                        // TODO put logic in here so it knows how many problems there are
-                        tinydb.putBoolean("prob" + problem_number + "_completed", true);
-                        // put code here that redirects them to survey if they finish all 3 problems
-
-
-                        Intent mainIntent = new Intent(ThirdActivity.this, SecondActivity.class);
-                        startActivity(mainIntent, options.toBundle());
                         finish();
+
                     }
                 })
                 .setNegative("Main Menu", new MaterialDialog.SingleButtonCallback() {
@@ -928,7 +784,6 @@ public class ThirdActivity extends AppCompatActivity {
 
                         // TODO put logic in here so it knows how many problems there are instead of hard coding in 3
                         if (problem_number < 3) {
-                            tinydb.putBoolean("prob" + problem_number + "_completed", true);
                             Intent mainIntent = new Intent(ThirdActivity.this, MainActivity.class);
                             startActivity(mainIntent, options.toBundle());
                             finish();
@@ -936,8 +791,6 @@ public class ThirdActivity extends AppCompatActivity {
                     }
                 })
                 .show();
-
-
     }
 
     private void helpDialog() {
@@ -969,10 +822,6 @@ public class ThirdActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.third_menu, menu);
-//        Long tmpTime = tinydb.getLong("TotalForegroundTime", 0);
-//        if (tmpTime == 0) {
-//            tinydb.putLong("TotalForegroundTime", System.currentTimeMillis());
-//        }
         startTimer(menu);
         return super.onCreateOptionsMenu(menu);
     }
@@ -985,7 +834,6 @@ public class ThirdActivity extends AppCompatActivity {
         rc.setOverallDuration(2 * 600);
         rc.setWarningDuration(90);
         rc.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
-//        rc.setTextColor(Color.WHITE);
         rc.reset();
         rc.run();
     }
@@ -1069,7 +917,6 @@ public class ThirdActivity extends AppCompatActivity {
                 bm_A = cache.OpenBitmap(db_title_A);
                 bm_B = cache.OpenBitmap(db_title_B);
             }
-
             return resp;
         }
 
@@ -1101,7 +948,6 @@ public class ThirdActivity extends AppCompatActivity {
                     btn_peek_probMain.setAlpha((float) 1.0);
                 } else if (!tinydb.getString("part_letter").equals("A")) {
                     // shows appropriate peek buttons
-
                     btn_peek_probMain.startAnimation(scaleIn);
                     btn_peek_probMain.setAlpha((float) 1.0);
 
@@ -1133,23 +979,6 @@ public class ThirdActivity extends AppCompatActivity {
             }
         }, 750);
     }
-
-    private void updateTextView() {
-        pauseTime = System.currentTimeMillis();
-        long time_string = TimeUnit.MILLISECONDS.toSeconds(tinydb.getLong("TotalForegroundTime", 0) + (pauseTime - resumeTime));
-
-        long days = time_string / 86400;
-        long hours = (time_string % 86400) / 3600;
-        long minutes = ((time_string % 86400) % 3600) / 60;
-        long seconds = ((time_string % 86400) % 3600) % 60;
-
-        pauseTime = System.currentTimeMillis();
-
-        if (TV_time_display != null) {
-            TV_time_display.setText(String.format("%d:%02d:%02d", hours, minutes, seconds));
-        }
-    }
-
 
     private void unbindDrawables(View view) {
         if (view.getBackground() != null) {
@@ -1221,6 +1050,5 @@ public class ThirdActivity extends AppCompatActivity {
             clipboard.setPrimaryClip(clip);
         }
     }
-
 }
 

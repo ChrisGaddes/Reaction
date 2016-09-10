@@ -13,13 +13,13 @@
         android:id="@+id/time_display"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:elevation="24dp"
-        android:alpha="0.7"
-        android:textSize="20sp"
-        android:layout_margin="8dp"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_margin="8dp"
+        android:alpha="0.7"
+        android:elevation="24dp"
+        android:padding="5dp"
+        android:textSize="20sp" />
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBarLayout"
@@ -33,38 +33,37 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:elevation="8dp"
-            android:transitionGroup="false"
-            android:theme="@style/ToolBarStyle" />
+            android:theme="@style/ToolBarStyle"
+            android:transitionGroup="false" />
     </android.support.design.widget.AppBarLayout>
 
     <android.support.percent.PercentRelativeLayout
         android:id="@+id/id_third_activity"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"
         android:layout_alignParentBottom="true"
         android:layout_below="@id/appBarLayout"
         android:background="@color/material_light_white"
+        android:clipToPadding="false"
         android:outlineProvider="bounds">
 
 
         <RelativeLayout
             android:id="@+id/relativeLayout_Third"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-            app:layout_heightPercent="20%"
-                android:layout_alignParentTop="true"
-                android:elevation="8dp">
-
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_alignParentTop="true"
+            android:elevation="8dp"
+            app:layout_heightPercent="20%">
 
             <com.chrisgaddes.reaction.AutoResizeTextView
-                    android:id="@+id/tv_statement"
+                android:id="@+id/tv_statement"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:textSize="100sp"
-                android:paddingTop="10dp"
                 android:paddingLeft="16dp"
-                android:paddingRight="16dp" />
+                android:paddingRight="16dp"
+                android:paddingTop="10dp"
+                android:textSize="100sp" />
 
         </RelativeLayout>
 
@@ -73,8 +72,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/relativeLayout_Third"
-            android:clipChildren="false"
-            android:background="@color/transparent" />
+            android:background="@color/transparent"
+            android:clipChildren="false" />
 
         <com.chrisgaddes.reaction.DrawArrowsView
             android:id="@+id/idDrawArrowsView"
@@ -88,40 +87,40 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/relativeLayout_Third"
-            android:clipChildren="false"
-            android:background="@color/transparent" />
+            android:background="@color/transparent"
+            android:clipChildren="false" />
 
         <com.chrisgaddes.reaction.SquareImageView
             android:id="@+id/peek_parta"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/relativeLayout_Third"
-            android:clipChildren="false"
-            android:background="@color/transparent" />
+            android:background="@color/transparent"
+            android:clipChildren="false" />
 
         <com.chrisgaddes.reaction.SquareImageView
             android:id="@+id/peek_parta_arrows"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/relativeLayout_Third"
-            android:clipChildren="false"
-            android:background="@color/transparent" />
+            android:background="@color/transparent"
+            android:clipChildren="false" />
 
         <com.chrisgaddes.reaction.SquareImageView
             android:id="@+id/peek_partb"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/relativeLayout_Third"
-            android:clipChildren="false"
-            android:background="@color/transparent" />
+            android:background="@color/transparent"
+            android:clipChildren="false" />
 
         <com.chrisgaddes.reaction.SquareImageView
             android:id="@+id/peek_partb_arrows"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/relativeLayout_Third"
-            android:clipChildren="false"
-            android:background="@color/transparent" />
+            android:background="@color/transparent"
+            android:clipChildren="false" />
 
     </android.support.percent.PercentRelativeLayout>
 
@@ -138,66 +137,66 @@
             android:id="@+id/relativeLayout"
             android:layout_width="match_parent"
             android:layout_height="96dp"
-            android:elevation="12dp"
-            android:layout_gravity="bottom">
+            android:layout_gravity="bottom"
+            android:elevation="12dp">
 
             <com.chrisgaddes.reaction.SquareImageView
                 android:id="@+id/btn_peek_prob"
                 android:layout_width="56dp"
                 android:layout_height="match_parent"
-                android:elevation="4dp"
-                android:background="@color/material_light_white"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentLeft="true"
                 android:layout_marginBottom="20dp"
-                android:layout_marginLeft="20dp" />
+                android:layout_marginLeft="20dp"
+                android:background="@color/material_light_white"
+                android:elevation="4dp" />
 
             <com.chrisgaddes.reaction.SquareImageView
                 android:id="@+id/btn_peek_parta"
                 android:layout_width="56dp"
                 android:layout_height="match_parent"
-                android:elevation="4dp"
-                android:background="@color/material_light_white"
                 android:layout_alignParentBottom="true"
-                android:layout_toRightOf="@id/btn_peek_prob"
                 android:layout_marginBottom="20dp"
-                android:layout_marginLeft="20dp" />
+                android:layout_marginLeft="20dp"
+                android:layout_toRightOf="@id/btn_peek_prob"
+                android:background="@color/material_light_white"
+                android:elevation="4dp" />
 
             <com.chrisgaddes.reaction.SquareImageView
                 android:id="@+id/btn_peek_parta_arrows"
                 android:layout_width="56dp"
                 android:layout_height="match_parent"
-                android:elevation="4dp"
                 android:layout_alignParentBottom="true"
-                android:layout_toRightOf="@id/btn_peek_prob"
                 android:layout_marginBottom="20dp"
-                android:layout_marginLeft="20dp" />
+                android:layout_marginLeft="20dp"
+                android:layout_toRightOf="@id/btn_peek_prob"
+                android:elevation="4dp" />
 
             <com.chrisgaddes.reaction.SquareImageView
                 android:id="@+id/btn_peek_partb"
                 android:layout_width="56dp"
                 android:layout_height="match_parent"
-                android:elevation="4dp"
-                android:background="@color/material_light_white"
                 android:layout_alignParentBottom="true"
-                android:layout_toRightOf="@id/btn_peek_parta"
                 android:layout_marginBottom="20dp"
-                android:layout_marginLeft="20dp" />
+                android:layout_marginLeft="20dp"
+                android:layout_toRightOf="@id/btn_peek_parta"
+                android:background="@color/material_light_white"
+                android:elevation="4dp" />
 
             <com.chrisgaddes.reaction.SquareImageView
                 android:id="@+id/btn_peek_partb_arrows"
                 android:layout_width="56dp"
                 android:layout_height="match_parent"
-                android:elevation="4dp"
                 android:layout_alignParentBottom="true"
-                android:layout_toRightOf="@id/btn_peek_parta"
                 android:layout_marginBottom="20dp"
-                android:layout_marginLeft="20dp" />
+                android:layout_marginLeft="20dp"
+                android:layout_toRightOf="@id/btn_peek_parta"
+                android:elevation="4dp" />
 
         </RelativeLayout>
 
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/btn_check_done"
+            android:id="@+id/fab_check_done"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"

@@ -6,25 +6,19 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.Toolbar;
 import android.transition.Explode;
 import android.transition.Fade;
 import android.transition.Slide;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ScrollView;
@@ -36,13 +30,11 @@ import com.github.florent37.viewanimator.ViewAnimator;
 import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
 import com.github.javiersantos.materialstyleddialogs.enums.Style;
 
-import java.util.concurrent.TimeUnit;
-
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 
 public class MainActivity extends AppCompatActivity {
-
     private static final String TAG = "MainActivity";
+
     private TinyDB tinydb;
     private int problem_number;
     private String part_letter;
@@ -50,9 +42,6 @@ public class MainActivity extends AppCompatActivity {
     private long pauseTime;
     private long resumeTime;
     private long totalForgroundTime;
-
-    private Toolbar toolbar;
-    private boolean first_launch;
 
     private CardView card_load_prob1;
     private CardView card_load_prob2;
@@ -77,30 +66,12 @@ public class MainActivity extends AppCompatActivity {
     private ImageView image_prob2_lock;
     private ImageView image_prob3_lock;
 
-    private Animation slideUp;
-    private Animation slideDown;
-
-    private TextView TV_time_display;
-
-    private Handler mHandler = new Handler();
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-//        LeakCanary.install(getApplication());
-
-
         // loads tinydb database
         tinydb = new TinyDB(this);
-
-
-        // initializes part_letter on first run
-//        if (tinydb.getString("part_letter") == null) {
-//            tinydb.putString("part_letter", "A");
-//        }
 
         // checks if first run or upgrade
         checkFirstRun();
@@ -109,73 +80,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        TV_time_display = (TextView) findViewById(R.id.time_display);
-
-//        // Thread which updates timer
-//        Thread t = new Thread() {
-//
-//            @Override
-//            public void run() {
-//                try {
-//                    while (!isInterrupted()) {
-//                        Thread.sleep(100);
-//                        runOnUiThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                updateTextView();
-//                            }
-//                        });
-//                    }
-//                } catch (InterruptedException e) {
-//                }
-//            }
-//        };
-//        t.start();
-
         // enables overscroll animation like in IOS
         ScrollView scrollView = (ScrollView) findViewById(R.id.scrollview_main_activity);
         OverScrollDecoratorHelper.setUpOverScroll(scrollView);
 
-
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            View decor = getWindow().getDecorView();
-//            decor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-//        }
-//
-//        if (Build.VERSION.SDK_INT >= 21) {
-//            Window window = getWindow();
-//            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-//            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-//            window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryLight));
-//        }
-
-//        // Sets toolbar title
-//        toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-//        getSupportActionBar().setTitle("");
-
-
-//        reset_everything = (ImageButton) findViewById(R.id.reset_everything);
-//        reset_everything.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                resetEverything();
-//            }
-//        });
-
         card_choose_problem_below = (CardView) findViewById(R.id.card_choose_problem_below);
         card_choose_problem_below.setVisibility(View.VISIBLE);
-//        top_view.setVisibility(View.VISIBLE);
         card_choose_problem_below.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
             }
         });
 
-
         card_survey = (CardView) findViewById(R.id.card_survey);
         card_survey.setVisibility(View.GONE);
-//        top_view.setVisibility(View.VISIBLE);
         card_survey.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -205,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
 
                         .setNegative("no", new MaterialDialog.SingleButtonCallback() {
                                     @Override
-                                    public void onClick(MaterialDialog dialog, DialogAction which) {
+                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 
                                     }
                                 }
@@ -235,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
 
                         .setNegative("no", new MaterialDialog.SingleButtonCallback() {
                                     @Override
-                                    public void onClick(MaterialDialog dialog, DialogAction which) {
+                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 
                                     }
                                 }
@@ -336,10 +254,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        slideUp = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up);
-        slideDown = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_down);
-
-
+        // animates in the three problem cards
         ViewAnimator
                 .animate(card_load_prob1)
                 .dp().translationY(200, 0)
@@ -361,10 +276,10 @@ public class MainActivity extends AppCompatActivity {
                 .accelerate()
                 .start();
 
+        // makes the cards visible once animation has begun
         card_load_prob1.setVisibility(View.VISIBLE);
         card_load_prob2.setVisibility(View.VISIBLE);
         card_load_prob3.setVisibility(View.VISIBLE);
-
     }
 
     private void queryTakingCourse() {
@@ -385,7 +300,7 @@ public class MainActivity extends AppCompatActivity {
 
                 .setNegative("no", new MaterialDialog.SingleButtonCallback() {
                             @Override
-                            public void onClick(MaterialDialog dialog, DialogAction which) {
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 
                             }
                         }
@@ -409,7 +324,7 @@ public class MainActivity extends AppCompatActivity {
 
                 .setNegative("no", new MaterialDialog.SingleButtonCallback() {
                             @Override
-                            public void onClick(MaterialDialog dialog, DialogAction which) {
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 
                             }
                         }
@@ -497,23 +412,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent, options.toBundle());
     }
 
-    private void updateTextView() {
-        pauseTime = System.currentTimeMillis();
-        long time_string = TimeUnit.MILLISECONDS.toSeconds(tinydb.getLong("TotalForegroundTime", 0) + (pauseTime - resumeTime));
-
-        long days = time_string / 86400;
-        long hours = (time_string % 86400) / 3600;
-        long minutes = ((time_string % 86400) % 3600) / 60;
-        long seconds = ((time_string % 86400) % 3600) % 60;
-
-        pauseTime = System.currentTimeMillis();
-
-        if (TV_time_display != null) {
-            TV_time_display.setText(String.format("%d:%02d:%02d", hours, minutes, seconds));
-        }
-    }
-
-    // TODO fix this onPause on Stop nonsense
     @Override
     protected void onPause() {
         super.onPause();
@@ -522,108 +420,100 @@ public class MainActivity extends AppCompatActivity {
         tinydb.putLong("TotalForegroundTime", totalForgroundTime);
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
-
         //update foreground time
         resumeTime = System.currentTimeMillis();
-
         // sets various values for the cards such as subtitles and visibility of lock images
         setCardValues();
     }
 
     private void setCardValues() {
-        // TODO remove hardcoded problem number here
-
-
         String str = tinydb.getString("prob1_part_letter");
         if (tinydb.getString("prob1_part_letter").equals("Done")) {
-            subtitle_prob1.setText("Finished");
+            subtitle_prob1.setText(R.string.str_finished);
             btn_prob1_start.setVisibility(View.GONE);
             btn_prob1_startover.setVisibility(View.VISIBLE);
         } else if (str != null && !str.equals("")) {
             String text_to_set = "Working on Part " + tinydb.getString("prob1_part_letter");
             subtitle_prob1.setText(text_to_set);
-            btn_prob1_start.setText("Continue");
-        } else if (tinydb.getString("prob1_part_letter").equals("A") || str.equals("")) {
-            subtitle_prob1.setText("Click to start problem");
-            btn_prob1_startover.setVisibility(View.GONE);
-            btn_prob1_start.setText("Start");
+            btn_prob1_start.setText(R.string.str_continue);
+        } else {
+            assert str != null;
+            if (tinydb.getString("prob1_part_letter").equals("A") || str.equals("")) {
+                subtitle_prob1.setText(R.string.str_click_start_problem);
+                btn_prob1_startover.setVisibility(View.GONE);
+                btn_prob1_start.setText(R.string.str_start);
+            }
         }
 
         str = tinydb.getString("prob2_part_letter");
         if (tinydb.getString("prob2_part_letter").equals("Done")) {
-            subtitle_prob2.setText("Finished");
+            subtitle_prob2.setText(R.string.str_finished);
             btn_prob2_start.setVisibility(View.GONE);
             btn_prob2_startover.setVisibility(View.VISIBLE);
             image_prob2_lock.setVisibility(ImageView.GONE);
         } else if (str != null && !str.equals("")) {
             String text_to_set = "Working on Part " + tinydb.getString("prob2_part_letter");
             subtitle_prob2.setText(text_to_set);
-            btn_prob2_start.setText("Continue");
+            btn_prob2_start.setText(R.string.str_continue);
             image_prob2_lock.setVisibility(ImageView.GONE);
             btn_prob2_start.setVisibility(View.VISIBLE);
             btn_prob2_startover.setVisibility(View.VISIBLE);
         } else if (!tinydb.getBoolean("prob1_completed")) {
-            subtitle_prob2.setText("Locked");
+            subtitle_prob2.setText(R.string.str_locked);
             image_prob2_lock.setVisibility(ImageView.VISIBLE);
             btn_prob2_start.setVisibility(View.GONE);
             btn_prob2_startover.setVisibility(View.GONE);
-        } else if (tinydb.getString("prob2_part_letter").equals("A") || str.equals("")) {
-            subtitle_prob2.setText("Click to start problem");
-            btn_prob2_start.setText("Start");
-            image_prob2_lock.setVisibility(ImageView.GONE);
-            btn_prob2_startover.setVisibility(View.GONE);
-            btn_prob2_start.setVisibility(View.VISIBLE);
+        } else {
+            assert str != null;
+            if (tinydb.getString("prob2_part_letter").equals("A") || str.equals("")) {
+                subtitle_prob2.setText(R.string.str_click_start_problem);
+                btn_prob2_start.setText(R.string.str_start);
+                image_prob2_lock.setVisibility(ImageView.GONE);
+                btn_prob2_startover.setVisibility(View.GONE);
+                btn_prob2_start.setVisibility(View.VISIBLE);
+            }
         }
-
 
         str = tinydb.getString("prob3_part_letter");
         if (tinydb.getString("prob3_part_letter").equals("Done")) {
-            subtitle_prob3.setText("Finished");
+            subtitle_prob3.setText(R.string.str_finished);
             btn_prob3_start.setVisibility(View.GONE);
             btn_prob3_startover.setVisibility(View.VISIBLE);
             image_prob3_lock.setVisibility(ImageView.GONE);
         } else if (str != null && !str.equals("")) {
             String text_to_set = "Working on Part " + tinydb.getString("prob3_part_letter");
             subtitle_prob3.setText(text_to_set);
-            btn_prob3_start.setText("Continue");
+            btn_prob3_start.setText(R.string.str_continue);
             image_prob3_lock.setVisibility(ImageView.GONE);
             btn_prob3_start.setVisibility(View.VISIBLE);
             btn_prob3_startover.setVisibility(View.VISIBLE);
         } else if (!tinydb.getBoolean("prob2_completed")) {
-            subtitle_prob3.setText("Locked");
+            subtitle_prob3.setText(R.string.str_locked);
             image_prob3_lock.setVisibility(ImageView.VISIBLE);
             btn_prob3_start.setVisibility(View.GONE);
             btn_prob3_startover.setVisibility(View.GONE);
-        } else if (tinydb.getString("prob3_part_letter").equals("A") || str.equals("")) {
-            subtitle_prob3.setText("Click to start problem");
-            btn_prob3_start.setText("Start");
-            image_prob3_lock.setVisibility(ImageView.GONE);
-            btn_prob3_startover.setVisibility(View.GONE);
-            btn_prob3_start.setVisibility(View.VISIBLE);
+        } else {
+            assert str != null;
+            if (tinydb.getString("prob3_part_letter").equals("A") || str.equals("")) {
+                subtitle_prob3.setText(R.string.str_click_start_problem);
+                btn_prob3_start.setText(R.string.str_start);
+                image_prob3_lock.setVisibility(ImageView.GONE);
+                btn_prob3_startover.setVisibility(View.GONE);
+                btn_prob3_start.setVisibility(View.VISIBLE);
+            }
         }
-
 
         if (tinydb.getBoolean("survey_allowed")) {
             // sets survey button to visible
             card_survey.setVisibility(View.VISIBLE);
             card_reset_everything.setVisibility(View.VISIBLE);
-//            card_choose_problem_below.setVisibility(View.INVISIBLE);
         } else {
             card_survey.setVisibility(View.GONE);
             card_reset_everything.setVisibility(View.GONE);
         }
-
-
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG + "onDestroy", "Destroyed");
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -661,7 +551,6 @@ public class MainActivity extends AppCompatActivity {
         invalidateOptionsMenu();
 
         if (tmpTime == 0) {
-//            tinydb.getLong("TotalForegroundTime", 0) + (pauseTime - resumeTime);
             tinydb.putLong("TotalForegroundTime", 0);
         }
 
@@ -733,46 +622,6 @@ public class MainActivity extends AppCompatActivity {
         // Update the shared preferences with the current version code
         prefs.edit().putInt(PREF_VERSION_CODE_KEY, currentVersionCode).commit();
     }
-
-    private void fadeOutAndHideImage(final ImageView img) {
-        Animation fadeOut = new AlphaAnimation(1, 0);
-        fadeOut.setInterpolator(new AccelerateInterpolator());
-        fadeOut.setDuration(1000);
-
-        fadeOut.setAnimationListener(new Animation.AnimationListener() {
-            public void onAnimationEnd(Animation animation) {
-                img.setVisibility(View.GONE);
-            }
-
-            public void onAnimationRepeat(Animation animation) {
-            }
-
-            public void onAnimationStart(Animation animation) {
-            }
-        });
-
-        img.startAnimation(fadeOut);
-    }
-
-//    private void fadeInAndShowImage(final ImageView img) {
-//        Animation fadeIn = new AlphaAnimation(0, 1);
-//        fadeIn.setInterpolator(new AccelerateInterpolator());
-//        fadeIn.setDuration(1000);
-//
-//        fadeIn.setAnimationListener(new Animation.AnimationListener() {
-//            public void onAnimationEnd(Animation animation) {
-//            }
-//
-//            public void onAnimationRepeat(Animation animation) {
-//            }
-//
-//            public void onAnimationStart(Animation animation) {
-//                img.setVisibility(View.VISIBLE);
-//            }
-//        });
-//
-//        img.startAnimation(fadeIn);
-//    }
 
     private void setClipboard(String text) {
         if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {

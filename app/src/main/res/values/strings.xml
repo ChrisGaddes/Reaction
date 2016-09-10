@@ -66,6 +66,11 @@
     <string name="description_canteen_intro2" translatable="false">Order and we\'ll deliver the menu right in front of your door.</string>
     <string name="description_canteen_intro3" translatable="false">Bookmark a menu you wanted to save and keep track of its status whether it\'s available or not.</string>
     <string name="label_button_cta_canteen_intro" translatable="false">Get started</string>
+    <string name="str_finished">Finished</string>
+    <string name="str_locked">Locked</string>
+    <string name="str_continue">Continue</string>
+    <string name="str_start">Start</string>
+    <string name="str_click_start_problem">Click to start problem</string>
 
 
 </resources>
