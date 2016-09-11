@@ -18,7 +18,6 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ScrollView;
@@ -175,6 +174,7 @@ public class MainActivity extends AppCompatActivity {
         btn_prob1_startover.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                problem_number = 1;
                 showDialogStartover(1);
             }
         });
@@ -204,6 +204,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (tinydb.getBoolean("prob1_completed")) {
+                    problem_number = 2;
                     showDialogStartover(2);
                 } else {
                     problem_number = 3;
@@ -238,6 +239,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (tinydb.getBoolean("prob2_completed")) {
+                    problem_number = 3;
                     showDialogStartover(3);
                 } else {
                     int previous_prob_num = problem_number - 1;
@@ -342,6 +344,7 @@ public class MainActivity extends AppCompatActivity {
                 part_letter = "A";
                 tinydb.putString("prob" + problem_number + "_part_letter", part_letter);
                 tinydb.putString("part_letter", part_letter);
+                tinydb.putInt("problem_number", problem_number);
                 loadSecondActivity();
             } else if (tinydb.getString("prob" + problem_number + "_part_letter").equals("Done")) {
                 showDialogProblemAlreadyFinished(problem_number);
@@ -366,6 +369,7 @@ public class MainActivity extends AppCompatActivity {
                 part_letter = "A";
                 tinydb.putString("prob" + problem_number + "_part_letter", part_letter);
                 tinydb.putString("part_letter", part_letter);
+                tinydb.putInt("problem_number", problem_number);
                 loadSecondActivity();
             } else if (tinydb.getString("prob" + problem_number + "_part_letter").equals("Done")) {
                 showDialogProblemAlreadyFinished(problem_number);
@@ -390,6 +394,7 @@ public class MainActivity extends AppCompatActivity {
             part_letter = "A";
             tinydb.putString("prob" + problem_number + "_part_letter", part_letter);
             tinydb.putString("part_letter", part_letter);
+            tinydb.putInt("problem_number", problem_number);
             loadSecondActivity();
         } else if (tinydb.getString("prob" + problem_number + "_part_letter").equals("Done")) {
             showDialogProblemAlreadyFinished(problem_number);
@@ -401,6 +406,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadSecondActivity() {
+
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this);
         Intent intent = new Intent(MainActivity.this, SecondActivity.class);
         startActivity(intent, options.toBundle());
@@ -579,14 +585,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public View getActionBarView() {
-        Window window = getWindow();
-        View v = window.getDecorView();
-        int resId = getResources().getIdentifier("action_bar_container", "id", "android");
-        return v.findViewById(resId);
-    }
-
-
     private void checkFirstRun() {
         final String PREFS_NAME = "MyPrefsFile";
         final String PREF_VERSION_CODE_KEY = "version_code";
@@ -636,10 +634,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void resetEverything() {
 //        Snackbar.make(findViewById(R.id.main_activity_Relative_Layout), "App was reset successfully", Snackbar.LENGTH_LONG).show();
-//        tinydb.clear();
-//        resumeTime = System.currentTimeMillis();
-//        tinydb = new TinyDB(this);
-//        setCardValues();
+        tinydb.clear();
+        resumeTime = System.currentTimeMillis();
+        tinydb = new TinyDB(this);
+        setCardValues();
+
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this);
+        Intent intent = new Intent(MainActivity.this, CanteenIntroActivity.class);
+        startActivity(intent, options.toBundle());
     }
 
     private void showDialogProblemAlreadyFinished(final int mproblem_number) {
@@ -655,7 +657,6 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(MaterialDialog dialog, DialogAction which) {
                         part_letter = "A";
                         tinydb.putString("prob" + mproblem_number + "_part_letter", part_letter);
-//                        tinydb.putString("part_letter_prob" + mproblem_number, part_letter);
                         loadSecondActivity();
                     }
                 })
@@ -681,8 +682,10 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(MaterialDialog dialog, DialogAction which) {
                         part_letter = "A";
+                        problem_number = mproblem_number;
                         tinydb.putString("part_letter", part_letter);
                         tinydb.putString("prob" + mproblem_number + "_part_letter", part_letter);
+                        tinydb.putInt("problem_number", problem_number);
 //                        tinydb.putString("part_letter_prob" + mproblem_number, part_letter);
                         loadSecondActivity();
                     }

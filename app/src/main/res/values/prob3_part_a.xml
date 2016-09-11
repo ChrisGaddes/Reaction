@@ -3,12 +3,12 @@
 
     <!--Main Problem Statement-->
     <string-array name="mainProblemStatement_prob3_partA">
-        <item>The cantilevered beam is fixed to the wall at point A and is connected to member BC with a pin. Member BC is connected to rocker at point C with a pin as shown. The distributed load, w, is applied across the top surface of member BC as shown. Force, F, is applied to the top of member AB at the point shown.  Draw the free-body diagram of a) member BC and the rocker b) member AB c) and both members and the rocker. Assume all members are massless and neglect friction.</item>
+        <item>The cantilevered beam is fixed to the wall at point A and is connected to member BC with a pin. Member BC is supported by a rocker at point C . Member AB has an applied force (F) and Member BC has a distributed load (w) as shown.  Draw the free-body diagram of a) member BC and the rocker, b) member AB, and c) the whole system. Assume all members are massless.  Neglect friction.  Reference the image below for parts a, b, and c. Recall that new diagrams are dependent on previous diagrams and reference them as needed.</item>
     </string-array>
 
     <!--Part Problem Statement-->
     <string-array name="problemStatement_prob3_partA">
-        <item>Draw the appropriate free-body diagram of the highlighted system which includes member BC, the rocker, and the pin at point C but NOT the pin at point B.</item>
+        <item>Draw the free-body diagram of the highlighted system which includes member BC, the rocker, and the pin at point C, but NOT the pin at point B.</item>
     </string-array>
 
     <!--Number of Buttons-->

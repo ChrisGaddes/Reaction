@@ -3,7 +3,7 @@
 
     <!--Main Problem Statement-->
     <string-array name="mainProblemStatement_prob1_partC">
-        <item>The lever with the red handle is pin supported at C and connected to a short link AB as shown. Draw the free-body diagram of a) the whole system b) member AB and c) the handle. Assume all members are massless. Neglect friction.</item>
+        <item>The lever with the red handle is pin supported at C and connected to a short link AB as shown. Draw the free-body diagram of a) the whole system, b) member AB, and c) the handle. Assume all members are massless. Neglect friction. Reference the image below for parts a, b, and c. Recall that new diagrams are dependent on previous diagrams and reference them as needed. </item>
     </string-array>
 
     <!--Part Problem Statement-->
