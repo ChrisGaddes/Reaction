@@ -20,11 +20,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".MainIntroActivity"
             android:screenOrientation="portrait"
@@ -43,6 +41,9 @@
         <activity
             android:name=".CanteenIntroActivity"
             android:screenOrientation="portrait" />
+        <activity android:name=".HelpActivity">
+
+        </activity>
     </application>
 
 </manifest>

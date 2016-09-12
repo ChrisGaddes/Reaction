@@ -29,10 +29,8 @@ import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
 import com.github.javiersantos.materialstyleddialogs.enums.Style;
 
 import co.mobiwise.materialintro.MaterialIntroConfiguration;
-import co.mobiwise.materialintro.animation.MaterialIntroListener;
 import co.mobiwise.materialintro.shape.Focus;
 import co.mobiwise.materialintro.shape.FocusGravity;
-import co.mobiwise.materialintro.view.MaterialIntroView;
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 
 public class MainActivity extends AppCompatActivity {
@@ -454,24 +452,24 @@ public class MainActivity extends AppCompatActivity {
         // sets various values for the cards such as subtitles and visibility of lock images
         setCardValues();
 
-        new MaterialIntroView.Builder(this)
-//                .enableDotAnimation(true)
-                .enableIcon(false)
-                .setFocusGravity(FocusGravity.CENTER)
-                .setFocusType(Focus.ALL)
-                .setDelayMillis(500)
-//                .enableFadeAnimation(true)
-                .setInfoText("Hi There! Welcome to Reaction!\nClick here to start Problem 1.")
-                .setTarget(findViewById(R.id.btn_prob1_start))
-                .setUsageId("IntroMainAct1_" + tinydb.getString("ID_IntroView"))
-//                .setConfiguration(matIntroConfig)
-                .setListener(new MaterialIntroListener() {
-                    @Override
-                    public void onUserClicked(String materialIntroViewId) {
-                        card_load_prob1.performClick();
-                    }
-                })//THIS SHOULD BE UNIQUE ID
-                .show();
+//        new MaterialIntroView.Builder(this)
+////                .enableDotAnimation(true)
+//                .enableIcon(false)
+//                .setFocusGravity(FocusGravity.CENTER)
+//                .setFocusType(Focus.ALL)
+//                .setDelayMillis(500)
+////                .enableFadeAnimation(true)
+//                .setInfoText("Hi There! Welcome to Reaction!\nClick here to start Problem 1.")
+//                .setTarget(findViewById(R.id.btn_prob1_start))
+//                .setUsageId("IntroMainAct1_" + tinydb.getString("ID_IntroView"))
+////                .setConfiguration(matIntroConfig)
+//                .setListener(new MaterialIntroListener() {
+//                    @Override
+//                    public void onUserClicked(String materialIntroViewId) {
+//                        card_load_prob1.performClick();
+//                    }
+//                })//THIS SHOULD BE UNIQUE ID
+//                .show();
 
     }
 
@@ -687,7 +685,7 @@ public class MainActivity extends AppCompatActivity {
         scrollview_main_activity.fullScroll(ScrollView.FOCUS_UP);
 
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this);
-        Intent intent = new Intent(MainActivity.this, CanteenIntroActivity.class);
+        Intent intent = new Intent(MainActivity.this, HelpActivity.class);
         startActivity(intent, options.toBundle());
     }
 
