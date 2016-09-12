@@ -38,9 +38,6 @@ public class CanteenIntroActivity extends IntroActivity {
                 .layout(R.layout.slide_canteen)
                 .build());
 
-//        Glide.with(image.getContext()).load(R.drawable.giphy).placeholder(R.drawable.loading_placeholder).into(image);
-
-
         addSlide(new SimpleSlide.Builder()
                 .title("Mobile")
                 .description("Practice Free-body Diagrams on the go!")

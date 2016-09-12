@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -22,6 +23,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -80,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
         setupWindowAnimations();
         setContentView(R.layout.activity_main);
 
-
         // enables overscroll animation like in IOS
         ScrollView scrollView = (ScrollView) findViewById(R.id.scrollview_main_activity);
         OverScrollDecoratorHelper.setUpOverScroll(scrollView);
@@ -94,12 +95,14 @@ public class MainActivity extends AppCompatActivity {
         });
 
         card_survey = (CardView) findViewById(R.id.card_survey);
-        card_survey.setVisibility(View.GONE);
+        card_survey.setVisibility(View.VISIBLE);
         card_survey.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                showSurveyPrompt();
                 // asks if student is taking MECH 2110 Statics and Dynamics at Auburn University
-                queryTakingCourse();
+//                queryTakingCourse();
             }
         });
 
@@ -328,27 +331,49 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showSurveyPrompt() {
+
+        pauseTime = System.currentTimeMillis();
+        totalForgroundTime = tinydb.getLong("TotalForegroundTime", 0) + (pauseTime - resumeTime);
+        tinydb.putLong("TotalForegroundTime", totalForgroundTime);
+
+        // sets finish time value to Clipboard
+        String stringYouExtracted = Long.toString(totalForgroundTime);
+        setClipboard(stringYouExtracted);
+
+
+        Toast.makeText(MainActivity.this, "Copied time: " + stringYouExtracted + " Milliseconds to clipboard ", Toast.LENGTH_SHORT).show();
+
         new MaterialStyledDialog(MainActivity.this)
-                .setTitle("Extra credit!")
-                .setDescription("Are you an Auburn student taking Statics & Dynamics (MECH 2110)? ")
+                .setTitle(stringYouExtracted + " milliseconds")
+                .setDescription("The total time you have used this app is " + stringYouExtracted + " milliseconds. This time been copied to your clipboard. Please paste it into the survey as directed.")
                 .setIcon(R.drawable.ic_spellcheck)
                 .setStyle(Style.HEADER_WITH_ICON)
                 .setScrollable(true)
-                .setCancelable(true)
-                .setPositive("yes", new MaterialDialog.SingleButtonCallback() {
+//                .setCancelable(true)
+                .setPositive("Take Survey", new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(MaterialDialog dialog, DialogAction which) {
 //                        resetEverything();
+
+
+                        String url = "https://goo.gl/forms/0wl3LGhqtNYC4oyA2";
+
+                        Intent openSurveyUrl = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                        startActivity(openSurveyUrl);
+                        finish();
+
                     }
                 })
 
-                .setNegative("no", new MaterialDialog.SingleButtonCallback() {
-                            @Override
-                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+//                .setNegative("I'll do it later", new MaterialDialog.SingleButtonCallback() {
+//                            @Override
+//                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+//
+//                            }
+//                        }
+//                )
 
-                            }
-                        }
-                ).show();
+                .show();
     }
 
     private void clickLoadProb3() {
@@ -555,7 +580,7 @@ public class MainActivity extends AppCompatActivity {
             card_survey.setVisibility(View.VISIBLE);
             card_reset_everything.setVisibility(View.VISIBLE);
         } else {
-            card_survey.setVisibility(View.GONE);
+            card_survey.setVisibility(View.VISIBLE);
             card_reset_everything.setVisibility(View.GONE);
         }
     }
