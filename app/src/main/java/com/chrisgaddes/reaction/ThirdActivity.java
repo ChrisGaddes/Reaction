@@ -890,7 +890,9 @@ public class ThirdActivity extends AppCompatActivity {
     }
 
     private void helpDialog() {
-
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(ThirdActivity.this);
+        Intent intent = new Intent(ThirdActivity.this, HelpActivity.class);
+        startActivity(intent, options.toBundle());
 
     }
 

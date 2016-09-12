@@ -31,7 +31,7 @@ public class HelpActivity extends IntroActivity {
         }
 
         addSlide(new SimpleSlide.Builder()
-                .title("Welcome to Reaction")
+                .title("Tutorial")
                 .description("Swipe to get started")
                 .image(R.drawable.ic_launcher_large)
                 .background(R.color.color_canteen)
@@ -40,13 +40,14 @@ public class HelpActivity extends IntroActivity {
                 .build());
 
         addSlide(new SimpleSlide.Builder()
-                .title("Mobile")
-                .description("Practice Free-body Diagrams on the go!")
+                .title("Add Forces")
+                .description("Tap and drag at points to add forces.")
                 .image(R.drawable.prob1)
                 .background(R.color.color_canteen)
                 .backgroundDark(R.color.color_dark_canteen)
                 .layout(R.layout.slide_canteen)
                 .build());
+
 
 //        autoplay(2500, INFINITE);
 

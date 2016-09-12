@@ -22,6 +22,7 @@
         tools:ignore="ContentDescription"
         tools:src="@android:drawable/sym_action_call" />
 
+
     <TextView
         android:id="@id/mi_title"
         android:layout_width="match_parent"

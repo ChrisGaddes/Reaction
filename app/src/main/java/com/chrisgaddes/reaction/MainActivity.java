@@ -710,7 +710,7 @@ public class MainActivity extends AppCompatActivity {
         scrollview_main_activity.fullScroll(ScrollView.FOCUS_UP);
 
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this);
-        Intent intent = new Intent(MainActivity.this, HelpActivity.class);
+        Intent intent = new Intent(MainActivity.this, CanteenIntroActivity.class);
         startActivity(intent, options.toBundle());
     }
 

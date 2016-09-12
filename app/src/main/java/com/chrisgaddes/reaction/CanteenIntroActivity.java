@@ -7,6 +7,7 @@ import android.text.Spanned;
 import android.text.style.TypefaceSpan;
 
 import com.heinrichreimersoftware.materialintro.app.IntroActivity;
+import com.heinrichreimersoftware.materialintro.slide.FragmentSlide;
 import com.heinrichreimersoftware.materialintro.slide.SimpleSlide;
 
 public class CanteenIntroActivity extends IntroActivity {
@@ -33,8 +34,8 @@ public class CanteenIntroActivity extends IntroActivity {
                 .title("Welcome to Reaction")
                 .description("Swipe to get started")
                 .image(R.drawable.ic_launcher_large)
-                .background(R.color.color_canteen)
-                .backgroundDark(R.color.color_dark_canteen)
+                .background(R.color.material_light_white)
+                .backgroundDark(R.color.material_light_white)
                 .layout(R.layout.slide_canteen)
                 .build());
 
@@ -42,9 +43,15 @@ public class CanteenIntroActivity extends IntroActivity {
                 .title("Mobile")
                 .description("Practice Free-body Diagrams on the go!")
                 .image(R.drawable.prob1)
-                .background(R.color.color_canteen)
-                .backgroundDark(R.color.color_dark_canteen)
+                .background(R.color.material_light_white)
+                .backgroundDark(R.color.material_light_white)
                 .layout(R.layout.slide_canteen)
+                .build());
+
+        addSlide(new FragmentSlide.Builder()
+                .background(R.color.material_light_white)
+                .backgroundDark(R.color.material_light_white)
+                .fragment(R.layout.gif_layout, R.style.Theme_Intro)
                 .build());
 
 //        autoplay(2500, INFINITE);
