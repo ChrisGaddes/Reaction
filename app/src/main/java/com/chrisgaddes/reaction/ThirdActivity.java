@@ -46,6 +46,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.lang.reflect.Field;
 
+import co.mobiwise.materialintro.animation.MaterialIntroListener;
+import co.mobiwise.materialintro.shape.Focus;
+import co.mobiwise.materialintro.shape.FocusGravity;
+import co.mobiwise.materialintro.view.MaterialIntroView;
+
 public class ThirdActivity extends AppCompatActivity {
     private static final String TAG = "ThirdActivity";
 
@@ -376,7 +381,11 @@ public class ThirdActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        // starts showcase views
+
     }
+
 
     private void startPart() {
 
@@ -478,6 +487,93 @@ public class ThirdActivity extends AppCompatActivity {
         insertPeekIfDestroyed();
 
         showPeekImages();
+
+//
+    }
+
+    private void showIntro1() {
+        new MaterialIntroView.Builder(this)
+//                .enableDotAnimation(true)
+                .enableIcon(false)
+                .setFocusGravity(FocusGravity.CENTER)
+                .setFocusType(Focus.ALL)
+                .setDelayMillis(500)
+                .enableFadeAnimation(true)
+                .setInfoText("This is the statement for part A of Problem 1. Read this carefully and click to continue.")
+                .setTarget(findViewById(R.id.tv_statement))
+                .setUsageId("IntroThirdAct1_" + tinydb.getString("ID_IntroView"))
+//                .setConfiguration(matIntroConfig)
+                .setListener(new MaterialIntroListener() {
+                    @Override
+                    public void onUserClicked(String materialIntroViewId) {
+                        showIntro2();
+                    }
+                })//THIS SHOULD BE UNIQUE ID
+                .show();
+    }
+
+    private void showIntro2() {
+        new MaterialIntroView.Builder(this)
+//                .enableDotAnimation(true)
+                .enableIcon(false)
+                .setFocusGravity(FocusGravity.CENTER)
+                .setFocusType(Focus.ALL)
+                .setDelayMillis(500)
+                .enableFadeAnimation(true)
+                .setInfoText("In a few moments, this is where you will draw the free body diagram of the highlighted member AB")
+                .setTarget(findViewById(R.id.problem_part))
+                .setUsageId("IntroThirdAct2_" + tinydb.getString("ID_IntroView"))
+//                .setConfiguration(matIntroConfig)
+                .setListener(new MaterialIntroListener() {
+                    @Override
+                    public void onUserClicked(String materialIntroViewId) {
+                        showIntro3();
+                    }
+                })//THIS SHOULD BE UNIQUE ID
+                .show();
+    }
+
+    private void showIntro3() {
+        new MaterialIntroView.Builder(this)
+//                .enableDotAnimation(true)
+                .enableIcon(false)
+                .setFocusGravity(FocusGravity.CENTER)
+                .setFocusType(Focus.ALL)
+//                .setDelayMillis(500)
+                .enableFadeAnimation(true)
+                .setInfoText("Before you start drawing, click here for a quick tutorial")
+                .setTarget(findViewById(R.id.action_help))
+                .setUsageId("IntroThirdAct3_" + tinydb.getString("ID_IntroView"))
+//                .setConfiguration(matIntroConfig)
+                .setListener(new MaterialIntroListener() {
+                    @Override
+                    public void onUserClicked(String materialIntroViewId) {
+                        findViewById(R.id.action_help).performClick();
+// showIntro3();
+                    }
+                })//THIS SHOULD BE UNIQUE ID
+                .show();
+    }
+
+    private void showIntro4() {
+        new MaterialIntroView.Builder(this)
+//                .enableDotAnimation(true)
+                .enableIcon(false)
+                .setFocusGravity(FocusGravity.CENTER)
+                .setFocusType(Focus.ALL)
+//                .setDelayMillis(500)
+                .enableFadeAnimation(true)
+                .setInfoText("Click here to start part A")
+                .setTarget(findViewById(R.id.btn_start_part))
+                .setUsageId("IntroThirdAct4_" + tinydb.getString("ID_IntroView"))
+//                .setConfiguration(matIntroConfig)
+                .setListener(new MaterialIntroListener() {
+                    @Override
+                    public void onUserClicked(String materialIntroViewId) {
+//                        btn_start_part.performClick();
+                    }
+                })//THIS SHOULD BE UNIQUE ID
+                .show();
     }
 
     private void insertPeekIfDestroyed() {
@@ -823,6 +919,8 @@ public class ThirdActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.third_menu, menu);
         startTimer(menu);
+        showIntro1();
+
         return super.onCreateOptionsMenu(menu);
     }
 

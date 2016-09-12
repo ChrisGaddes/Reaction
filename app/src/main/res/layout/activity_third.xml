@@ -9,18 +9,6 @@
     android:clipToPadding="false"
     android:outlineProvider="bounds">
 
-    <TextView
-        android:id="@+id/time_display"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="8dp"
-        android:alpha="0.7"
-        android:elevation="24dp"
-        android:padding="5dp"
-        android:textSize="20sp" />
-
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"

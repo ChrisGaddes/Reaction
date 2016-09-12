@@ -7,8 +7,6 @@
     tools:context="com.chrisgaddes.reaction.SecondActivity"
     android:id="@+id/relativeLayout_Second">
 
-
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -25,10 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize" />
 
-
     </android.support.design.widget.AppBarLayout>
-
-
         <android.support.percent.PercentRelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -54,7 +49,6 @@
                     android:paddingTop="10dp"
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp" />
-
             </RelativeLayout>
 
             <ImageView
@@ -82,19 +76,5 @@
             android:src="@drawable/ic_send"
             android:transitionGroup="false" />
     </android.support.design.widget.CoordinatorLayout>
-
-    <TextView
-        android:id="@+id/time_display"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:elevation="24dp"
-        android:alpha="0.0"
-        android:textSize="20sp"
-        android:layout_margin="8dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:background="@color/material_orange_600" />
-
 
 </RelativeLayout>

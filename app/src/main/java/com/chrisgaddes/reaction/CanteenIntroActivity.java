@@ -48,51 +48,6 @@ public class CanteenIntroActivity extends IntroActivity {
                 .layout(R.layout.slide_canteen)
                 .build());
 
-        addSlide(new SimpleSlide.Builder()
-                .title("Touch and drag")
-                .description("Tap on appropriate locations and drag outward to create force arrows")
-                .image(R.drawable.prob1)
-                .background(R.color.color_canteen)
-                .backgroundDark(R.color.color_dark_canteen)
-                .layout(R.layout.slide_canteen)
-                .build());
-
-        addSlide(new SimpleSlide.Builder()
-                .title("Instant Feedback")
-                .description("Correctly placed arrows turn from grey to black")
-                .image(R.drawable.art_canteen_intro3)
-                .background(R.color.color_canteen)
-                .backgroundDark(R.color.color_dark_canteen)
-                .layout(R.layout.slide_canteen)
-                .build());
-
-        addSlide(new SimpleSlide.Builder()
-                .title("Add Forces")
-                .description("Swipe and drag to create force arrows")
-                .image(R.drawable.art_canteen_intro3)
-                .background(R.color.color_canteen)
-                .backgroundDark(R.color.color_dark_canteen)
-                .layout(R.layout.slide_canteen)
-                .build());
-
-        addSlide(new SimpleSlide.Builder()
-                .title("Add Moments")
-                .description("Long press to create mohoments")
-                .image(R.drawable.art_canteen_intro3)
-                .background(R.color.color_canteen)
-                .backgroundDark(R.color.color_dark_canteen)
-                .layout(R.layout.slide_canteen)
-                .build());
-
-        addSlide(new SimpleSlide.Builder()
-                .title(R.string.title_canteen_intro3)
-                .description(R.string.description_canteen_intro3)
-                .image(R.drawable.art_canteen_intro3)
-                .background(R.color.color_canteen)
-                .backgroundDark(R.color.color_dark_canteen)
-                .layout(R.layout.slide_canteen)
-                .build());
-
 //        autoplay(2500, INFINITE);
     }
 

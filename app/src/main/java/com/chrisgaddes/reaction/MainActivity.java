@@ -25,10 +25,14 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.github.florent37.viewanimator.ViewAnimator;
 import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
 import com.github.javiersantos.materialstyleddialogs.enums.Style;
 
+import co.mobiwise.materialintro.MaterialIntroConfiguration;
+import co.mobiwise.materialintro.animation.MaterialIntroListener;
+import co.mobiwise.materialintro.shape.Focus;
+import co.mobiwise.materialintro.shape.FocusGravity;
+import co.mobiwise.materialintro.view.MaterialIntroView;
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 
 public class MainActivity extends AppCompatActivity {
@@ -244,7 +248,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     int previous_prob_num = problem_number - 1;
                     Snackbar.make(findViewById(R.id.main_activity_Relative_Layout), "Problem " + problem_number + " is locked. Complete problem " + previous_prob_num + " first.", Snackbar.LENGTH_LONG).show();
-                    }
+                }
             }
         });
 
@@ -256,32 +260,48 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // animates in the three problem cards
-        ViewAnimator
-                .animate(card_load_prob1)
-                .dp().translationY(200, 0)
-                .duration(500)
-                .accelerate()
-                .start();
-
-        ViewAnimator
-                .animate(card_load_prob2)
-                .dp().translationY(250, 0)
-                .duration(500)
-                .accelerate()
-                .start();
-
-        ViewAnimator
-                .animate(card_load_prob3)
-                .dp().translationY(300, 0)
-                .duration(500)
-                .accelerate()
-                .start();
+//        // animates in the three problem cards
+//        ViewAnimator
+//                .animate(card_load_prob1)
+//                .dp().translationY(200, 0)
+//                .duration(500)
+//                .accelerate()
+//                .start();
+//
+//        ViewAnimator
+//                .animate(card_load_prob2)
+//                .dp().translationY(250, 0)
+//                .duration(500)
+//                .accelerate()
+//                .start();
+//
+//        ViewAnimator
+//                .animate(card_load_prob3)
+//                .dp().translationY(300, 0)
+//                .duration(500)
+//                .accelerate()
+//                .start();
 
         // makes the cards visible once animation has begun
         card_load_prob1.setVisibility(View.VISIBLE);
         card_load_prob2.setVisibility(View.VISIBLE);
         card_load_prob3.setVisibility(View.VISIBLE);
+
+
+        //Global config instance to not write same config to builder again and again.
+        MaterialIntroConfiguration matIntroConfig = new MaterialIntroConfiguration();
+        matIntroConfig.setDelayMillis(1000);
+        matIntroConfig.setFadeAnimationEnabled(true);
+        matIntroConfig.setFocusGravity(FocusGravity.CENTER);
+        matIntroConfig.setFocusType(Focus.MINIMUM);
+        matIntroConfig.setDelayMillis(500);
+
+
+        // TODO: Fix this so it resets on sharedpreference wipe
+//        Random r = new Random();
+//        int i1 = r.nextInt();
+
+
     }
 
     private void queryTakingCourse() {
@@ -433,6 +453,26 @@ public class MainActivity extends AppCompatActivity {
         resumeTime = System.currentTimeMillis();
         // sets various values for the cards such as subtitles and visibility of lock images
         setCardValues();
+
+        new MaterialIntroView.Builder(this)
+//                .enableDotAnimation(true)
+                .enableIcon(false)
+                .setFocusGravity(FocusGravity.CENTER)
+                .setFocusType(Focus.ALL)
+                .setDelayMillis(500)
+//                .enableFadeAnimation(true)
+                .setInfoText("Hi There! Welcome to Reaction!\nClick here to start Problem 1.")
+                .setTarget(findViewById(R.id.btn_prob1_start))
+                .setUsageId("IntroMainAct1_" + tinydb.getString("ID_IntroView"))
+//                .setConfiguration(matIntroConfig)
+                .setListener(new MaterialIntroListener() {
+                    @Override
+                    public void onUserClicked(String materialIntroViewId) {
+                        card_load_prob1.performClick();
+                    }
+                })//THIS SHOULD BE UNIQUE ID
+                .show();
+
     }
 
     private void setCardValues() {
@@ -607,6 +647,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         } else if (savedVersionCode == DOESNT_EXIST) {
             tinydb.putBoolean("key_first_launch", true);
+            tinydb.putString("ID_IntroView", String.valueOf(System.currentTimeMillis()));
             ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this);
             Intent intent = new Intent(MainActivity.this, CanteenIntroActivity.class);
             startActivity(intent, options.toBundle());
@@ -637,7 +678,13 @@ public class MainActivity extends AppCompatActivity {
         tinydb.clear();
         resumeTime = System.currentTimeMillis();
         tinydb = new TinyDB(this);
+        tinydb.putString("ID_IntroView", String.valueOf(System.currentTimeMillis()));
         setCardValues();
+
+        ScrollView scrollview_main_activity = (ScrollView) findViewById(R.id.scrollview_main_activity);
+
+        //scrolls to top
+        scrollview_main_activity.fullScroll(ScrollView.FOCUS_UP);
 
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this);
         Intent intent = new Intent(MainActivity.this, CanteenIntroActivity.class);

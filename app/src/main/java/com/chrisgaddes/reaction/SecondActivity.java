@@ -27,6 +27,11 @@ import com.github.javiersantos.materialstyleddialogs.enums.Style;
 
 import java.lang.reflect.Field;
 
+import co.mobiwise.materialintro.animation.MaterialIntroListener;
+import co.mobiwise.materialintro.shape.Focus;
+import co.mobiwise.materialintro.shape.FocusGravity;
+import co.mobiwise.materialintro.view.MaterialIntroView;
+
 public class SecondActivity extends AppCompatActivity {
 
     private static final String TAG = "SecondActivity";
@@ -55,7 +60,7 @@ public class SecondActivity extends AppCompatActivity {
         setupWindowAnimations();
         setContentView(R.layout.activity_second);
 
-        TV_time_display = (TextView) findViewById(R.id.time_display);
+
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         // Initializes database
@@ -118,6 +123,71 @@ public class SecondActivity extends AppCompatActivity {
                 btn_start_part.show();
             }
         }, 350);
+
+
+    }
+
+    private void showIntro1() {
+        new MaterialIntroView.Builder(this)
+//                .enableDotAnimation(true)
+                .enableIcon(false)
+                .setFocusGravity(FocusGravity.CENTER)
+                .setFocusType(Focus.ALL)
+                .setDelayMillis(500)
+                .enableFadeAnimation(true)
+                .setInfoText("This is the main problem statement for Problem 1. Read it carefully and then click to continue.")
+                .setTarget(findViewById(R.id.tv_problem_statement2))
+                .setUsageId("IntroSecondAct1_" + tinydb.getString("ID_IntroView"))
+//                .setConfiguration(matIntroConfig)
+                .setListener(new MaterialIntroListener() {
+                    @Override
+                    public void onUserClicked(String materialIntroViewId) {
+                        showIntro2();
+                    }
+                })//THIS SHOULD BE UNIQUE ID
+                .show();
+    }
+
+    private void showIntro2() {
+        new MaterialIntroView.Builder(this)
+//                .enableDotAnimation(true)
+                .enableIcon(false)
+                .setFocusGravity(FocusGravity.CENTER)
+                .setFocusType(Focus.ALL)
+//                .setDelayMillis(500)
+                .enableFadeAnimation(true)
+                .setInfoText("This is the main problem diagram of the whole mechanical system. You will be able to reference it later as needed. Click to continue.")
+                .setTarget(findViewById(R.id.problem))
+                .setUsageId("IntroSecondAct2_" + tinydb.getString("ID_IntroView"))
+//                .setConfiguration(matIntroConfig)
+                .setListener(new MaterialIntroListener() {
+                    @Override
+                    public void onUserClicked(String materialIntroViewId) {
+                        showIntro3();
+                    }
+                })//THIS SHOULD BE UNIQUE ID
+                .show();
+    }
+
+    private void showIntro3() {
+        new MaterialIntroView.Builder(this)
+//                .enableDotAnimation(true)
+                .enableIcon(false)
+                .setFocusGravity(FocusGravity.CENTER)
+                .setFocusType(Focus.ALL)
+//                .setDelayMillis(500)
+                .enableFadeAnimation(true)
+                .setInfoText("That's all for this screen, click here to start part A!")
+                .setTarget(findViewById(R.id.btn_start_part))
+                .setUsageId("IntroSecondAct3_" + tinydb.getString("ID_IntroView"))
+//                .setConfiguration(matIntroConfig)
+                .setListener(new MaterialIntroListener() {
+                    @Override
+                    public void onUserClicked(String materialIntroViewId) {
+                        btn_start_part.performClick();
+                    }
+                })//THIS SHOULD BE UNIQUE ID
+                .show();
     }
 
     private void startThirdActivity() {
@@ -188,6 +258,8 @@ public class SecondActivity extends AppCompatActivity {
 
         MenuItem timer = menu.findItem(R.id.timer);
         timer.setVisible(false);
+
+        showIntro1();
 
         return super.onCreateOptionsMenu(menu);
     }
