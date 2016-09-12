@@ -113,7 +113,7 @@
     </android.support.percent.PercentRelativeLayout>
 
 
-    <android.support.design.widget.CoordinatorLayout
+    <RelativeLayout
         android:id="@+id/coordinatorLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -126,7 +126,8 @@
             android:layout_width="match_parent"
             android:layout_height="96dp"
             android:layout_gravity="bottom"
-            android:elevation="12dp">
+            android:elevation="12dp"
+            android:layout_alignParentBottom="true">
 
             <com.chrisgaddes.reaction.SquareImageView
                 android:id="@+id/btn_peek_prob"
@@ -188,6 +189,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
             android:layout_margin="20dp"
             android:src="@drawable/ic_check"
             android:transitionGroup="false"
@@ -195,6 +198,6 @@
             app:elevation="12dp"
             app:fabSize="normal" />
 
-    </android.support.design.widget.CoordinatorLayout>
+    </RelativeLayout>
 
 </RelativeLayout>

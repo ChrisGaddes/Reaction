@@ -32,6 +32,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 
@@ -164,6 +165,15 @@ public class ThirdActivity extends AppCompatActivity {
                     Snackbar.make(findViewById(R.id.coordinatorLayout), "Not Finished Yet...", Snackbar.LENGTH_LONG).setCallback(new Snackbar.Callback() {
                         @Override
                         public void onDismissed(Snackbar snackbar, int event) {
+
+//                            fab_check_done.setTranslationY(snackbar.getView().getHeight());
+                            fab_check_done.show();
+
+                            TranslateAnimation animationFAB2 = new TranslateAnimation(0, 0, 0, 0);
+                            animationFAB2.setDuration(200); // duartion in ms
+                            animationFAB2.setFillAfter(true);
+                            fab_check_done.startAnimation(animationFAB2);
+
                             switch (event) {
                                 case Snackbar.Callback.DISMISS_EVENT_ACTION:
                                     btn_peek_probMain.setAlpha((float) 1.0);
@@ -192,6 +202,32 @@ public class ThirdActivity extends AppCompatActivity {
 
                         @Override
                         public void onShown(Snackbar snackbar) {
+
+
+                            TranslateAnimation animationFAB = new TranslateAnimation(0, 0, 0, -snackbar.getView().getHeight());
+                            animationFAB.setDuration(200); // duartion in ms
+                            animationFAB.setFillAfter(true);
+                            fab_check_done.startAnimation(animationFAB);
+
+                            animationFAB.setAnimationListener(new Animation.AnimationListener() {
+                                @Override
+                                public void onAnimationStart(Animation arg0) {
+                                }
+
+                                @Override
+                                public void onAnimationRepeat(Animation arg0) {
+                                }
+
+                                @Override
+                                public void onAnimationEnd(Animation arg0) {
+                                    fab_check_done.hide();
+                                }
+                            });
+
+//                            fab_check_done.setTranslationY(-snackbar.getView().getHeight());
+
+
+
                             btn_peek_probMain.setAlpha((float) 0.0);
                             if (enable_peek_a) {
                                 btn_peek_parta.setAlpha((float) 0.0);
