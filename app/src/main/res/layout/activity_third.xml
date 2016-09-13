@@ -51,7 +51,7 @@
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:paddingTop="10dp"
-                android:textSize="100sp" />
+                android:textSize="18sp" />
 
         </RelativeLayout>
 

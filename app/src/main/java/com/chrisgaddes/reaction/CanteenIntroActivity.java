@@ -31,25 +31,17 @@ public class CanteenIntroActivity extends IntroActivity {
 
         addSlide(new SimpleSlide.Builder()
                 .title("Welcome to Reaction")
-                .description("Swipe to get started")
+                .description("Practice Free-body Diagrams on the go\n\nSwipe to get started")
                 .image(R.drawable.ic_launcher_large)
                 .background(R.color.material_light_white)
                 .backgroundDark(R.color.material_light_white)
                 .layout(R.layout.slide_canteen)
                 .build());
 
-        addSlide(new SimpleSlide.Builder()
-                .title("Mobile")
-                .description("Practice Free-body Diagrams on the go!")
-                .image(R.drawable.prob1)
-                .background(R.color.material_light_white)
-                .backgroundDark(R.color.material_light_white)
-                .layout(R.layout.slide_canteen)
-                .build());
 
         addSlide(new SimpleSlide.Builder()
                 .title("Proof-of-Concept")
-                .description("This app is a proof of concept, so there are currently only 3 problems. Swipe to get started!")
+                .description("This app is a proof of concept so there are only 3 problems for now")
                 .image(R.drawable.prob1)
                 .background(R.color.material_light_white)
                 .backgroundDark(R.color.material_light_white)

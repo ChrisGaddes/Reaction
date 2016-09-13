@@ -15,6 +15,7 @@ import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.transition.Explode;
@@ -163,7 +164,7 @@ public class ThirdActivity extends AppCompatActivity {
                 if (mrunCheckIfFinished) {
                     setDialogArrowsCorrect();
                 } else {
-                    Snackbar.make(findViewById(R.id.coordinatorLayout), "Not Finished Yet...", Snackbar.LENGTH_LONG).setCallback(new Snackbar.Callback() {
+                    Snackbar.make(findViewById(R.id.coordinatorLayout), "Not Finished Yet...", Snackbar.LENGTH_LONG).setActionTextColor(ContextCompat.getColor(ThirdActivity.this, R.color.material_light_white)).setCallback(new Snackbar.Callback() {
                         @Override
                         public void onDismissed(Snackbar snackbar, int event) {
                             switch (event) {
@@ -210,15 +211,13 @@ public class ThirdActivity extends AppCompatActivity {
                             new MaterialStyledDialog(ThirdActivity.this)
                                     .setTitle("Hint:")
                                     .setDescription(str_hint[0])
-                                    .setIcon(R.drawable.ic_check)
+                                    .setIcon(R.drawable.ic_lightbulb_outline)
                                     .setStyle(Style.HEADER_WITH_ICON)
                                     .setScrollable(true)
                                     .setCancelable(true)
                                     .setPositive("Okay", new MaterialDialog.SingleButtonCallback() {
                                                 @Override
                                                 public void onClick(MaterialDialog dialog, DialogAction which) {
-
-
                                                 }
                                             }
                                     ).show();
@@ -505,6 +504,8 @@ public class ThirdActivity extends AppCompatActivity {
         insertPeekIfDestroyed();
 
         showPeekImages();
+
+        tv_statement.resetTextSize();
 
 //
     }

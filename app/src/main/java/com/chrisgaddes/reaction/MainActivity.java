@@ -457,24 +457,19 @@ public class MainActivity extends AppCompatActivity {
         // sets various values for the cards such as subtitles and visibility of lock images
         setCardValues();
 
-
         showIntro1();
-
 
     }
 
     private void showIntro1() {
         new MaterialIntroView.Builder(this)
-//                .enableDotAnimation(true)
                 .enableIcon(false)
                 .setFocusGravity(FocusGravity.CENTER)
                 .setFocusType(Focus.ALL)
                 .setDelayMillis(500)
-//                .enableFadeAnimation(true)
-                .setInfoText("Hi There! Welcome to Reaction!\nAfter you have tried out my app, please return tho this main screen and click on this button to complete a brief anonymous survey. The data will be used to evaluate the effectiveness of my Android application as a supplemental learning platform as part of my Master's Thesis")
+                .setInfoText("Hi! Welcome to Reaction!\n\nAfter you have tried out my app, please return to this main screen and click on the Survey button to complete a brief anonymous survey. Your feedback will be used to evaluate the effectiveness of my Android application as a supplemental learning platform as part of my Master's Thesis.\n\nI really appreciate your help!")
                 .setTarget(findViewById(R.id.card_survey))
                 .setUsageId("IntroMainAct1_" + tinydb.getString("ID_IntroView"))
-//                .setConfiguration(matIntroConfig)
                 .setListener(new MaterialIntroListener() {
                     @Override
                     public void onUserClicked(String materialIntroViewId) {
@@ -486,16 +481,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void showIntro2() {
         new MaterialIntroView.Builder(this)
-//                .enableDotAnimation(true)
                 .enableIcon(false)
                 .setFocusGravity(FocusGravity.CENTER)
                 .setFocusType(Focus.ALL)
                 .setDelayMillis(500)
-//                .enableFadeAnimation(true)
                 .setInfoText("Click here to start Problem 1.")
                 .setTarget(findViewById(R.id.btn_prob1_start))
-                .setUsageId("IntroMainAct1_" + tinydb.getString("ID_IntroView"))
-//                .setConfiguration(matIntroConfig)
+                .setUsageId("IntroMainAct2_" + tinydb.getString("ID_IntroView"))
                 .setListener(new MaterialIntroListener() {
                     @Override
                     public void onUserClicked(String materialIntroViewId) {
