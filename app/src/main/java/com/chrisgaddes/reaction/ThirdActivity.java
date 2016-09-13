@@ -980,8 +980,8 @@ public class ThirdActivity extends AppCompatActivity {
 
         new MaterialStyledDialog(ThirdActivity.this)
                 .setTitle("Usage time: " + stringYouExtracted + " seconds")
-                .setDescription("The total time you have used this app is " + stringYouExtracted + " seconds. This time been copied to your clipboard. Please paste it into the survey as directed.")
-                .setIcon(R.drawable.ic_assignment)
+                .setDescription("The length of time you have used this app, " + stringYouExtracted + " seconds, has been copied to your clipboard. Please paste it into the survey as directed.")
+                .setIcon(R.drawable.ic_assignment_light)
                 .setStyle(Style.HEADER_WITH_ICON)
                 .setScrollable(true)
 //                .setCancelable(true)

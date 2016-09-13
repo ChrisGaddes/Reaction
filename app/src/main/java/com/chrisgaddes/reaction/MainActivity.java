@@ -34,7 +34,6 @@ import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
 import com.github.javiersantos.materialstyleddialogs.enums.Style;
 import com.nineoldandroids.animation.Animator;
 
-import co.mobiwise.materialintro.MaterialIntroConfiguration;
 import co.mobiwise.materialintro.animation.MaterialIntroListener;
 import co.mobiwise.materialintro.shape.Focus;
 import co.mobiwise.materialintro.shape.FocusGravity;
@@ -279,21 +278,6 @@ public class MainActivity extends AppCompatActivity {
         card_load_prob2.setVisibility(View.VISIBLE);
         card_load_prob3.setVisibility(View.VISIBLE);
 
-
-        //Global config instance to not write same config to builder again and again.
-        MaterialIntroConfiguration matIntroConfig = new MaterialIntroConfiguration();
-        matIntroConfig.setDelayMillis(1000);
-        matIntroConfig.setFadeAnimationEnabled(true);
-        matIntroConfig.setFocusGravity(FocusGravity.CENTER);
-        matIntroConfig.setFocusType(Focus.MINIMUM);
-        matIntroConfig.setDelayMillis(500);
-
-
-        // TODO: Fix this so it resets on sharedpreference wipe
-//        Random r = new Random();
-//        int i1 = r.nextInt();
-
-
     }
 
     private void queryTakingCourse() {
@@ -338,8 +322,8 @@ public class MainActivity extends AppCompatActivity {
 
         new MaterialStyledDialog(MainActivity.this)
                 .setTitle("Usage time: " + stringYouExtracted + " seconds")
-                .setDescription("The total time you have used this app is " + stringYouExtracted + " seconds. This time been copied to your clipboard. Please paste it into the survey as directed.")
-                .setIcon(R.drawable.ic_spellcheck)
+                .setDescription("The length of time you have used this app, " + stringYouExtracted + " seconds, has been copied to your clipboard. Please paste it into the survey as directed.")
+                .setIcon(R.drawable.ic_assignment_light)
                 .setStyle(Style.HEADER_WITH_ICON)
                 .setScrollable(true)
                 .setPositive("Take Survey", new MaterialDialog.SingleButtonCallback() {
@@ -462,16 +446,16 @@ public class MainActivity extends AppCompatActivity {
             doYoyo(Techniques.Tada, findViewById(R.id.image_survey_icon));
         }
 
-
         //update foreground time
         resumeTime = System.currentTimeMillis();
         // sets various values for the cards such as subtitles and visibility of lock images
 
 
+        if (!tinydb.getBoolean("Intro_run")) {
+            showIntroPre();
+        }
+
         setCardValues();
-
-
-        showIntroPre();
 
     }
 
@@ -502,13 +486,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showIntroPre() {
-
+        tinydb.putBoolean("Intro_run", true);
         new MaterialIntroView.Builder(this)
                 .enableDotAnimation(true)
                 .enableIcon(false)
                 .setFocusGravity(FocusGravity.CENTER)
                 .setFocusType(Focus.NORMAL)
-                .setDelayMillis(50)
+                .setDelayMillis(500)
                 .setInfoText("Hi! Welcome to Reaction!\n\nTap on the circle to get started.")
                 .setTarget(findViewById(R.id.card_choose_problem_below))
                 .setUsageId("IntroMainActPre_" + tinydb.getString("ID_IntroView"))
@@ -548,7 +532,7 @@ public class MainActivity extends AppCompatActivity {
                 .setFocusGravity(FocusGravity.CENTER)
                 .setFocusType(Focus.NORMAL)
                 .setDelayMillis(50)
-                .setInfoText("Tap on this card to start Problem 1.")
+                .setInfoText("There are three problems, but only Problem 1 is unlocked. Complete it to unlock the next problem. Tap in the circle to start Problem 1.")
                 .setTarget(findViewById(R.id.card_load_prob1))
                 .setUsageId("IntroMainAct2_" + tinydb.getString("ID_IntroView"))
                 .setListener(new MaterialIntroListener() {
@@ -738,6 +722,8 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, CanteenIntroActivity.class);
             startActivity(intent, options.toBundle());
 
+//            showIntroPre();
+
 //            tinydb.remove("TotalForegroundTime"); //TODO: remove this
 
             // TODO This is a new install (or the user cleared the shared preferences)
@@ -764,13 +750,22 @@ public class MainActivity extends AppCompatActivity {
         tinydb.clear();
         resumeTime = System.currentTimeMillis();
         tinydb = new TinyDB(this);
+//        tinydb.putBoolean("Intro_run",true);
         tinydb.putString("ID_IntroView", String.valueOf(System.currentTimeMillis()));
         setCardValues();
+
+        tinydb.putBoolean("Intro_run", false);
+
+
 
         ScrollView scrollview_main_activity = (ScrollView) findViewById(R.id.scrollview_main_activity);
 
         //scrolls to top
         scrollview_main_activity.fullScroll(ScrollView.FOCUS_UP);
+
+//        if (!tinydb.getBoolean("Intro_run")) {
+//            showIntroPre();
+//        }
 
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this);
         Intent intent = new Intent(MainActivity.this, CanteenIntroActivity.class);
