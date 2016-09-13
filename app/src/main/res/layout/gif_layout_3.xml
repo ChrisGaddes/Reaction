@@ -1,98 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relativeLayout_Second"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.chrisgaddes.reaction.SecondActivity"
-    android:id="@+id/relativeLayout_Second"
     android:orientation="vertical"
-    android:paddingTop="@dimen/mi_baseline">
+    android:paddingTop="@dimen/mi_baseline"
+    tools:context="com.chrisgaddes.reaction.SecondActivity">
 
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="0dp"
+        android:layout_weight=".4"
+        android:layout_marginTop="28dp">
 
 
-        <View
-            android:id="@+id/center_divider_gif_view"
-            android:layout_width="1dp"
-            android:layout_height="200dp"
-            android:background="@color/colorDivider"
-            android:layout_centerInParent="true"
-            android:layout_margin="10dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="18dp"
+            android:layout_marginRight="18dp"
 
-        <pl.droidsonroids.gif.GifImageView
+            android:orientation="horizontal">
 
-            android:id="@+id/left_gif_image"
-            android:layout_width="wrap_content"
-            android:layout_height="300dp"
-            android:paddingTop="28dp"
-            android:paddingLeft="28dp"
-            android:layout_toLeftOf="@id/center_divider_gif_view"
-            android:src="@drawable/incorrect_way_to_draw"
-            android:layout_centerVertical="true" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".4"
+                android:orientation="vertical">
 
-        <pl.droidsonroids.gif.GifImageView
+                <pl.droidsonroids.gif.GifImageView
 
-            android:id="@+id/right_gif_image"
-            android:layout_width="wrap_content"
-            android:paddingTop="28dp"
-            android:layout_height="300dp"
-            android:layout_toRightOf="@id/center_divider_gif_view"
-            android:paddingRight="28dp"
-            android:src="@drawable/correct_way_to_draw"
-            android:layout_centerVertical="true" />
+                    android:id="@+id/left_gif_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight=".7"
+                    android:paddingTop="28dp"
+                    android:src="@drawable/incorrect_way_to_draw" />
 
-        <ImageView
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:paddingTop="28dp"
-            android:layout_marginBottom="28dp"
-            android:paddingLeft="28dp"
-            android:layout_toLeftOf="@id/center_divider_gif_view"
-            android:src="@drawable/wrong"
-            android:layout_below="@id/left_gif_image"
 
-            android:layout_alignLeft="@id/left_gif_image"
-            android:layout_alignRight="@id/left_gif_image" />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="55dp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="28dp"
 
-        <ImageView
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:paddingTop="28dp"
-            android:paddingRight="28dp"
-            android:layout_marginBottom="28dp"
-            android:layout_toRightOf="@id/center_divider_gif_view"
-            android:src="@drawable/right"
-            android:layout_below="@id/right_gif_image"
-            android:layout_alignLeft="@id/right_gif_image"
-            android:layout_alignRight="@id/right_gif_image" />
+                    android:paddingTop="18dp"
+
+                    android:src="@drawable/wrong"
+
+                    />
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/center_divider_gif_view"
+                android:layout_width="1dp"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_margin="10dp"
+                android:background="@color/colorDivider" />
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".4"
+                android:orientation="vertical">
+
+                <pl.droidsonroids.gif.GifImageView
+                    android:id="@+id/right_gif_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight=".7"
+                    android:paddingTop="28dp"
+                    android:src="@drawable/correct_way_to_draw" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="55dp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="28dp"
+                    android:paddingTop="18dp"
+                    android:src="@drawable/right" />
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
 
     </RelativeLayout>
 
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-        android:fontFamily="sans-serif-medium"
-        android:text="Common Mistake"
-        android:textColor="@color/black" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight=".4"
+        android:orientation="vertical">
 
-    <TextView
-        android:paddingStart="@dimen/mi_baseline"
-        android:paddingEnd="@dimen/mi_baseline"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/mi_baseline"
-        android:gravity="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        android:textSize="15sp"
-        android:fontFamily="sans-serif-medium"
-        android:text="@string/common_mistake_1_full_text"
-        android:textColor="@color/colorSecondaryText" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:text="Common Mistake"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+            android:textColor="@color/black" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/mi_baseline"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:paddingEnd="@dimen/mi_baseline"
+            android:paddingStart="@dimen/mi_baseline"
+            android:text="@string/common_mistake_1_full_text"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:textColor="@color/colorSecondaryText"
+            android:textSize="15sp" />
+
+    </LinearLayout>
 
 </LinearLayout>

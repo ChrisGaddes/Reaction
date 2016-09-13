@@ -19,6 +19,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ScrollView;
@@ -27,8 +28,11 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
 import com.github.javiersantos.materialstyleddialogs.enums.Style;
+import com.nineoldandroids.animation.Animator;
 
 import co.mobiwise.materialintro.MaterialIntroConfiguration;
 import co.mobiwise.materialintro.animation.MaterialIntroListener;
@@ -47,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private long pauseTime;
     private long resumeTime;
     private long totalForgroundTime;
+    private boolean stop_animations;
 
     private CardView card_load_prob1;
     private CardView card_load_prob2;
@@ -83,6 +88,12 @@ public class MainActivity extends AppCompatActivity {
 
         setupWindowAnimations();
         setContentView(R.layout.activity_main);
+
+//        str == null || str.equals(""
+
+        String str_tmp = tinydb.getString("part_letter");
+
+        stop_animations = str_tmp == null || str_tmp.equals("");
 
         // enables overscroll animation like in IOS
         ScrollView scrollView = (ScrollView) findViewById(R.id.scrollview_main_activity);
@@ -312,47 +323,34 @@ public class MainActivity extends AppCompatActivity {
 
     private void showSurveyPrompt() {
 
+        stop_animations = true;
+
         pauseTime = System.currentTimeMillis();
         totalForgroundTime = tinydb.getLong("TotalForegroundTime", 0) + (pauseTime - resumeTime);
         tinydb.putLong("TotalForegroundTime", totalForgroundTime);
 
         // sets finish time value to Clipboard
-        String stringYouExtracted = Long.toString(totalForgroundTime);
+        String stringYouExtracted = Long.toString(Math.round(totalForgroundTime / 1000));
         setClipboard(stringYouExtracted);
 
 
-        Toast.makeText(MainActivity.this, "Copied time: " + stringYouExtracted + " Milliseconds to clipboard ", Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.this, "Copied time: " + stringYouExtracted + " seconds to clipboard ", Toast.LENGTH_LONG).show();
 
         new MaterialStyledDialog(MainActivity.this)
-                .setTitle(stringYouExtracted + " milliseconds")
-                .setDescription("The total time you have used this app is " + stringYouExtracted + " milliseconds. This time been copied to your clipboard. Please paste it into the survey as directed.")
+                .setTitle("Usage time: " + stringYouExtracted + " seconds")
+                .setDescription("The total time you have used this app is " + stringYouExtracted + " seconds. This time been copied to your clipboard. Please paste it into the survey as directed.")
                 .setIcon(R.drawable.ic_spellcheck)
                 .setStyle(Style.HEADER_WITH_ICON)
                 .setScrollable(true)
-//                .setCancelable(true)
                 .setPositive("Take Survey", new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(MaterialDialog dialog, DialogAction which) {
-//                        resetEverything();
-
-
                         String url = "https://goo.gl/forms/20nMeq7L0KCilwym2";
-
                         Intent openSurveyUrl = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                         startActivity(openSurveyUrl);
-                        finish();
 
                     }
                 })
-
-//                .setNegative("I'll do it later", new MaterialDialog.SingleButtonCallback() {
-//                            @Override
-//                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-//
-//                            }
-//                        }
-//                )
-
                 .show();
     }
 
@@ -452,22 +450,86 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+
+        String str_tmp = tinydb.getString("part_letter");
+
+        if (str_tmp == null || str_tmp.equals("")) {
+            stop_animations = true;
+
+        } else {
+            stop_animations = false;
+            doYoyo(Techniques.Tada, findViewById(R.id.image_survey_icon));
+        }
+
+
         //update foreground time
         resumeTime = System.currentTimeMillis();
         // sets various values for the cards such as subtitles and visibility of lock images
+
+
         setCardValues();
 
-        showIntro1();
+
+        showIntroPre();
 
     }
 
-    private void showIntro1() {
+    public void doYoyo(final Techniques techniques, final View view) {
+        YoYo.with(techniques).duration(2000).interpolate(new LinearInterpolator()).withListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (!stop_animations) {
+                    doYoyo(techniques, view);
+                }
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        }).playOn(view);
+    }
+
+    private void showIntroPre() {
+
         new MaterialIntroView.Builder(this)
+                .enableDotAnimation(true)
+                .enableIcon(false)
+                .setFocusGravity(FocusGravity.CENTER)
+                .setFocusType(Focus.NORMAL)
+                .setDelayMillis(50)
+                .setInfoText("Hi! Welcome to Reaction!\n\nTap on the circle to get started.")
+                .setTarget(findViewById(R.id.card_choose_problem_below))
+                .setUsageId("IntroMainActPre_" + tinydb.getString("ID_IntroView"))
+                .setListener(new MaterialIntroListener() {
+                    @Override
+                    public void onUserClicked(String materialIntroViewId) {
+                        showIntro1();
+                    }
+                })
+                .show();
+    }
+
+    private void showIntro1() {
+
+        new MaterialIntroView.Builder(this)
+                .enableDotAnimation(true)
                 .enableIcon(false)
                 .setFocusGravity(FocusGravity.CENTER)
                 .setFocusType(Focus.ALL)
-                .setDelayMillis(500)
-                .setInfoText("Hi! Welcome to Reaction!\n\nAfter you have tried out my app, please return to this main screen and click on the Survey button to complete a brief anonymous survey. Your feedback will be used to evaluate the effectiveness of my Android application as a supplemental learning platform as part of my Master's Thesis.\n\nI really appreciate your help!")
+                .setDelayMillis(50)
+                .setInfoText("After you have tried out my app, please click on this Survey button to complete a brief 3 question survey. It should take less than 1 minute and your feedback will be used as part of my Master's Thesis. I really appreciate your help!\n\nTap anywhere in the circle to continue.")
                 .setTarget(findViewById(R.id.card_survey))
                 .setUsageId("IntroMainAct1_" + tinydb.getString("ID_IntroView"))
                 .setListener(new MaterialIntroListener() {
@@ -481,12 +543,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void showIntro2() {
         new MaterialIntroView.Builder(this)
+                .enableDotAnimation(true)
                 .enableIcon(false)
                 .setFocusGravity(FocusGravity.CENTER)
-                .setFocusType(Focus.ALL)
-                .setDelayMillis(500)
-                .setInfoText("Click here to start Problem 1.")
-                .setTarget(findViewById(R.id.btn_prob1_start))
+                .setFocusType(Focus.NORMAL)
+                .setDelayMillis(50)
+                .setInfoText("Tap on this card to start Problem 1.")
+                .setTarget(findViewById(R.id.card_load_prob1))
                 .setUsageId("IntroMainAct2_" + tinydb.getString("ID_IntroView"))
                 .setListener(new MaterialIntroListener() {
                     @Override

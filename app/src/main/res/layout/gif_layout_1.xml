@@ -10,33 +10,44 @@
 
     <pl.droidsonroids.gif.GifImageView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-
+        android:layout_height="0dp"
+        android:layout_weight=".4"
+        android:layout_marginTop="28dp"
         android:paddingLeft="?actionBarSize"
         android:paddingRight="?actionBarSize"
         android:gravity="center"
-        android:src="@drawable/draw_and_remove_force"
-        android:layout_centerInParent="true" />
+        android:src="@drawable/draw_and_remove_force" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-        android:fontFamily="sans-serif-medium"
-        android:text="Draw Forces"
-        android:textColor="@color/black" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight=".4"
+        android:orientation="vertical">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/mi_baseline"
-        android:gravity="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        android:textSize="15sp"
-        android:fontFamily="sans-serif-medium"
-        android:text="Tap and drag from a location to create a force. Remove it by dragging its head back to the spot you initially tapped. Forces snap to 30 degree increments."
-        android:textColor="@color/colorSecondaryText" />
+        <TextView
+            android:layout_marginTop="@dimen/mi_baseline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+            android:fontFamily="sans-serif-medium"
+            android:text="Draw Forces"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:layout_marginTop="@dimen/mi_baseline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:gravity="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:textSize="15sp"
+            android:fontFamily="sans-serif-medium"
+            android:text="Tap and drag from a location to create a force. Remove it by dragging its head back to the spot you initially tapped. Forces snap to 30 degree increments."
+            android:textColor="@color/colorSecondaryText" />
+
+
+    </LinearLayout>
 
 
 </LinearLayout>

@@ -518,30 +518,9 @@ public class ThirdActivity extends AppCompatActivity {
                 .setFocusType(Focus.ALL)
                 .setDelayMillis(500)
                 .enableFadeAnimation(true)
-                .setInfoText("This is the statement for part A of Problem 1. Read this carefully and click to continue.")
+                .setInfoText("This is the statement for part A of Problem 1. Read this carefully and tap in the circle to continue.")
                 .setTarget(findViewById(R.id.tv_statement))
                 .setUsageId("IntroThirdAct1_" + tinydb.getString("ID_IntroView"))
-//                .setConfiguration(matIntroConfig)
-                .setListener(new MaterialIntroListener() {
-                    @Override
-                    public void onUserClicked(String materialIntroViewId) {
-                        showIntro2();
-                    }
-                })
-                .show();
-    }
-
-    private void showIntro2() {
-        new MaterialIntroView.Builder(this)
-//                .enableDotAnimation(true)
-                .enableIcon(false)
-                .setFocusGravity(FocusGravity.CENTER)
-                .setFocusType(Focus.ALL)
-                .setDelayMillis(500)
-                .enableFadeAnimation(true)
-                .setInfoText("In a few moments, this is where you will draw the free body diagram of the highlighted member AB")
-                .setTarget(findViewById(R.id.problem_part))
-                .setUsageId("IntroThirdAct2_" + tinydb.getString("ID_IntroView"))
 //                .setConfiguration(matIntroConfig)
                 .setListener(new MaterialIntroListener() {
                     @Override
@@ -552,13 +531,15 @@ public class ThirdActivity extends AppCompatActivity {
                 .show();
     }
 
+
+
     private void showIntro3() {
         new MaterialIntroView.Builder(this)
                 .enableIcon(false)
                 .setFocusGravity(FocusGravity.CENTER)
                 .setFocusType(Focus.ALL)
                 .enableFadeAnimation(true)
-                .setInfoText("Before you start drawing, click here for a quick tutorial")
+                .setInfoText("Before you start drawing, click on the help button here for a quick tutorial.")
                 .setTarget(findViewById(R.id.action_help))
                 .setUsageId("IntroThirdAct3_" + tinydb.getString("ID_IntroView"))
                 .setListener(new MaterialIntroListener() {
@@ -576,10 +557,11 @@ public class ThirdActivity extends AppCompatActivity {
         new MaterialIntroView.Builder(this)
                 .enableDotAnimation(true)
                 .enableIcon(false)
+                .setDelayMillis(1000)
                 .setFocusGravity(FocusGravity.CENTER)
                 .setFocusType(Focus.ALL)
                 .enableFadeAnimation(true)
-                .setInfoText("Press and hold here to reference the main problem statement")
+                .setInfoText("Press and hold here to reference the main problem statement.")
                 .setTarget(findViewById(R.id.btn_peek_prob))
                 .setUsageId("IntroThirdAct4_" + tinydb.getString("ID_IntroView"))
                 .setListener(new MaterialIntroListener() {
@@ -608,7 +590,7 @@ public class ThirdActivity extends AppCompatActivity {
 
     private void showIntro5() {
         new MaterialIntroView.Builder(this)
-                .enableDotAnimation(true)
+//                .enableDotAnimation(true)
                 .setDelayMillis(2000)
                 .enableIcon(false)
                 .setFocusGravity(FocusGravity.CENTER)
@@ -631,12 +613,12 @@ public class ThirdActivity extends AppCompatActivity {
     private void showIntro6() {
         new MaterialIntroView.Builder(this)
                 .enableDotAnimation(true)
-                .setDelayMillis(1000)
+                .setDelayMillis(500)
                 .enableIcon(false)
                 .setFocusGravity(FocusGravity.CENTER)
                 .setFocusType(Focus.ALL)
                 .enableFadeAnimation(true)
-                .setInfoText("Click the red check button to see if you have drawn the forces and moments correctly. A popup bar with a HINT button will appear if you've done something wrong.")
+                .setInfoText("Finally, click on the red check button to see if you have drawn the forces and moments correctly. A popup bar with a HINT button will appear if you're having trouble.")
                 .setTarget(findViewById(R.id.fab_check_done))
                 .setUsageId("IntroThirdAct6_" + tinydb.getString("ID_IntroView"))
                 .setListener(new MaterialIntroListener() {
@@ -653,7 +635,7 @@ public class ThirdActivity extends AppCompatActivity {
     private void showIntro7() {
         new MaterialIntroView.Builder(this)
                 .enableDotAnimation(true)
-                .setDelayMillis(1000)
+                .setDelayMillis(2000)
                 .enableIcon(false)
                 .setFocusGravity(FocusGravity.CENTER)
                 .setFocusType(Focus.ALL)
@@ -717,7 +699,10 @@ public class ThirdActivity extends AppCompatActivity {
 
         // pauses timer
         paused_timer_time = SystemClock.elapsedRealtime();
-        rc.stop();
+
+        if (rc != null) {
+            rc.stop();
+        }
 
         pauseTime = System.currentTimeMillis();
         totalForgroundTime = tinydb.getLong("TotalForegroundTime", 0) + (pauseTime - resumeTime);
@@ -952,7 +937,7 @@ public class ThirdActivity extends AppCompatActivity {
                 .setStyle(Style.HEADER_WITH_ICON)
                 .setScrollable(true)
                 .setCancelable(false)
-                .setPositive("Take Survey", new MaterialDialog.SingleButtonCallback() {
+                .setPositive("Take 1 min Survey", new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(MaterialDialog dialog, DialogAction which) {
                         showSurveyPrompt();
@@ -987,16 +972,16 @@ public class ThirdActivity extends AppCompatActivity {
         tinydb.putLong("TotalForegroundTime", totalForgroundTime);
 
         // sets finish time value to Clipboard
-        String stringYouExtracted = Long.toString(totalForgroundTime);
+        String stringYouExtracted = Long.toString(Math.round(totalForgroundTime / 1000));
         setClipboard(stringYouExtracted);
 
 
-        Toast.makeText(ThirdActivity.this, "Copied time: " + stringYouExtracted + " Milliseconds to clipboard ", Toast.LENGTH_SHORT).show();
+        Toast.makeText(ThirdActivity.this, "Copied time: " + stringYouExtracted + " seconds to clipboard ", Toast.LENGTH_LONG).show();
 
         new MaterialStyledDialog(ThirdActivity.this)
-                .setTitle(stringYouExtracted + " milliseconds")
-                .setDescription("The total time you have used this app is " + stringYouExtracted + " milliseconds. This time been copied to your clipboard. Please paste it into the survey as directed.")
-                .setIcon(R.drawable.ic_spellcheck)
+                .setTitle("Usage time: " + stringYouExtracted + " seconds")
+                .setDescription("The total time you have used this app is " + stringYouExtracted + " seconds. This time been copied to your clipboard. Please paste it into the survey as directed.")
+                .setIcon(R.drawable.ic_assignment)
                 .setStyle(Style.HEADER_WITH_ICON)
                 .setScrollable(true)
 //                .setCancelable(true)
