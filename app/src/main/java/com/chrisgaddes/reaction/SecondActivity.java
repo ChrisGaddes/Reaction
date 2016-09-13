@@ -261,7 +261,7 @@ public class SecondActivity extends AppCompatActivity {
         MenuItem timer = menu.findItem(R.id.timer);
         timer.setVisible(false);
 
-//        showIntro1();
+        showIntro1();
 
         return super.onCreateOptionsMenu(menu);
     }

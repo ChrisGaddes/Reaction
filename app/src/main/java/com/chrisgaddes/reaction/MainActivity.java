@@ -31,8 +31,10 @@ import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
 import com.github.javiersantos.materialstyleddialogs.enums.Style;
 
 import co.mobiwise.materialintro.MaterialIntroConfiguration;
+import co.mobiwise.materialintro.animation.MaterialIntroListener;
 import co.mobiwise.materialintro.shape.Focus;
 import co.mobiwise.materialintro.shape.FocusGravity;
+import co.mobiwise.materialintro.view.MaterialIntroView;
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 
 public class MainActivity extends AppCompatActivity {
@@ -261,28 +263,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        // animates in the three problem cards
-//        ViewAnimator
-//                .animate(card_load_prob1)
-//                .dp().translationY(200, 0)
-//                .duration(500)
-//                .accelerate()
-//                .start();
-//
-//        ViewAnimator
-//                .animate(card_load_prob2)
-//                .dp().translationY(250, 0)
-//                .duration(500)
-//                .accelerate()
-//                .start();
-//
-//        ViewAnimator
-//                .animate(card_load_prob3)
-//                .dp().translationY(300, 0)
-//                .duration(500)
-//                .accelerate()
-//                .start();
-
         // makes the cards visible once animation has begun
         card_load_prob1.setVisibility(View.VISIBLE);
         card_load_prob2.setVisibility(View.VISIBLE);
@@ -356,7 +336,7 @@ public class MainActivity extends AppCompatActivity {
 //                        resetEverything();
 
 
-                        String url = "https://goo.gl/forms/0wl3LGhqtNYC4oyA2";
+                        String url = "https://goo.gl/forms/20nMeq7L0KCilwym2";
 
                         Intent openSurveyUrl = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                         startActivity(openSurveyUrl);
@@ -477,25 +457,52 @@ public class MainActivity extends AppCompatActivity {
         // sets various values for the cards such as subtitles and visibility of lock images
         setCardValues();
 
-//        new MaterialIntroView.Builder(this)
-////                .enableDotAnimation(true)
-//                .enableIcon(false)
-//                .setFocusGravity(FocusGravity.CENTER)
-//                .setFocusType(Focus.ALL)
-//                .setDelayMillis(500)
-////                .enableFadeAnimation(true)
-//                .setInfoText("Hi There! Welcome to Reaction!\nClick here to start Problem 1.")
-//                .setTarget(findViewById(R.id.btn_prob1_start))
-//                .setUsageId("IntroMainAct1_" + tinydb.getString("ID_IntroView"))
-////                .setConfiguration(matIntroConfig)
-//                .setListener(new MaterialIntroListener() {
-//                    @Override
-//                    public void onUserClicked(String materialIntroViewId) {
-//                        card_load_prob1.performClick();
-//                    }
-//                })//THIS SHOULD BE UNIQUE ID
-//                .show();
 
+        showIntro1();
+
+
+    }
+
+    private void showIntro1() {
+        new MaterialIntroView.Builder(this)
+//                .enableDotAnimation(true)
+                .enableIcon(false)
+                .setFocusGravity(FocusGravity.CENTER)
+                .setFocusType(Focus.ALL)
+                .setDelayMillis(500)
+//                .enableFadeAnimation(true)
+                .setInfoText("Hi There! Welcome to Reaction!\nAfter you have tried out my app, please return tho this main screen and click on this button to complete a brief anonymous survey. The data will be used to evaluate the effectiveness of my Android application as a supplemental learning platform as part of my Master's Thesis")
+                .setTarget(findViewById(R.id.card_survey))
+                .setUsageId("IntroMainAct1_" + tinydb.getString("ID_IntroView"))
+//                .setConfiguration(matIntroConfig)
+                .setListener(new MaterialIntroListener() {
+                    @Override
+                    public void onUserClicked(String materialIntroViewId) {
+                        showIntro2();
+                    }
+                })
+                .show();
+    }
+
+    private void showIntro2() {
+        new MaterialIntroView.Builder(this)
+//                .enableDotAnimation(true)
+                .enableIcon(false)
+                .setFocusGravity(FocusGravity.CENTER)
+                .setFocusType(Focus.ALL)
+                .setDelayMillis(500)
+//                .enableFadeAnimation(true)
+                .setInfoText("Click here to start Problem 1.")
+                .setTarget(findViewById(R.id.btn_prob1_start))
+                .setUsageId("IntroMainAct1_" + tinydb.getString("ID_IntroView"))
+//                .setConfiguration(matIntroConfig)
+                .setListener(new MaterialIntroListener() {
+                    @Override
+                    public void onUserClicked(String materialIntroViewId) {
+                        card_load_prob1.performClick();
+                    }
+                })
+                .show();
     }
 
     private void setCardValues() {

@@ -1002,29 +1002,14 @@ public class ThirdActivity extends AppCompatActivity {
                 .setPositive("Take Survey", new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(MaterialDialog dialog, DialogAction which) {
-//                        resetEverything();
-
-
-                        String url = "https://goo.gl/forms/0wl3LGhqtNYC4oyA2";
-
+                        String url = "https://goo.gl/forms/20nMeq7L0KCilwym2";
                         Intent openSurveyUrl = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                         startActivity(openSurveyUrl);
                         finish();
-
                     }
                 })
-
-//                .setNegative("I'll do it later", new MaterialDialog.SingleButtonCallback() {
-//                            @Override
-//                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-//
-//                            }
-//                        }
-//                )
-
                 .show();
     }
-
 
     private void helpDialog() {
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(ThirdActivity.this);
@@ -1032,7 +1017,6 @@ public class ThirdActivity extends AppCompatActivity {
         startActivity(intent, options.toBundle());
 
     }
-
 
     private int getResId(String variableName, Class<?> c) {
         try {
@@ -1050,8 +1034,6 @@ public class ThirdActivity extends AppCompatActivity {
 
         startTimer(menu);
         showIntro1();
-
-
         return super.onCreateOptionsMenu(menu);
     }
 
