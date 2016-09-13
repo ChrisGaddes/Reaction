@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.chrisgaddes.reaction.SecondActivity"
+    android:id="@+id/relativeLayout_Second"
+    android:orientation="vertical"
+    android:padding="@dimen/mi_baseline">
+
+    <pl.droidsonroids.gif.GifImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:paddingLeft="?actionBarSize"
+        android:paddingRight="?actionBarSize"
+        android:gravity="center"
+        android:src="@drawable/draw_and_remove_moment"
+        android:layout_centerInParent="true" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+        android:fontFamily="sans-serif-medium"
+        android:text="Draw Moments"
+        android:textColor="@color/black" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/mi_baseline"
+        android:gravity="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textSize="15sp"
+        android:fontFamily="sans-serif-medium"
+        android:text="Long press at a location to create a moment. Remove it by dragging its head back to the spot you long pressed."
+        android:textColor="@color/colorSecondaryText" />
+
+
+</LinearLayout>

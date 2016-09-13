@@ -133,7 +133,7 @@ public class SecondActivity extends AppCompatActivity {
                 .enableIcon(false)
                 .setFocusGravity(FocusGravity.CENTER)
                 .setFocusType(Focus.ALL)
-                .setDelayMillis(500)
+                .setDelayMillis(0)
                 .enableFadeAnimation(true)
                 .setInfoText("This is the main problem statement for Problem 1. Read it carefully and then click to continue.")
                 .setTarget(findViewById(R.id.tv_problem_statement2))
@@ -144,7 +144,7 @@ public class SecondActivity extends AppCompatActivity {
                     public void onUserClicked(String materialIntroViewId) {
                         showIntro2();
                     }
-                })//THIS SHOULD BE UNIQUE ID
+                })
                 .show();
     }
 
@@ -154,7 +154,7 @@ public class SecondActivity extends AppCompatActivity {
                 .enableIcon(false)
                 .setFocusGravity(FocusGravity.CENTER)
                 .setFocusType(Focus.ALL)
-//                .setDelayMillis(500)
+                .setDelayMillis(0)
                 .enableFadeAnimation(true)
                 .setInfoText("This is the main problem diagram of the whole mechanical system. You will be able to reference it later as needed. Click to continue.")
                 .setTarget(findViewById(R.id.problem))
@@ -165,28 +165,27 @@ public class SecondActivity extends AppCompatActivity {
                     public void onUserClicked(String materialIntroViewId) {
                         showIntro3();
                     }
-                })//THIS SHOULD BE UNIQUE ID
+                })
                 .show();
     }
 
     private void showIntro3() {
         new MaterialIntroView.Builder(this)
-//                .enableDotAnimation(true)
+                .enableDotAnimation(true)
                 .enableIcon(false)
                 .setFocusGravity(FocusGravity.CENTER)
                 .setFocusType(Focus.ALL)
-//                .setDelayMillis(500)
+                .setDelayMillis(0)
                 .enableFadeAnimation(true)
                 .setInfoText("That's all for this screen, click here to start part A!")
                 .setTarget(findViewById(R.id.btn_start_part))
                 .setUsageId("IntroSecondAct3_" + tinydb.getString("ID_IntroView"))
-//                .setConfiguration(matIntroConfig)
                 .setListener(new MaterialIntroListener() {
                     @Override
                     public void onUserClicked(String materialIntroViewId) {
                         btn_start_part.performClick();
                     }
-                })//THIS SHOULD BE UNIQUE ID
+                })
                 .show();
     }
 
@@ -256,10 +255,13 @@ public class SecondActivity extends AppCompatActivity {
         startover.setVisible(false);
 
 
+        MenuItem help = menu.findItem(R.id.action_help);
+        help.setVisible(false);
+
         MenuItem timer = menu.findItem(R.id.timer);
         timer.setVisible(false);
 
-        showIntro1();
+//        showIntro1();
 
         return super.onCreateOptionsMenu(menu);
     }

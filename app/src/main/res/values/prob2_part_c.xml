@@ -11,6 +11,11 @@
         <item>Draw the free-body diagram of the highlighted system which includes the member ABD, the wheel, and pins at A and D, but NOT the pin at B.</item>
     </string-array>
 
+    <!--Hint-->
+    <string-array name="hint_prob2_partC">
+        <item>Just look at where you drew forces in Part A and Part B and you should be fine.</item>
+    </string-array>
+
     <!--Number of Buttons-->
     <string-array name="number_of_buttons_prob2_partC">
         <item>9</item>

@@ -7,7 +7,6 @@ import android.text.Spanned;
 import android.text.style.TypefaceSpan;
 
 import com.heinrichreimersoftware.materialintro.app.IntroActivity;
-import com.heinrichreimersoftware.materialintro.slide.FragmentSlide;
 import com.heinrichreimersoftware.materialintro.slide.SimpleSlide;
 
 public class CanteenIntroActivity extends IntroActivity {
@@ -48,13 +47,14 @@ public class CanteenIntroActivity extends IntroActivity {
                 .layout(R.layout.slide_canteen)
                 .build());
 
-        addSlide(new FragmentSlide.Builder()
+        addSlide(new SimpleSlide.Builder()
+                .title("Proof-of-Concept")
+                .description("This app is a proof of concept, so there are currently only 3 problems. Swipe to get started!")
+                .image(R.drawable.prob1)
                 .background(R.color.material_light_white)
                 .backgroundDark(R.color.material_light_white)
-                .fragment(R.layout.gif_layout, R.style.Theme_Intro)
+                .layout(R.layout.slide_canteen)
                 .build());
-
-//        autoplay(2500, INFINITE);
     }
 
 }

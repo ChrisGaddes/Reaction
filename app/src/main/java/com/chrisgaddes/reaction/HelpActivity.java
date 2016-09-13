@@ -7,6 +7,7 @@ import android.text.Spanned;
 import android.text.style.TypefaceSpan;
 
 import com.heinrichreimersoftware.materialintro.app.IntroActivity;
+import com.heinrichreimersoftware.materialintro.slide.FragmentSlide;
 import com.heinrichreimersoftware.materialintro.slide.SimpleSlide;
 
 public class HelpActivity extends IntroActivity {
@@ -14,7 +15,6 @@ public class HelpActivity extends IntroActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_help);
 
         setButtonBackVisible(false);
         setButtonNextVisible(false);
@@ -34,22 +34,37 @@ public class HelpActivity extends IntroActivity {
                 .title("Tutorial")
                 .description("Swipe to get started")
                 .image(R.drawable.ic_launcher_large)
-                .background(R.color.color_canteen)
-                .backgroundDark(R.color.color_dark_canteen)
+                .background(R.color.material_light_white)
+                .backgroundDark(R.color.material_light_white)
                 .layout(R.layout.slide_canteen)
+                .build());
+
+        addSlide(new FragmentSlide.Builder()
+                .background(R.color.material_light_white)
+                .backgroundDark(R.color.material_light_white)
+                .fragment(R.layout.gif_layout_1, R.style.Theme_Intro)
+                .build());
+
+
+        addSlide(new FragmentSlide.Builder()
+                .background(R.color.material_light_white)
+                .backgroundDark(R.color.material_light_white)
+                .fragment(R.layout.gif_layout_2, R.style.Theme_Intro)
                 .build());
 
         addSlide(new SimpleSlide.Builder()
-                .title("Add Forces")
-                .description("Tap and drag at points to add forces.")
-                .image(R.drawable.prob1)
-                .background(R.color.color_canteen)
-                .backgroundDark(R.color.color_dark_canteen)
+                .title("Immediate Feedback")
+                .description("Arrows and moments turn from gray to black if placed correctly. Incorrect (gray) arrows must be removed.")
+                .image(R.drawable.correct_incorrect)
+                .background(R.color.material_light_white)
+                .backgroundDark(R.color.material_light_white)
                 .layout(R.layout.slide_canteen)
                 .build());
 
-
-//        autoplay(2500, INFINITE);
-
+        addSlide(new FragmentSlide.Builder()
+                .background(R.color.material_light_white)
+                .backgroundDark(R.color.material_light_white)
+                .fragment(R.layout.gif_layout_3, R.style.Theme_Intro)
+                .build());
     }
 }

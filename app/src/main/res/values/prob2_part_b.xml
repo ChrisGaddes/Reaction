@@ -11,6 +11,12 @@
         <item>Draw the appropriate free-body diagram of the highlighted system which includes member CD, but NOT the pins at C and D.</item>
     </string-array>
 
+    <!--Hint-->
+    <string-array name="hint_prob2_partB">
+        <item>Member CD is a two force member. You do not include the vertical and horizontal forces applied at C in Part B because they were applied to the pin, and the pin is not included in this part.</item>
+    </string-array>
+
+
     <!--Number of Buttons-->
     <string-array name="number_of_buttons_prob2_partB">
         <item>6</item>

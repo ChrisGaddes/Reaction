@@ -11,6 +11,11 @@
         <item>Draw the free-body diagram of the highlighted system which includes the handle and the pin at B, but NOT the pin at C.</item>
     </string-array>
 
+    <!--Hint-->
+    <string-array name="hint_prob1_partB">
+        <item>The force(s) at point B must mirror (be equal and opposite) the force(s) you drew in Part A at point B. Also, although the pin at point C is not included, that pin still applies forces to the handle at point C.</item>
+    </string-array>
+
     <!--Number of Buttons-->
     <string-array name="number_of_buttons_prob1_partB">
         <item>10</item>

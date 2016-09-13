@@ -11,6 +11,11 @@
         <item>Draw the appropriate free-body diagram of the highlighted system which includes the handle, member AB, and the pin at B, but NOT the pins at A and C. This diagram is dependent on both of the previous diagrams. Press the peek button at the bottom of the screen to reference those diagrams.</item>
     </string-array>
 
+    <!--Hint-->
+    <string-array name="hint_prob1_partC">
+        <item>The force(s) at point B and C must be drawn the same direction as the force(s) you drew in Part A and Part B at points B and C.</item>
+    </string-array>
+
     <!--Number of Buttons-->
     <string-array name="number_of_buttons_prob1_partC">
         <item>7</item>

@@ -70,5 +70,6 @@
     <string name="str_continue">Continue</string>
     <string name="str_start">Start</string>
     <string name="str_click_start_problem">Click to start problem</string>
+    <string name="common_mistake_1_full_text">You cannot tap on the <b>background</b> and swipe inward <b>toward</b> the object to place an arrow, you must tap on the <b>object</b> at the point where you would like an arrow to contact it and swipe outward <b>away</b> from the object.\n\n</string>
 
 </resources>

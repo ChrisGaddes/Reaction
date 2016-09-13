@@ -11,6 +11,11 @@
         <item>Draw the free-body diagram of the highlighted system which includes member AB but NOT the pin at point B.</item>
     </string-array>
 
+    <!--Hint-->
+    <string-array name="hint_prob3_partB">
+        <item>There is a moment in this part.</item>
+    </string-array>
+
     <!--Number of Buttons-->
     <string-array name="number_of_buttons_prob3_partB">
         <item>5</item>

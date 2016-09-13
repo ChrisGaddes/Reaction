@@ -508,6 +508,7 @@ public class MainActivity extends AppCompatActivity {
             String text_to_set = "Working on Part " + tinydb.getString("prob1_part_letter");
             subtitle_prob1.setText(text_to_set);
             btn_prob1_start.setText(R.string.str_continue);
+            btn_prob1_startover.setVisibility(View.VISIBLE);
         } else {
             assert str != null;
             if (tinydb.getString("prob1_part_letter").equals("A") || str.equals("")) {

@@ -34,6 +34,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -78,6 +79,7 @@ public class ThirdActivity extends AppCompatActivity {
     private int eventaction;
 
     private String str_toolbar_partCurrent_title;
+    private String[] str_hint;
     private String[] str_part_statement;
     private String[] str_problem_statement;
     private String str_parta_statement[];
@@ -205,7 +207,22 @@ public class ThirdActivity extends AppCompatActivity {
                     }).setAction("Hint", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Log.d(TAG, "Put hint here");
+                            new MaterialStyledDialog(ThirdActivity.this)
+                                    .setTitle("Hint:")
+                                    .setDescription(str_hint[0])
+                                    .setIcon(R.drawable.ic_check)
+                                    .setStyle(Style.HEADER_WITH_ICON)
+                                    .setScrollable(true)
+                                    .setCancelable(true)
+                                    .setPositive("Okay", new MaterialDialog.SingleButtonCallback() {
+                                                @Override
+                                                public void onClick(MaterialDialog dialog, DialogAction which) {
+
+
+                                                }
+                                            }
+                                    ).show();
+
 
                         }
                     }).show();
@@ -404,6 +421,7 @@ public class ThirdActivity extends AppCompatActivity {
         str_part_statement = getResources().getStringArray(getResId("problemStatement_" + "prob" + problem_number + "_part" + part_letter, R.array.class));
         str_parta_statement = getResources().getStringArray(getResId("problemStatement_" + "prob" + problem_number + "_part" + "A", R.array.class));
         str_partb_statement = getResources().getStringArray(getResId("problemStatement_" + "prob" + problem_number + "_part" + "B", R.array.class));
+        str_hint = getResources().getStringArray(getResId("hint_" + "prob" + problem_number + "_part" + part_letter, R.array.class));
 
         // converts to lower case
         part_letter = part_letter.toLowerCase();
@@ -508,7 +526,7 @@ public class ThirdActivity extends AppCompatActivity {
                     public void onUserClicked(String materialIntroViewId) {
                         showIntro2();
                     }
-                })//THIS SHOULD BE UNIQUE ID
+                })
                 .show();
     }
 
@@ -529,50 +547,124 @@ public class ThirdActivity extends AppCompatActivity {
                     public void onUserClicked(String materialIntroViewId) {
                         showIntro3();
                     }
-                })//THIS SHOULD BE UNIQUE ID
+                })
                 .show();
     }
 
     private void showIntro3() {
         new MaterialIntroView.Builder(this)
-//                .enableDotAnimation(true)
                 .enableIcon(false)
                 .setFocusGravity(FocusGravity.CENTER)
                 .setFocusType(Focus.ALL)
-//                .setDelayMillis(500)
                 .enableFadeAnimation(true)
                 .setInfoText("Before you start drawing, click here for a quick tutorial")
                 .setTarget(findViewById(R.id.action_help))
                 .setUsageId("IntroThirdAct3_" + tinydb.getString("ID_IntroView"))
-//                .setConfiguration(matIntroConfig)
                 .setListener(new MaterialIntroListener() {
                     @Override
                     public void onUserClicked(String materialIntroViewId) {
+                        showIntro4();
                         findViewById(R.id.action_help).performClick();
-// showIntro3();
+
                     }
-                })//THIS SHOULD BE UNIQUE ID
+                })
                 .show();
     }
 
     private void showIntro4() {
         new MaterialIntroView.Builder(this)
-//                .enableDotAnimation(true)
+                .enableDotAnimation(true)
                 .enableIcon(false)
                 .setFocusGravity(FocusGravity.CENTER)
                 .setFocusType(Focus.ALL)
-//                .setDelayMillis(500)
                 .enableFadeAnimation(true)
-                .setInfoText("Click here to start part A")
-                .setTarget(findViewById(R.id.btn_start_part))
+                .setInfoText("Press and hold here to reference the main problem statement")
+                .setTarget(findViewById(R.id.btn_peek_prob))
                 .setUsageId("IntroThirdAct4_" + tinydb.getString("ID_IntroView"))
-//                .setConfiguration(matIntroConfig)
                 .setListener(new MaterialIntroListener() {
                     @Override
                     public void onUserClicked(String materialIntroViewId) {
-//                        btn_start_part.performClick();
+
+                        btn_peek_probMain.performClick();
+
+                        showIntro5();
+                        //initiate the button
+//                        btn_peek_probMain.performClick();
+//                        btn_peek_probMain.setPressed(true);
+//                        btn_peek_probMain.invalidate();
+//                        // delay completion till animation completes
+//                        btn_peek_probMain.postDelayed(new Runnable() {  //delay button
+//                            public void run() {
+//                                btn_peek_probMain.setPressed(false);
+//                                btn_peek_probMain.invalidate();
+//                                //any other associated action
+//                            }
+//                        }, 800);  // .8secs delay time
                     }
-                })//THIS SHOULD BE UNIQUE ID
+                })
+                .show();
+    }
+
+    private void showIntro5() {
+        new MaterialIntroView.Builder(this)
+                .enableDotAnimation(true)
+                .setDelayMillis(2000)
+                .enableIcon(false)
+                .setFocusGravity(FocusGravity.CENTER)
+                .setFocusType(Focus.ALL)
+                .enableFadeAnimation(true)
+                .setInfoText("Click here to remove all arrows and startover. (You probably haven't drawn any arrows yet, but this may be useful later.)")
+                .setTarget(findViewById(R.id.action_startover))
+                .setUsageId("IntroThirdAct5_" + tinydb.getString("ID_IntroView"))
+                .setListener(new MaterialIntroListener() {
+                    @Override
+                    public void onUserClicked(String materialIntroViewId) {
+                        findViewById(R.id.action_startover).performClick();
+                        showIntro6();
+
+                    }
+                })
+                .show();
+    }
+
+    private void showIntro6() {
+        new MaterialIntroView.Builder(this)
+                .enableDotAnimation(true)
+                .setDelayMillis(1000)
+                .enableIcon(false)
+                .setFocusGravity(FocusGravity.CENTER)
+                .setFocusType(Focus.ALL)
+                .enableFadeAnimation(true)
+                .setInfoText("Click the red check button to see if you have drawn the forces and moments correctly. A popup bar with a HINT button will appear if you've done something wrong.")
+                .setTarget(findViewById(R.id.fab_check_done))
+                .setUsageId("IntroThirdAct6_" + tinydb.getString("ID_IntroView"))
+                .setListener(new MaterialIntroListener() {
+                    @Override
+                    public void onUserClicked(String materialIntroViewId) {
+                        fab_check_done.performClick();
+                        showIntro7();
+
+                    }
+                })
+                .show();
+    }
+
+    private void showIntro7() {
+        new MaterialIntroView.Builder(this)
+                .enableDotAnimation(true)
+                .setDelayMillis(1000)
+                .enableIcon(false)
+                .setFocusGravity(FocusGravity.CENTER)
+                .setFocusType(Focus.ALL)
+                .enableFadeAnimation(true)
+                .setInfoText("That should do it for now. Click here and start drawing forces. Good luck!")
+                .setTarget(findViewById(R.id.problem_part))
+                .setUsageId("IntroThirdAct7_" + tinydb.getString("ID_IntroView"))
+                .setListener(new MaterialIntroListener() {
+                    @Override
+                    public void onUserClicked(String materialIntroViewId) {
+                    }
+                })
                 .show();
     }
 
@@ -862,12 +954,10 @@ public class ThirdActivity extends AppCompatActivity {
                 .setPositive("Take Survey", new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(MaterialDialog dialog, DialogAction which) {
+                        showSurveyPrompt();
+//                        String url = "https://goo.gl/forms/0wl3LGhqtNYC4oyA2";
 
-                        String url = "https://goo.gl/forms/0wl3LGhqtNYC4oyA2";
-
-                        Intent openSurveyUrl = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                        startActivity(openSurveyUrl);
-                        finish();
+//                        finish();
 
                     }
                 })
@@ -879,15 +969,62 @@ public class ThirdActivity extends AppCompatActivity {
                         part_letter = tinydb.getString("part_letter");
 
                         // TODO put logic in here so it knows how many problems there are instead of hard coding in 3
-                        if (problem_number < 3) {
+//                        if (problem_number < 3) {
                             Intent mainIntent = new Intent(ThirdActivity.this, MainActivity.class);
                             startActivity(mainIntent, options.toBundle());
                             finish();
-                        }
+//                        }
                     }
                 })
                 .show();
     }
+
+    private void showSurveyPrompt() {
+
+        pauseTime = System.currentTimeMillis();
+        totalForgroundTime = tinydb.getLong("TotalForegroundTime", 0) + (pauseTime - resumeTime);
+        tinydb.putLong("TotalForegroundTime", totalForgroundTime);
+
+        // sets finish time value to Clipboard
+        String stringYouExtracted = Long.toString(totalForgroundTime);
+        setClipboard(stringYouExtracted);
+
+
+        Toast.makeText(ThirdActivity.this, "Copied time: " + stringYouExtracted + " Milliseconds to clipboard ", Toast.LENGTH_SHORT).show();
+
+        new MaterialStyledDialog(ThirdActivity.this)
+                .setTitle(stringYouExtracted + " milliseconds")
+                .setDescription("The total time you have used this app is " + stringYouExtracted + " milliseconds. This time been copied to your clipboard. Please paste it into the survey as directed.")
+                .setIcon(R.drawable.ic_spellcheck)
+                .setStyle(Style.HEADER_WITH_ICON)
+                .setScrollable(true)
+//                .setCancelable(true)
+                .setPositive("Take Survey", new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(MaterialDialog dialog, DialogAction which) {
+//                        resetEverything();
+
+
+                        String url = "https://goo.gl/forms/0wl3LGhqtNYC4oyA2";
+
+                        Intent openSurveyUrl = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                        startActivity(openSurveyUrl);
+                        finish();
+
+                    }
+                })
+
+//                .setNegative("I'll do it later", new MaterialDialog.SingleButtonCallback() {
+//                            @Override
+//                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+//
+//                            }
+//                        }
+//                )
+
+                .show();
+    }
+
 
     private void helpDialog() {
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(ThirdActivity.this);
@@ -910,13 +1047,16 @@ public class ThirdActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.third_menu, menu);
+
         startTimer(menu);
-//        showIntro1();
+        showIntro1();
+
 
         return super.onCreateOptionsMenu(menu);
     }
 
     private void startTimer(Menu menu) {
+
         rc = (ChronometerView) menu
                 .findItem(R.id.timer)
                 .getActionView();

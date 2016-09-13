@@ -116,7 +116,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="18dp"
                         android:maxLines="1"
-                        android:text="Survey (so I can graduate...)"
+                        android:text="Short Survey"
                         android:textColor="@color/colorPrimaryText"
                         android:textSize="18sp"
                         android:textStyle="normal" />
@@ -128,7 +128,7 @@
                         android:layout_alignParentBottom="true"
                         android:layout_marginBottom="18dp"
                         android:fontFamily="sans-serif-condensed"
-                        android:text="Once you've tried out my app, please help me out by taking this brief survey so I can graduate!"
+                        android:text="Once you've tried out my app, please help me out by taking this brief survey so I can graduate soon!"
                         android:textSize="14sp"
                         android:textStyle="normal" />
 

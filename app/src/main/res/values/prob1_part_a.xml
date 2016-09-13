@@ -11,6 +11,11 @@
         <item>Draw the free-body diagram of the highlighted system which includes member AB but NOT the pins at A and B.</item>
     </string-array>
 
+    <!--Hint-->
+    <string-array name="hint_prob1_partA">
+        <item>Member AB is a two force member.</item>
+    </string-array>
+
     <!--Number of Buttons-->
     <string-array name="number_of_buttons_prob1_partA">
         <item>4</item>

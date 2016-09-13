@@ -11,6 +11,11 @@
         <item>Draw the free-body diagram of the highlighted system which includes member AB, member BC, the rocker, and pins at points B and C.</item>
     </string-array>
 
+    <!--Hint-->
+    <string-array name="hint_prob3_partC">
+        <item>You\'ve nearly made it, no more hints!</item>
+    </string-array>
+
     <!--Number of Buttons-->
     <string-array name="number_of_buttons_prob3_partC">
         <item>6</item>
