@@ -12,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.transition.Explode;
 import android.transition.Fade;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -314,7 +313,7 @@ public class MainActivity extends AppCompatActivity {
                 .setOnClickButtonListener(new OnClickButtonListener() {
                     @Override
                     public void onClickButton(int which) {
-                        Log.d(MainActivity.class.getName(), Integer.toString(which));
+//                        Log.d(MainActivity.class.getName(), Integer.toString(which));
 
                         switch (which) {
                             case -2:
