@@ -3,7 +3,7 @@
 
     <!--Main Problem Statement-->
     <string-array name="mainProblemStatement_prob1_partC">
-        <item>The lever with the red handle is pin supported at C and connected to a short link AB as shown. Draw the free-body diagram of a) the whole system, b) member AB, and c) the handle. Assume all members are massless. Neglect friction. Reference the image below for parts a, b, and c. Recall that new diagrams are dependent on previous diagrams and reference them as needed. </item>
+        <item>The lever with the red handle is pin supported at C and connected to a short link AB as shown. Assume all members are massless. Neglect friction. Reference the image below for parts a, b, and c. Recall that new diagrams are dependent on previous diagrams and reference them as needed. </item>
     </string-array>
 
     <!--Part Problem Statement-->
@@ -13,7 +13,7 @@
 
     <!--Hint-->
     <string-array name="hint_prob1_partC">
-        <item>The force(s) at point B and C must be drawn the same direction as the force(s) you drew in Part A and Part B at points B and C.</item>
+        <item>The force(s) at point B and C must be drawn the same direction as the force(s) you drew in Part A and Part B at points A and C.</item>
     </string-array>
 
     <!--Number of Buttons-->

@@ -25,8 +25,8 @@ android {
         applicationId "com.chrisgaddes.reaction"
         minSdkVersion 19
         targetSdkVersion 24
-        versionCode 6
-        versionName "0.3.3"
+        versionCode 7
+        versionName "0.3.4"
     }
     buildTypes {
         release {
@@ -45,7 +45,9 @@ dependencies {
     compile 'com.android.support:support-v4:24.0.0'
     compile 'com.android.support:design:24.0.0'
     compile 'com.android.support:percent:24.0.0'
+    compile 'com.github.hotchemi:android-rate:1.0.1'
     compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.1'
+
 //    compile 'com.android.support:customtabs:24.0.0'
     compile 'com.dmitrymalkovich.android:material-design-dimens:1.2'
     compile 'com.github.javiersantos:MaterialStyledDialogs:1.5.1'

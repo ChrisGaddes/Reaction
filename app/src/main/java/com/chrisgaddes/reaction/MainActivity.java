@@ -15,6 +15,7 @@ import android.support.v7.widget.CardView;
 import android.transition.Explode;
 import android.transition.Fade;
 import android.transition.Slide;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,6 +39,8 @@ import co.mobiwise.materialintro.animation.MaterialIntroListener;
 import co.mobiwise.materialintro.shape.Focus;
 import co.mobiwise.materialintro.shape.FocusGravity;
 import co.mobiwise.materialintro.view.MaterialIntroView;
+import hotchemi.android.rate.AppRate;
+import hotchemi.android.rate.OnClickButtonListener;
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 
 public class MainActivity extends AppCompatActivity {
@@ -88,11 +91,12 @@ public class MainActivity extends AppCompatActivity {
         setupWindowAnimations();
         setContentView(R.layout.activity_main);
 
-//        str == null || str.equals(""
+
+
 
         String str_tmp = tinydb.getString("part_letter");
 
-        stop_animations = str_tmp == null || str_tmp.equals("");
+//        stop_animations = str_tmp == null || str_tmp.equals("");
 
         // enables overscroll animation like in IOS
         ScrollView scrollView = (ScrollView) findViewById(R.id.scrollview_main_activity);
@@ -113,8 +117,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 showSurveyPrompt();
-                // asks if student is taking MECH 2110 Statics and Dynamics at Auburn University
-//                queryTakingCourse();
             }
         });
 
@@ -280,29 +282,62 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void queryTakingCourse() {
-        new MaterialStyledDialog(MainActivity.this)
-                .setDescription("Are you an Auburn student taking Statics & Dynamics (MECH 2110)? ")
-                .setStyle(Style.HEADER_WITH_ICON)
-                .setTitle("Extra Credit!")
-                .setIcon(R.drawable.ic_spellcheck)
-                .setScrollable(true)
-                .setCancelable(true)
-                .setPositive("yes", new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(MaterialDialog dialog, DialogAction which) {
-//                        resetEverything();
-                        showSurveyPrompt();
-                    }
-                })
+    private void surveyReminderDialog() {
+        if (!tinydb.getBoolean("survey_taken") && tinydb.getBoolean("intro_finished")) {
 
-                .setNegative("no", new MaterialDialog.SingleButtonCallback() {
-                            @Override
-                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+//        // prompts user to rate app on Google Play STore
+//        AppRate.with(this)
+//                .setInstallDays(0) // default 10, 0 means install day.
+//                .setLaunchTimes(10) // default 10
+//                .setRemindInterval(1) // default 1
+//                .setShowLaterButton(true) // default true
+//                .setDebug(true) // default false
+//                .setMessage("Would you mind taking a moment to rate my app? Thanks!")
+//                .setOnClickButtonListener(new OnClickButtonListener() { // callback listener.
+//                    @Override
+//                    public void onClickButton(int which) {
+//                        Log.d(MainActivity.class.getName(), Integer.toString(which));
+//                    }
+//                })
+//                .monitor();
 
+            // Show a dialog if meets conditions
+//        AppRate.showRateDialogIfMeetsConditions(this);
+
+
+            // prompts user to take survey
+            AppRate.with(this)
+                    .setInstallDays(0) // default 10, 0 means install day.
+                    .setLaunchTimes(3) // default 10
+                    .setRemindInterval(1) // default 1
+                    .setShowLaterButton(true) // default true
+                    .setDebug(true) // default false
+                    .setTitle("1 minute (or less) Survey")
+                    .setTextRateNow("")
+                    .setTextNever("Yes")
+                    .setTextLater("Later")
+                    .setShowLaterButton(true)
+                    .setShowNeverButton(true)
+                    .setCancelable(true)
+                    .setOnClickButtonListener(new OnClickButtonListener() {
+                        @Override
+                        public void onClickButton(int which) {
+                            Log.d(MainActivity.class.getName(), Integer.toString(which));
+
+                            switch (which) {
+                                case -2:
+                                    showSurveyPrompt();
+                                    break;
                             }
                         }
-                ).show();
+                    })
+                    .setMessage("Would you please take a brief 3 question survey about this app to help me graduate? It will take less than 1 minute and would really help me out!")
+
+                    .monitor();
+
+            // Show a dialog if meets conditions
+            AppRate.showRateDialogIfMeetsConditions(this);
+        }
     }
 
     private void showSurveyPrompt() {
@@ -329,6 +364,10 @@ public class MainActivity extends AppCompatActivity {
                 .setPositive("Take Survey", new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(MaterialDialog dialog, DialogAction which) {
+
+                        // sets survey not taken to false (meaning it has been taken)
+                        tinydb.putBoolean("survey_taken", true);
+
                         String url = "https://goo.gl/forms/20nMeq7L0KCilwym2";
                         Intent openSurveyUrl = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                         startActivity(openSurveyUrl);
@@ -435,21 +474,19 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-
-        String str_tmp = tinydb.getString("part_letter");
-
-        if (str_tmp == null || str_tmp.equals("")) {
-            stop_animations = true;
-
-        } else {
+        if (!tinydb.getBoolean("survey_taken")) {
             stop_animations = false;
             doYoyo(Techniques.Tada, findViewById(R.id.image_survey_icon));
+        } else {
+            stop_animations = true;
         }
 
         //update foreground time
         resumeTime = System.currentTimeMillis();
         // sets various values for the cards such as subtitles and visibility of lock images
 
+        // show survey reminder dialog
+        surveyReminderDialog();
 
         if (!tinydb.getBoolean("Intro_run")) {
             showIntroPre();
@@ -513,7 +550,7 @@ public class MainActivity extends AppCompatActivity {
                 .setFocusGravity(FocusGravity.CENTER)
                 .setFocusType(Focus.ALL)
                 .setDelayMillis(50)
-                .setInfoText("After you have tried out my app, please click on this Survey button to complete a brief 3 question survey. It should take less than 1 minute and your feedback will be used as part of my Master's Thesis. I really appreciate your help!\n\nTap anywhere in the circle to continue.")
+                .setInfoText("Please take my brief brief 3 question survey later. It should take less than 1 minute and your feedback will be used as part of my Master's Thesis. I really appreciate your help!\n\nTap anywhere in the circle to continue.")
                 .setTarget(findViewById(R.id.card_survey))
                 .setUsageId("IntroMainAct1_" + tinydb.getString("ID_IntroView"))
                 .setListener(new MaterialIntroListener() {
@@ -538,6 +575,7 @@ public class MainActivity extends AppCompatActivity {
                 .setListener(new MaterialIntroListener() {
                     @Override
                     public void onUserClicked(String materialIntroViewId) {
+                        tinydb.putBoolean("intro_finished", true);
                         card_load_prob1.performClick();
                     }
                 })
@@ -722,10 +760,6 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, CanteenIntroActivity.class);
             startActivity(intent, options.toBundle());
 
-//            showIntroPre();
-
-//            tinydb.remove("TotalForegroundTime"); //TODO: remove this
-
             // TODO This is a new install (or the user cleared the shared preferences)
         } else if (currentVersionCode > savedVersionCode) {
             // TODO This is an upgrade
@@ -746,6 +780,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void resetEverything() {
+
+        // resets rating and survey dialog prompts
+        AppRate.with(this).clearAgreeShowDialog();
+
 //        Snackbar.make(findViewById(R.id.main_activity_Relative_Layout), "App was reset successfully", Snackbar.LENGTH_LONG).show();
         tinydb.clear();
         resumeTime = System.currentTimeMillis();

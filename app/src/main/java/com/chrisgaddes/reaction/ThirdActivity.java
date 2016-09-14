@@ -518,7 +518,7 @@ public class ThirdActivity extends AppCompatActivity {
                 .setFocusType(Focus.ALL)
                 .setDelayMillis(500)
                 .enableFadeAnimation(true)
-                .setInfoText("This is the statement for part A of Problem 1. Read this carefully and tap in the circle to continue.")
+                .setInfoText("Read the problem statement for Part A carefully and tap in the circle to continue.\n\n COMMON MISTAKE: Just because the pins (the small black circles) are NOT included in the free-body diagram does NOT mean there are no forces applied at points A and B.")
                 .setTarget(findViewById(R.id.tv_statement))
                 .setUsageId("IntroThirdAct1_" + tinydb.getString("ID_IntroView"))
 //                .setConfiguration(matIntroConfig)
@@ -590,7 +590,7 @@ public class ThirdActivity extends AppCompatActivity {
 
     private void showIntro5() {
         new MaterialIntroView.Builder(this)
-//                .enableDotAnimation(true)
+                .enableDotAnimation(true)
                 .setDelayMillis(2000)
                 .enableIcon(false)
                 .setFocusGravity(FocusGravity.CENTER)
@@ -879,7 +879,7 @@ public class ThirdActivity extends AppCompatActivity {
     }
 
     private void showDialogCorrectPartC() {
-        description = "All forces placed correctly! You finished in " + time_string_for_dialog + "Problem " + problem_number + " is now complete.";
+        description = "All forces placed correctly! You finished in " + time_string_for_dialog + " Problem " + problem_number + " is now complete.";
         strDialogNextButton = "Main Menu";
         new MaterialStyledDialog(this)
                 .setTitle("Correct! Problem " + problem_number + " finished!")

@@ -401,16 +401,10 @@ public class DrawArrowsView extends ImageView {
 
                     // flips to mirror if val3 does not equal 0.0
                     // If you want force angle to use "same" angle (not op) as it's dependency which
-                    // is defined in dependency row, then set the opposite allowed Row to 1.0 (default).
+                    // is defined in dependency row, then set the opposite allowed Row to 2.0 .
                     // If you want it to use the op angle (i.e. mirror it's dependency) the set the
-                    // opposite allowed Row to 2.0 (or any value but 1.0)
-                    if (val3.equals(1.0)) {
-                        if (val2.equals(1.0)) {
-                            val2 = 2.0;
-                        } else {
-                            val2 = 1.0;
-                        }
-                    } else {
+                    // opposite allowed Row to 1.0
+                    if (val3.equals(2.0)) {
                         // replaced opposite allowed row with default "allowed" flag: 1.0
                         checkMatrix.get(btn).get(3).add(1.0);
                         if (val2.equals(1.0)) {
@@ -418,6 +412,15 @@ public class DrawArrowsView extends ImageView {
                         } else {
                             val2 = 2.0;
                         }
+                    } else if (val3.equals(1.0)) {
+                        checkMatrix.get(btn).get(3).add(1.0);
+                        if (val2.equals(1.0)) {
+                            val2 = 2.0;
+                        } else {
+                            val2 = 1.0;
+                        }
+
+
                     }
 
                     val6 = 0.0;
@@ -1512,7 +1515,7 @@ public class DrawArrowsView extends ImageView {
                 rounded_opp_ang = 100.0;
 
                 // checks if opposite allowed row and used row
-                if (checkMatrix.get(btn_chosen).get(3).get(u) == 1.0 && checkMatrix.get(btn_chosen).get(1).get(u) == 0.0) {
+                if ((checkMatrix.get(btn_chosen).get(3).get(u) == 1.0 || checkMatrix.get(btn_chosen).get(3).get(u) == 2.0) && checkMatrix.get(btn_chosen).get(1).get(u) == 0.0) {
                     // calculate opposite angle
                     if (checkMatrix.get(btn_chosen).get(0).get(u) <= 0.0) { // TODO I changed this to or equals from just less than. If this breaks things then remove it
                         opp_ang = checkMatrix.get(btn_chosen).get(0).get(u) + pi;
@@ -1524,7 +1527,7 @@ public class DrawArrowsView extends ImageView {
                 }
 
                 if (checkMatrix.get(btn_chosen).get(0).get(u).equals(100.0)) {
-                    // set finished row
+                    // set finished row for unsused angle positions
                     checkMatrix.get(btn_chosen).get(5).set(u, 1.0);
                 }
 
