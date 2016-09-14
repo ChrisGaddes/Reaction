@@ -1,11 +1,9 @@
 package com.chrisgaddes.reaction;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -14,9 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.transition.Explode;
 import android.transition.Fade;
-import android.transition.Slide;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -90,8 +86,6 @@ public class MainActivity extends AppCompatActivity {
 
         setupWindowAnimations();
         setContentView(R.layout.activity_main);
-
-
 
 
         String str_tmp = tinydb.getString("part_letter");
@@ -283,8 +277,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void surveyReminderDialog() {
-        if (!tinydb.getBoolean("survey_taken") && tinydb.getBoolean("intro_finished")) {
-
 //        // prompts user to rate app on Google Play STore
 //        AppRate.with(this)
 //                .setInstallDays(0) // default 10, 0 means install day.
@@ -301,43 +293,43 @@ public class MainActivity extends AppCompatActivity {
 //                })
 //                .monitor();
 
-            // Show a dialog if meets conditions
+        // Show a dialog if meets conditions
 //        AppRate.showRateDialogIfMeetsConditions(this);
 
 
-            // prompts user to take survey
-            AppRate.with(this)
-                    .setInstallDays(0) // default 10, 0 means install day.
-                    .setLaunchTimes(3) // default 10
-                    .setRemindInterval(1) // default 1
-                    .setShowLaterButton(true) // default true
-                    .setDebug(true) // default false
-                    .setTitle("1 minute (or less) Survey")
-                    .setTextRateNow("")
-                    .setTextNever("Yes")
-                    .setTextLater("Later")
-                    .setShowLaterButton(true)
-                    .setShowNeverButton(true)
-                    .setCancelable(true)
-                    .setOnClickButtonListener(new OnClickButtonListener() {
-                        @Override
-                        public void onClickButton(int which) {
-                            Log.d(MainActivity.class.getName(), Integer.toString(which));
+        // prompts user to take survey
+        AppRate.with(this)
+                .setInstallDays(0) // default 10, 0 means install day.
+                .setLaunchTimes(3) // default 10
+                .setRemindInterval(1) // default 1
+                .setShowLaterButton(true) // default true
+                .setDebug(true) // default false
+                .setTitle("1 minute (or less) Survey")
+                .setTextRateNow("")
+                .setTextNever("Yes")
+                .setTextLater("Later")
+                .setShowLaterButton(true)
+                .setShowNeverButton(true)
+                .setCancelable(true)
+                .setOnClickButtonListener(new OnClickButtonListener() {
+                    @Override
+                    public void onClickButton(int which) {
+                        Log.d(MainActivity.class.getName(), Integer.toString(which));
 
-                            switch (which) {
-                                case -2:
-                                    showSurveyPrompt();
-                                    break;
-                            }
+                        switch (which) {
+                            case -2:
+                                showSurveyPrompt();
+                                break;
                         }
-                    })
-                    .setMessage("Would you please take a brief 3 question survey about this app to help me graduate? It will take less than 1 minute and would really help me out!")
+                    }
+                })
+                .setMessage("Would you please take a brief 3 question survey about this app to help me graduate? It will take less than 1 minute and would really help me out!")
 
-                    .monitor();
+                .monitor();
 
-            // Show a dialog if meets conditions
-            AppRate.showRateDialogIfMeetsConditions(this);
-        }
+        // Show a dialog if meets conditions
+        AppRate.showRateDialogIfMeetsConditions(this);
+
     }
 
     private void showSurveyPrompt() {
@@ -474,11 +466,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        if (!tinydb.getBoolean("survey_taken")) {
-            stop_animations = false;
-            doYoyo(Techniques.Tada, findViewById(R.id.image_survey_icon));
-        } else {
-            stop_animations = true;
+        if (tinydb.getBoolean("intro_finished")){
+            if (!tinydb.getBoolean("survey_taken")) {
+                stop_animations = false;
+                doYoyo(Techniques.Tada, findViewById(R.id.image_survey_icon));
+            } else {
+                stop_animations = true;
+            }
         }
 
         //update foreground time
@@ -486,7 +480,9 @@ public class MainActivity extends AppCompatActivity {
         // sets various values for the cards such as subtitles and visibility of lock images
 
         // show survey reminder dialog
-        surveyReminderDialog();
+        if (!tinydb.getBoolean("survey_taken") && tinydb.getBoolean("intro_finished")) {
+            surveyReminderDialog();
+        }
 
         if (!tinydb.getBoolean("Intro_run")) {
             showIntroPre();
@@ -670,17 +666,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+
     private void setupWindowAnimations() {
-
-        Slide slide = new Slide();
-        slide.setDuration(250);
-        slide.setSlideEdge(Gravity.RIGHT);
-
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
         Fade fade = new Fade();
         fade.setDuration(250);
 
-        Explode explode = new Explode();
+        Explode explode = null;
+
+            explode = new Explode();
+
         explode.setDuration(250);
 
         ////exclude toolbar
@@ -695,6 +690,7 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setReturnTransition(explode);
         getWindow().setAllowEnterTransitionOverlap(false);
         getWindow().setAllowReturnTransitionOverlap(false);
+        }
     }
 
     @Override
@@ -793,7 +789,6 @@ public class MainActivity extends AppCompatActivity {
         setCardValues();
 
         tinydb.putBoolean("Intro_run", false);
-
 
 
         ScrollView scrollview_main_activity = (ScrollView) findViewById(R.id.scrollview_main_activity);

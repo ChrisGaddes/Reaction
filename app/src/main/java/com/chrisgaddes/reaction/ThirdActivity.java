@@ -1,6 +1,5 @@
 package com.chrisgaddes.reaction;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -19,12 +18,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.transition.Explode;
-import android.transition.Fade;
-import android.transition.Slide;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -732,24 +728,18 @@ public class ThirdActivity extends AppCompatActivity {
         unbindDrawables(findViewById(R.id.relativeLayout_Main));
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void setupWindowAnimations() {
-        Slide slide = new Slide();
-        slide.setDuration(250);
-        slide.setSlideEdge(Gravity.RIGHT);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            Explode explode = new Explode();
+            explode.setDuration(250);
 
-        Fade fade = new Fade();
-        fade.setDuration(250);
-
-        Explode explode = new Explode();
-        explode.setDuration(250);
-
-        //exclude toolbar
-        explode.excludeTarget(R.id.toolbar, true);
-        //exclude status bar
-        explode.excludeTarget(android.R.id.statusBarBackground, true);
-        //exclude navigation bar
-        explode.excludeTarget(android.R.id.navigationBarBackground, true);
+            //exclude toolbar
+            explode.excludeTarget(R.id.toolbar, true);
+            //exclude status bar
+            explode.excludeTarget(android.R.id.statusBarBackground, true);
+            //exclude navigation bar
+            explode.excludeTarget(android.R.id.navigationBarBackground, true);
+        }
     }
 
     private void setDialogArrowsCorrect() {

@@ -1,8 +1,6 @@
 package com.chrisgaddes.reaction;
 
-import android.annotation.TargetApi;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
@@ -198,22 +196,24 @@ public class SecondActivity extends AppCompatActivity {
         finish();
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+
     private void setupWindowAnimations() {
-        Explode explode = new Explode();
-        explode.setDuration(250);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            Explode explode = new Explode();
+            explode.setDuration(250);
 
-        // TODO remove this stuff if it doesn't do anything
-        //exclude status bar
-        explode.excludeTarget(android.R.id.statusBarBackground, true);
+            // TODO remove this stuff if it doesn't do anything
+            //exclude status bar
+            explode.excludeTarget(android.R.id.statusBarBackground, true);
 
-        //exclude navigation bar
-        explode.excludeTarget(android.R.id.navigationBarBackground, true);
+            //exclude navigation bar
+            explode.excludeTarget(android.R.id.navigationBarBackground, true);
 
-        getWindow();
-        getWindow().setEnterTransition(explode);
-        getWindow().setReturnTransition(explode);
-        getWindow().setAllowEnterTransitionOverlap(false);
+            getWindow();
+            getWindow().setEnterTransition(explode);
+            getWindow().setReturnTransition(explode);
+            getWindow().setAllowEnterTransitionOverlap(false);
+        }
     }
 
     private void helpDialog() {
