@@ -262,13 +262,13 @@
         <item>0.0</item>
     </string-array>
     <string-array name="forceAngleRow_prob3_partC_btn4">
-        <item>0.0</item>
+        <item>1.0</item>
         <item>0.0</item>
         <item>0.0</item>
         <item>0.0</item>
     </string-array>
     <string-array name="oppositeAllowedRow_prob3_partC_btn4">
-        <item>0.0</item>
+        <item>1.0</item>
         <item>1.0</item>
         <item>1.0</item>
         <item>1.0</item>
@@ -286,10 +286,10 @@
         <item>0.0</item>
     </string-array>
     <string-array name="dependencyRow_prob3_partC_btn4">
-        <item>prob3_partA_btn3_row0</item>
-        <item>0.0</item>
-        <item>0.0</item>
         <item>1.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.0</item>
     </string-array>
     <string-array name="usedSameOrOpRow_prob3_partC_btn4">
         <item>0.0</item>
