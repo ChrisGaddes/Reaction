@@ -1,69 +1,8 @@
 <resources>
     <string name="app_name">Reaction</string>
-    <string name="str_btn_get_started">Get Started</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="str_next_problem">Next Problem</string>
-    <string name="str_all_arrows_placed_correctly">All forces and moments placed correctly!</string>
     <string name="str_get_started">Okay</string>
-    <string name="str_problem_statement">Draw the free-body diagram of the highlighted member. The member has mass m and gravity is downward</string>
-    <string name="str_problem_title">Problem #1</string>
     <string name="str_help_dialog_description">Add forces by tapping and dragging outward from points\n\nAdd moments by long pressing at points\n\nRemove an arrow or moment by dragging its arrow head back into itself\n\nChange direction of a moment by dragging the arrow head clockwise or counterclockwise in a circle\n\nCorrect arrows turn from gray to black. Gray arrows must be removed\n\nPress the "Check" button when finished</string>
 
-    <string name="title_menu_github">View on GitHub</string>
-    <string name="title_menu_reset_first_start">Reset "First start" flag</string>
-
-    <string name="label_options">Options:</string>
-    <string name="label_option_fullscreen">Enable fullscreen</string>
-    <string name="label_option_scrollable">Scrollable slides</string>
-    <string name="label_option_custom_fragments">Enable custom fragments</string>
-    <string name="label_option_permissions">Enable permission request</string>
-    <string name="label_option_show_back">Show back button</string>
-    <string name="label_option_show_next">Show next button</string>
-    <string name="label_option_skip_enabled">Enable skip button</string>
-    <string name="label_option_finish_enabled">Enable finish button</string>
-    <string name="label_option_get_started_enabled">Enable \"Get Started\" button</string>
-    <string name="label_start_intro">Start intro</string>
-    <string name="label_or">or</string>
-    <string name="label_demos">Demos: </string>
-    <string name="label_start_canteen">\"Canteen\" intro</string>
-    <string name="label_start_splash">Splash screen</string>
-
-    <string name="title_material_metaphor">Material is the metaphor</string>
-    <string name="title_material_bold">Bold, graphic, intentional</string>
-    <string name="title_material_motion">Motion provides meaning</string>
-    <string name="title_material_shadow">Light and shadow</string>
-
-    <string name="description_material_metaphor">A material metaphor is the unifying theory of a rationalized space and a system of motion. The material is grounded in tactile reality, inspired by the study of paper and ink, yet technologically advanced and open to imagination and magic.</string>
-    <string name="description_material_bold">The foundational elements of print-based design – typography, grids, space, scale, color, and use of imagery – guide visual treatments.</string>
-    <string name="description_material_motion">Motion respects and reinforces the user as the prime mover. Primary user actions are inflection points that initiate motion, transforming the whole design.</string>
-    <string name="description_material_shadow">Within the material environment, virtual lights illuminate the scene. Key lights create directional shadows, while ambient light creates soft shadows from all angles.</string>
-
-    <string name="title_permissions">Requesting permissions was never easier.</string>
-    <string name="description_permissions">This app needs the camera and storage permission.\nIt\'s only to show how permission requests work in this library and we won\'t do anything with the granted permissions.</string>
-    <string name="label_grant_permissions">Please grant the permissions before proceeding.</string>
-
-    <string name="label_button_cta">Click me!</string>
-    <string name="toast_button_cta">Hey, that\'s how custom CTA buttons work in material-intro!</string>
-
-    <string name="title_fragment_login">This is a custom fragment.</string>
-    <string name="hint_fake_username">Fake username</string>
-    <string name="hint_fake_password">Fake password</string>
-    <string name="label_fake_login">Fake login</string>
-    <string name="label_fake_login_loading">Loading…</string>
-    <string name="label_fake_login_success">Logged in ☺</string>
-    <string name="label_fake_login_success_message">Successfully faked login.</string>
-    <string name="label_fill_out_form">Please fill out the form before proceeding.</string>
-
-    <string name="title_fragment_custom">Take off!</string>
-
-    <string name="label_activity_finish">Nothing here…\n…just a demo how to create a splash screen intro.</string>
-
-    <string name="title_canteen_intro1" translatable="false">Problems right on your phone</string>
-    <string name="title_canteen_intro2" translatable="false">Cash on delivery</string>
-    <string name="title_canteen_intro3" translatable="false">Choose what you like</string>
-    <string name="description_canteen_intro1" translatable="false">Have a couple minutes of down time? Just polish up your free-body diagramming skills.</string>
-    <string name="description_canteen_intro2" translatable="false">Order and we\'ll deliver the menu right in front of your door.</string>
-    <string name="description_canteen_intro3" translatable="false">Bookmark a menu you wanted to save and keep track of its status whether it\'s available or not.</string>
     <string name="label_button_cta_canteen_intro" translatable="false">Get started</string>
     <string name="str_finished">Finished</string>
     <string name="str_locked">Locked</string>

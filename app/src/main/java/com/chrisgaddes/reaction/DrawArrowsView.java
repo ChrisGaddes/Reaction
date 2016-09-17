@@ -5,7 +5,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -17,7 +16,6 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
@@ -44,13 +42,9 @@ import java.util.List;
 public class DrawArrowsView extends ImageView {
     private static final String TAG = "ThirdActivity";
 
-    final double pi = Math.PI;
+    private final double pi = Math.PI;
 
-    private Rect src;
-    private Rect dest;
-
-    //double angles[] = {-pi, -3 * pi / 4, -pi / 2, -pi / 4, 0, pi / 4, pi / 2, 3 * pi / 4, pi};
-    final double[] angles = {-pi, -5 * pi / 6, -2 * pi / 3, -pi / 2, -pi / 3, -pi / 6, 0, pi / 6, pi / 3, pi / 2, 2 * pi / 3, 5 * pi / 6, pi, 2 * pi};
+    private final double[] angles = {-pi, -5 * pi / 6, -2 * pi / 3, -pi / 2, -pi / 3, -pi / 6, 0, pi / 6, pi / 3, pi / 2, 2 * pi / 3, 5 * pi / 6, pi, 2 * pi};
 
     // Declare variables
     // TODO: Add descriptions of what each member variable is used for
@@ -92,37 +86,20 @@ public class DrawArrowsView extends ImageView {
     private boolean clicked_on_arrow_head;
     private boolean moved_outside_radius_already;
 
-    int eventaction;
-    private int i;
-    private int k;
-    private double opp_ang;
-    private double rounded_opp_ang;
     private int offset;
     private float stepAngle;
     private float touchAngle;
     private float deltaAngle;
 
-    private Canvas canvas;
     private Bitmap problem_image_bitmap;
 
     private boolean invalidateNow;
 
-    private int arrow_head_point_x;
-    private int arrow_head_point_y;
-    private boolean arrow_head_inward;
-
-    private TheObserver mObserver;
-
     private boolean allArrowsCorrect;
 
-    public TinyDB tinydb;
+    private TinyDB tinydb;
 
     private int btn_chosen;
-    private int u;
-
-    private String[] str_part_statement;
-
-    private SharedPreferences.OnSharedPreferenceChangeListener prefListener;
 
     //TODO consider http://stackoverflow.com/questions/32324876/how-to-save-an-answer-in-a-riddle-game-without-creating-a-database
 
@@ -145,17 +122,12 @@ public class DrawArrowsView extends ImageView {
     private Path path_arrow;
     private Path null_path;
 
-    private int x_b;
-    private int y_b;
-
-    private Rect rectDone;
-
     private int X;
     private int Y;
     private int x_tmp;
     private int y_tmp;
-    int last_touch_x;
-    int last_touch_y;
+    private int last_touch_x;
+    private int last_touch_y;
 
     private int btn_loc_x;
     private int btn_loc_y;
@@ -165,7 +137,6 @@ public class DrawArrowsView extends ImageView {
     private double len_arrow_shaft_current;
     private double angle;
     private double angle_difference;
-    private float sweep_angle;
     private double startAngle;
     private boolean used_already2;
 
@@ -181,55 +152,16 @@ public class DrawArrowsView extends ImageView {
     private boolean match;
 
     private boolean debuggingTextToggle;
-    private boolean moving_clockwise;
 
-    int value;
+    private int value;
 
     private long viewHeight;
     private long viewWidth;
-    private Drawable mFocusedImage;
-    private Drawable mGrayedImage;
 
     private int problem_number;
     private String part_letter;
 
-    private String str_angleRow;
-    private String str_usedRow;
-    private String str_forceAngleRow;
-    private String str_oppositeAllowedRow;
-    private String str_clockwiseRow;
-    private String str_finishedRow;
-    private String str_dependencyRow;
     private String str_usedSameOrOpRow;
-
-    private String[] mangleRow;
-    private String[] musedRow;
-    private String[] mforceAngleRow;
-    private String[] moppositeAllowedRow;
-    private String[] mclockwiseRow;
-    private String[] mfinishedRow;
-    private String[] mdependencyRow;
-    private String[] musedSameOrOpRow;
-
-    private BigDecimal tmp0;
-    private BigDecimal tmp1;
-    private BigDecimal tmp2;
-    private BigDecimal tmp3;
-    private BigDecimal tmp4;
-    private BigDecimal tmp5;
-    private BigDecimal tmp6;
-    private BigDecimal tmp7;
-    private Double opSwitchVal;
-    private BigDecimal opSwitchTmp;
-
-    private Double val0;
-    private Double val1;
-    private Double val2;
-    private Double val3;
-    private Double val4;
-    private Double val5;
-    private Double val6;
-    private Double val7;
 
     /**
      * Description of what this Constructor does/is used for...
@@ -292,11 +224,7 @@ public class DrawArrowsView extends ImageView {
         setArrowStyle();
     }
 
-
-    /**
-     * @param context //TODO add what context is used for
-     */
-    private void setButtonPoints(Context context) {
+    private void setButtonPoints() {
         // this method sets the location of the points
         // TODO: import these from database
 
@@ -319,7 +247,7 @@ public class DrawArrowsView extends ImageView {
         String[] mnumberOfButtons = getResources().getStringArray(getResId(str_number_of_buttons, R.array.class));
         int number_of_buttons = Integer.parseInt(mnumberOfButtons[0]);
 
-        mforceAngleRow = new String[4];
+        String[] mforceAngleRow = new String[4];
 
         for (int btn = 0; btn < number_of_buttons; btn++) {
 
@@ -345,49 +273,52 @@ public class DrawArrowsView extends ImageView {
 
             for (int c = 0; c < 4; c++) { // TODO remove hardcoded 5 here
 
-                str_angleRow = "angleRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
-                str_usedRow = "usedRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
-                str_forceAngleRow = "forceAngleRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
-                str_oppositeAllowedRow = "oppositeAllowedRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
-                str_clockwiseRow = "clockwiseRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
-                str_finishedRow = "finishedRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
-                str_dependencyRow = "dependencyRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
+                String str_angleRow = "angleRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
+                String str_usedRow = "usedRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
+                String str_forceAngleRow = "forceAngleRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
+                String str_oppositeAllowedRow = "oppositeAllowedRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
+                String str_clockwiseRow = "clockwiseRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
+                String str_finishedRow = "finishedRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
+                String str_dependencyRow = "dependencyRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
                 str_usedSameOrOpRow = "usedSameOrOpRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn;
 
-                mangleRow = getResources().getStringArray(getResId(str_angleRow, R.array.class));
-                musedRow = getResources().getStringArray(getResId(str_usedRow, R.array.class));
+                String[] mangleRow = getResources().getStringArray(getResId(str_angleRow, R.array.class));
+                String[] musedRow = getResources().getStringArray(getResId(str_usedRow, R.array.class));
                 // mforceAngleRow is defined below
-                moppositeAllowedRow = getResources().getStringArray(getResId(str_oppositeAllowedRow, R.array.class));
-                mclockwiseRow = getResources().getStringArray(getResId(str_clockwiseRow, R.array.class));
-                mfinishedRow = getResources().getStringArray(getResId(str_finishedRow, R.array.class));
-                mdependencyRow = getResources().getStringArray(getResId(str_dependencyRow, R.array.class));
-                musedSameOrOpRow = getResources().getStringArray(getResId(str_usedSameOrOpRow, R.array.class));
+                String[] moppositeAllowedRow = getResources().getStringArray(getResId(str_oppositeAllowedRow, R.array.class));
+                String[] mclockwiseRow = getResources().getStringArray(getResId(str_clockwiseRow, R.array.class));
+                String[] mfinishedRow = getResources().getStringArray(getResId(str_finishedRow, R.array.class));
+                String[] mdependencyRow = getResources().getStringArray(getResId(str_dependencyRow, R.array.class));
+                String[] musedSameOrOpRow = getResources().getStringArray(getResId(str_usedSameOrOpRow, R.array.class));
 
-                tmp0 = new Expression(mangleRow[c]).eval();
-                tmp1 = new Expression(musedRow[c]).eval();
-                tmp3 = new Expression(moppositeAllowedRow[c]).eval();
-                tmp4 = new Expression(mclockwiseRow[c]).eval();
-                tmp5 = new Expression(mfinishedRow[c]).eval();
+                BigDecimal tmp0 = new Expression(mangleRow[c]).eval();
+                BigDecimal tmp1 = new Expression(musedRow[c]).eval();
+                BigDecimal tmp3 = new Expression(moppositeAllowedRow[c]).eval();
+                BigDecimal tmp4 = new Expression(mclockwiseRow[c]).eval();
+                BigDecimal tmp5 = new Expression(mfinishedRow[c]).eval();
                 // tmp6 is defined below
-                tmp7 = new Expression(musedSameOrOpRow[c]).eval();
+                BigDecimal tmp7 = new Expression(musedSameOrOpRow[c]).eval();
 
-                val0 = Double.valueOf(String.valueOf(tmp0));
-                val1 = Double.valueOf(String.valueOf(tmp1));
+                Double val0 = Double.valueOf(String.valueOf(tmp0));
+                Double val1 = Double.valueOf(String.valueOf(tmp1));
                 // val2 is defined below
-                val3 = Double.valueOf(String.valueOf(tmp3));
-                val4 = Double.valueOf(String.valueOf(tmp4));
-                val5 = Double.valueOf(String.valueOf(tmp5));
+                Double val3 = Double.valueOf(String.valueOf(tmp3));
+                Double val4 = Double.valueOf(String.valueOf(tmp4));
+                Double val5 = Double.valueOf(String.valueOf(tmp5));
 
-                val7 = Double.valueOf(String.valueOf(tmp7));
+                Double val7 = Double.valueOf(String.valueOf(tmp7));
 
                 // Sets forceAngleRow from previous problem
+                Double val2;
+                Double val6;
+                BigDecimal tmp2;
                 if (mdependencyRow[c].equals("0.0") || mdependencyRow[c].equals("1.0")) {
                     // if mdependency row equals 0.0 than the arrow head should be left facing outward
                     // if mdependency row equals 1.0 than the arrow head should be flipped to inward
 
                     mforceAngleRow = getResources().getStringArray(getResId(str_forceAngleRow, R.array.class));
                     tmp2 = new Expression(mforceAngleRow[c]).eval();
-                    tmp6 = new Expression(mdependencyRow[c]).eval();
+                    BigDecimal tmp6 = new Expression(mdependencyRow[c]).eval();
 
                     val2 = Double.valueOf(String.valueOf(tmp2));
                     val6 = Double.valueOf(String.valueOf(tmp6));
@@ -459,7 +390,6 @@ public class DrawArrowsView extends ImageView {
 
         // loads tinydb database
         tinydb = new TinyDB(getContext());
-//        tinydb.clear(); //TODO
 
         // toggles debugging text - this value can be changed in menu in app
         debuggingTextToggle = SP.getBoolean("debuggingTextToggle", false);
@@ -568,7 +498,7 @@ public class DrawArrowsView extends ImageView {
 
         // TODO run this off main thread IMPORTANT
         if (!SetButtonPoints_RunAlready) {
-            setButtonPoints(getContext());
+            setButtonPoints();
         }
     }
 
@@ -581,49 +511,22 @@ public class DrawArrowsView extends ImageView {
             problem_number = tinydb.getInt("problem_number");
             part_letter = tinydb.getString("part_letter");
 
-
-
-//
-////            getResId("prob1", R.drawable.class)
-//
-
             String drawable_name = "prob" + problem_number + "_part" + part_letter.toLowerCase();
 
             int resID = getResId(drawable_name, R.drawable.class); // this.getContext().getResources().getIdentifier("prob1", "drawable", getContext().getPackageName());
 
-
             problem_image_bitmap = BitmapFactory.decodeResource(this.getResources(), resID);
-
-            src = new Rect(0, 0, canvas.getWidth(), canvas.getHeight());
-            dest = new Rect(0, 0, (int) viewWidth, (int) viewHeight);
-
-//            canvas.drawBitmap(problem_image_bitmap,src,dest,null);
-
-//            problem_image_bitmap = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888);
-//            Canvas canvasToSave = new Canvas(savedBitmap);
-//            canvas.drawBitmap(savedBitmap, 0, 0, new Paint());
         }
 
-//        canvas.drawBitmap(problem_image_bitmap,src,dest,null);
         if (invalidateNow) {
             invalidateNow = false;
             invalidate();
         }
 
-//        Rect imageBounds = canvas.getClipBounds();  // Adjust this for where you want it
-
         // draws rectangles around arrowheads
         for (Rect rect1 : rectListArrowHead) {
             canvas.drawRect(rect1, paint_arrow_head_box);
         }
-
-        x_b = (int) dim_btn_radius * 2;
-        y_b = (int) dim_btn_radius * 2;
-
-        // TODO remove in final build
-        rectDone = new Rect(x_b - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), y_b - ((int) dim_btn_radius + (int) dim_btn_radius_buffer), x_b + ((int) dim_btn_radius + (int) dim_btn_radius_buffer), y_b + ((int) dim_btn_radius + (int) dim_btn_radius_buffer));
-
-        canvas.drawRect(rectDone, paint_arrow_head_box);
 
         // draws rectangles around points
         for (Rect rect7 : rectListButtons) {
@@ -643,7 +546,6 @@ public class DrawArrowsView extends ImageView {
         // draws correct arrows from pathlist pthLst_arrows
         for (Path pthLst_arrows : pathListCorrect) {
             canvas.drawPath(pthLst_arrows, paint_arrow_correct_location_shadow);
-//            canvas.drawPath(pthLst_arrows, paint_arrow_correct_location);
         }
 
         if (debuggingTextToggle) {
@@ -703,12 +605,10 @@ public class DrawArrowsView extends ImageView {
     }
 
     // triggers long press
-    final Handler handler = new Handler();
+    private final Handler handler = new Handler();
 
-    Runnable mLongPressed = new Runnable() {
+    private Runnable mLongPressed = new Runnable() {
         public void run() {
-            //sets clockwise to true
-            moving_clockwise = true;
 
             // first loop in drawMoment has not occured yet for this particular moment
             used_already2 = false;
@@ -734,7 +634,7 @@ public class DrawArrowsView extends ImageView {
         }
     };
 
-    void removeValuesFromArraylists(int mRectListArrowHead_indice) {
+    private void removeValuesFromArraylists(int mRectListArrowHead_indice) {
         // removes values from Arraylists
         path_arrow.reset();
         angleListArrowHead.remove(mRectListArrowHead_indice);
@@ -753,7 +653,7 @@ public class DrawArrowsView extends ImageView {
     }
 
     public boolean onTouchEvent(MotionEvent event) {
-        eventaction = event.getAction();
+        int eventaction = event.getAction();
         X = (int) event.getX();
         Y = (int) event.getY();
 
@@ -768,25 +668,7 @@ public class DrawArrowsView extends ImageView {
                 break;
 
             case MotionEvent.ACTION_UP:
-
-                runFromMainActivityClass();
-
-//                new MaterialIntroView.Builder(thirdActivity)
-//                        .enableDotAnimation(true)
-//                        .enableIcon(false)
-//                        .setFocusGravity(FocusGravity.CENTER)
-//                        .setFocusType(Focus.MINIMUM)
-//                        .setDelayMillis(500)
-//                        .enableFadeAnimation(true)
-//                        .performClick(false)
-//                        .setInfoText("Hi There! Welcome to Reaction!")
-//                        .setUsageId("2") //THIS SHOULD BE UNIQUE ID
-//                        .show();
-
                 if (clicked_on_button || clicked_on_arrow_head) {
-
-                    // Checks all arrows that are currently placed
-//                    checkAllArrows();
 
                     // TODO move this into loop right below. Seems redundant
                     // checks if release is inside button
@@ -940,30 +822,15 @@ public class DrawArrowsView extends ImageView {
 
                             // checks if force arrow is correct
 
-                            // TODO fix it so it can tell which arrow was just placed
-//                            setAllToUnused();
-//                            checkArrowIsCorrect(rectListArrowHead_indice);
-
                             checkAllArrows();
 
-                            showSnackBarArrowPlaced(rectListArrowHead_indice);
+                            showSnackBarArrowPlaced();
                         }
                     });
 
                     // starts animator to snap arrow into position
                     animator.start();
 
-                    // TODO remove this if unwanted
-                    // prints angle snapped to in degrees to snackbar
-//                     All angles are inverted, so this if statement shows 0.0 instead of -0.0
-//                    double angle_degrees;
-//                    if (angles[idx] == 0.0) {
-//                        angle_degrees = Math.round(Math.toDegrees(angles[idx]));
-//                    } else {
-//                        angle_degrees = Math.round(Math.toDegrees(-angles[idx]));
-//                    }
-//
-//                    Snackbar.make(this, "Created force at " + angle_degrees + "\u00B0", Snackbar.LENGTH_SHORT).show();
                     inside_button = false;
                 }
                 break;
@@ -1009,62 +876,18 @@ public class DrawArrowsView extends ImageView {
     public boolean runCheckIfFinished() {
         checkAllArrows();
 
-        int[][] states = new int[][]{
-                new int[]{android.R.attr.state_enabled}, // enabled
-                new int[]{-android.R.attr.state_enabled}, // disabled
-                new int[]{-android.R.attr.state_checked}, // unchecked
-                new int[]{android.R.attr.state_pressed}  // pressed
-        };
-
-        int[] colors = new int[]{
-                Color.GREEN,
-                Color.GREEN,
-                Color.GREEN,
-                Color.BLUE
-        };
-
-        ColorStateList myList = new ColorStateList(states, colors);
-
         if (allArrowsCorrect = checkIfFinished()) {
 
             // Writes SameOrOpRow non-zero values to a tinyDB database
             writeSameOrOpRowToDatabase();
 
-//            Snackbar.make(this, "Finished!", Snackbar.LENGTH_SHORT).show();
-//            btn_check_done.setBackgroundTintList(myList);
-//            showDialogArrowsCorrect();
             return true;
         } else {
             return false;
-//            invalidate();
-
         }
     }
 
-//    // dialog that says arrows were placed correctly
-//    private boolean showDialogArrowsCorrect() {
-//        new MaterialStyledDialog(getContext())
-//                .setTitle("Correct!")
-//                .setDescription(R.string.str_all_arrows_placed_correctly)
-//                .setIcon(R.drawable.ic_check)
-//                .setStyle(Style.HEADER_WITH_ICON)
-//
-//                .setPositive(getResources().getString(R.string.str_next_problem), new MaterialDialog.SingleButtonCallback() {
-//                    @Override
-//                    public void onClick(MaterialDialog dialog, DialogAction which) {
-//                        Log.d("MaterialStyledDialogs", "Do something!");
-//                        tinydb.putString("part_letter", "B");
-//                        Context context = getContext();
-//                        Intent i = new Intent(context, ThirdActivity.class);
-//                        context.startActivity(i);
-//                    }
-//                })
-//
-//                .show();
-//    }
-
-
-    public boolean checkIfFinished() {
+    private boolean checkIfFinished() {
         // checks if all arrows have been placed in the correct locations
 
         // resets AllArrowsCorrect boolean
@@ -1089,21 +912,14 @@ public class DrawArrowsView extends ImageView {
         return allArrowsCorrect;
     }
 
-    public void message() {
-        System.out.println("Test");
-    }
-
-
     private void onActionDown() {
         invalidate();
 
         // able_to_click is used to eliminate rapid clicks which can cause problems
         if (able_to_click) {
 
-
             // check if arrow head has just been clicked on
-            k = 0;
-//            if (!clicked_on_button) {
+            int k = 0;
                 for (Rect rect_tmp2 : rectListArrowHead) {
                     if (rect_tmp2.contains(X, Y)) {
                         clicked_on_arrow_head = true;
@@ -1113,7 +929,6 @@ public class DrawArrowsView extends ImageView {
                     }
                     k++;
                 }
-//            }
 
             if (!clicked_on_arrow_head) {
                 k = 0;
@@ -1224,9 +1039,7 @@ public class DrawArrowsView extends ImageView {
     private void writeSameOrOpRowToDatabase() {
         for (int btn_chosen = 0; btn_chosen < pointList.size(); btn_chosen++) {
             for (int k = 0; k < checkMatrix.get(btn_chosen).get(7).size(); k++)
-                if (String.valueOf(checkMatrix.get(btn_chosen).get(7).get(k)).equals("0.0")) {
-
-                } else {
+                if (!String.valueOf(checkMatrix.get(btn_chosen).get(7).get(k)).equals("0.0")) {
                     str_usedSameOrOpRow = "usedSameOrOpRow_" + "prob" + problem_number + "_part" + part_letter + "_" + "btn" + btn_chosen + "_row" + k;
                     tinydb.putString(str_usedSameOrOpRow, String.valueOf(checkMatrix.get(btn_chosen).get(7).get(k)));
                 }
@@ -1234,7 +1047,7 @@ public class DrawArrowsView extends ImageView {
     }
 
 
-    private void showSnackBarArrowPlaced(int mrectListArrowHead_indice) {
+    private void showSnackBarArrowPlaced() {
         // overlays colored arrow over gray arrow if in correct location
         if (match) {
             SpannableStringBuilder snackbarText = new SpannableStringBuilder();
@@ -1263,13 +1076,15 @@ public class DrawArrowsView extends ImageView {
 
         // checks if dependency row has a 1.0 in it which means flip the arrow to outward
         // this only works if the arrow is at 0 (i.e. the first of the four possible correct angles at a given point)
-        arrow_head_inward = String.valueOf(checkMatrix.get(btn_chosen).get(6).get(0)).equals("1.0");
+        boolean arrow_head_inward = String.valueOf(checkMatrix.get(btn_chosen).get(6).get(0)).equals("1.0");
 
         if (String.valueOf(checkMatrix.get(btn_chosen).get(6).get(3)).equals("1.0")) {
             // this is a quick and dirty workaround for when dependency row is already used
             arrow_head_inward = true;
         }
 
+        int arrow_head_point_y;
+        int arrow_head_point_x;
         if (arrow_head_inward) {
             // sets angle of arrow head facing inward
             angle_arrow_head_left = 4 * pi / 3 - angle - pi;
@@ -1327,21 +1142,11 @@ public class DrawArrowsView extends ImageView {
             value += offset;
 
             if (offset == 1) {
-                moving_clockwise = true;
                 isClockwiseList.set(rectListArrowHead_indice, 200.0);
-                if (i != offset) {
-//                    Snackbar.make(this, "Moment was flipped", Snackbar.LENGTH_SHORT).show();
-                }
             } else {
-                moving_clockwise = false;
                 isClockwiseList.set(rectListArrowHead_indice, 300.0);
-                if (i != offset) {
-//                    Snackbar.make(this, "Moment was flipped", Snackbar.LENGTH_SHORT).show();
-                }
             }
         }
-
-        i = offset;
 
         used_already2 = true;
 
@@ -1360,6 +1165,7 @@ public class DrawArrowsView extends ImageView {
             len_from_btn_to_touch = dim_moment_radius + len_arrow_shaft_spring;
         }
 
+        float sweep_angle;
         if (isClockwiseList.get(rectListArrowHead_indice).equals(200.0)) {
             //counter clockwise
             sweep_angle = -180;
@@ -1396,21 +1202,14 @@ public class DrawArrowsView extends ImageView {
     }
 
     // converts dp to pixels
-    public int dpToPx(int dp) {
+    private int dpToPx(int dp) {
         DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
         return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 
     // converts screen percentage to pixels
-    public Point percentToPx(PointF per) {
+    private Point percentToPx(PointF per) {
         return new Point(Math.round(per.x * viewWidth / 100), Math.round((per.y * viewHeight / 100)));
-    }
-
-    // TODO: remove this before release if unused
-    // converts pixels to dp
-    public int pxToDp(int px) {
-        DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
-        return Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 
     // This method keeps the aspect ration of the view constant. This is necessary since I am placing points on the canvas by percentage of the way across the view
@@ -1419,26 +1218,10 @@ public class DrawArrowsView extends ImageView {
     private static final double VIEW_ASPECT_RATIO = 1; // Do not change this or you will have to re place all the points at the corect location!!
     private ViewAspectRatioMeasurer varm = new ViewAspectRatioMeasurer(VIEW_ASPECT_RATIO);
 
-    public double convertRadToDegreeAndInvert(Double angle) {
-        // prints angle snapped to in degrees to snackbar
-        if (angle == 0.0) {
-            // All angles are inverted, so this if statement shows 0.0 instead of -0.0
-            return (double) Math.round(Math.toDegrees(angle));
-        } else {
-            return (double) Math.round(Math.toDegrees(-angle));
-        }
-    }
-
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         varm.measure(widthMeasureSpec, heightMeasureSpec);
         setMeasuredDimension(varm.getMeasuredWidth(), varm.getMeasuredHeight());
-    }
-
-    private float touchAngle(float touchX, float touchY) {
-        float dX = touchX - btn_loc_x;
-        float dY = btn_loc_y - touchY;
-        return (float) (270 - Math.toDegrees(Math.atan2(dY, dX))) % 360 - 180;
     }
 
     private void checkArrowIsCorrect(int mrectListArrowHead_indice) {
@@ -1463,16 +1246,16 @@ public class DrawArrowsView extends ImageView {
         // iterates through the list of correct angles at the button btn_chosen
         for (Double r : checkMatrix.get(btn_chosen).get(0)) {
             // if not used already
-            Double angle_row = checkMatrix.get(btn_chosen).get(0).get(u);
-            Double used_row = checkMatrix.get(btn_chosen).get(1).get(u);
-            Double force_ang_row = checkMatrix.get(btn_chosen).get(2).get(u); // forces opposite or not. If 0.0, no forcing. If 1.0, angle is forced. If 2.0, opoposite angle is forced
-            Double oppos_allowed_row = checkMatrix.get(btn_chosen).get(3).get(u);
-            Double clockwise_row = checkMatrix.get(btn_chosen).get(4).get(u);
-            Double finished_row = checkMatrix.get(btn_chosen).get(5).get(u);
-            Double used_same_or_op_row = checkMatrix.get(btn_chosen).get(7).get(u);
-//            Double moment_used_row = checkMatrix.get(btn_chosen).get(6).get(u);
+//            Double angle_row = checkMatrix.get(btn_chosen).get(0).get(u);
+//            Double used_row = checkMatrix.get(btn_chosen).get(1).get(u);
+//            Double force_ang_row = checkMatrix.get(btn_chosen).get(2).get(u); // forces opposite or not. If 0.0, no forcing. If 1.0, angle is forced. If 2.0, opoposite angle is forced
+//            Double oppos_allowed_row = checkMatrix.get(btn_chosen).get(3).get(u);
+//            Double clockwise_row = checkMatrix.get(btn_chosen).get(4).get(u);
+//            Double finished_row = checkMatrix.get(btn_chosen).get(5).get(u);
+//            Double used_same_or_op_row = checkMatrix.get(btn_chosen).get(7).get(u);
 
 
+            double opp_ang;
             if (isMomentList.get(mrectListArrowHead_indice)) {
                 // sets match to true if
 
@@ -1512,7 +1295,7 @@ public class DrawArrowsView extends ImageView {
 
                 //resets opp_angle
                 opp_ang = 100.0;
-                rounded_opp_ang = 100.0;
+                double rounded_opp_ang = 100.0;
 
                 // checks if opposite allowed row and used row
                 if ((checkMatrix.get(btn_chosen).get(3).get(u) == 1.0 || checkMatrix.get(btn_chosen).get(3).get(u) == 2.0) && checkMatrix.get(btn_chosen).get(1).get(u) == 0.0) {
@@ -1543,15 +1326,7 @@ public class DrawArrowsView extends ImageView {
 
 
                         // if used_row equals 1.0
-                        if (checkMatrix.get(btn_chosen).get(1).get(u).equals(1.0)) {
-
-                            // TODO figure out why this fires every time
-//                            Snackbar.make(this, "Opposite Already Used", Snackbar.LENGTH_SHORT).show();
-                        } else if (checkMatrix.get(btn_chosen).get(1).get(u).equals(0.0)) {
-
-//                        rounded_angle_row = ((double) (Math.round(angle_row * 1000)) / 1000);
-//                        rounded_mAngle = ((double) (Math.round(mAngle * 1000)) / 1000);
-
+                        if (checkMatrix.get(btn_chosen).get(1).get(u).equals(0.0)) {
                             if (((double) (Math.round(checkMatrix.get(btn_chosen).get(0).get(u) * 1000)) / 1000) == ((double) (Math.round(mAngle * 1000)) / 1000)) {
                                 match = true;
                                 checkMatrix.get(btn_chosen).get(1).set(u, 1.0); // mark as used
@@ -1615,11 +1390,6 @@ public class DrawArrowsView extends ImageView {
         }
     }
 
-
-    public void invalidateNow() {
-        invalidateNow = true;
-    }
-
     public void resetForNextPart() {
         pointListArrowHead.clear();
         pointList.clear();
@@ -1664,7 +1434,7 @@ public class DrawArrowsView extends ImageView {
         invalidate();
     }
 
-    public static int getResId(String variableName, Class<?> c) {
+    private static int getResId(String variableName, Class<?> c) {
 
         try {
             Field idField = c.getDeclaredField(variableName);
@@ -1672,18 +1442,6 @@ public class DrawArrowsView extends ImageView {
         } catch (Exception e) {
             e.printStackTrace();
             return -1;
-        }
-    }
-
-    // this is to set the observer
-    public void setObserver(TheObserver observer) {
-        mObserver = observer;
-    }
-
-    // here be the magic
-    private void runFromMainActivityClass() {
-        if (mObserver != null) {
-            mObserver.callback();
         }
     }
 }

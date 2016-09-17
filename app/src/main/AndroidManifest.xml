@@ -24,10 +24,6 @@
             android:name=".MainActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".MainIntroActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Intro" />
-        <activity
             android:name=".ThirdActivity"
             android:parentActivityName=".SecondActivity"
             android:screenOrientation="portrait" />

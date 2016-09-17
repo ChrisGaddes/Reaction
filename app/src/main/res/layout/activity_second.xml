@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.chrisgaddes.reaction.SecondActivity"
+    tools:context=".SecondActivity"
     android:id="@+id/relativeLayout_Second">
 
     <RelativeLayout
@@ -38,7 +38,8 @@
                 android:layout_height="0dp"
                 app:layout_heightPercent="20%"
                 android:layout_alignParentTop="true"
-                android:elevation="8dp">
+                android:elevation="8dp"
+                tools:targetApi="lollipop">
 
 
                 <com.chrisgaddes.reaction.AutoResizeTextView
@@ -55,7 +56,8 @@
                 android:id="@+id/problem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/relativeLayout_Second2" />
+                android:layout_below="@id/relativeLayout_Second2"
+                android:contentDescription="Problem Image"/>
 
         </android.support.percent.PercentRelativeLayout>
 
@@ -74,7 +76,8 @@
             android:layout_marginBottom="20dp"
             android:layout_gravity="bottom|end"
             android:src="@drawable/ic_next"
-            android:transitionGroup="false" />
+            android:transitionGroup="false"
+            tools:targetApi="lollipop" />
     </android.support.design.widget.CoordinatorLayout>
 
 </RelativeLayout>

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingTop="@dimen/mi_baseline"
-    tools:context="com.chrisgaddes.reaction.SecondActivity">
+    tools:context=".SecondActivity">
 
 
     <RelativeLayout
@@ -45,11 +45,9 @@
                     android:layout_height="55dp"
                     android:layout_gravity="center"
                     android:layout_marginBottom="28dp"
-
                     android:paddingTop="18dp"
-
                     android:src="@drawable/wrong"
-
+                    android:contentDescription="Incorrect"
                     />
 
             </LinearLayout>
@@ -58,7 +56,6 @@
                 android:id="@+id/center_divider_gif_view"
                 android:layout_width="1dp"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
                 android:layout_margin="10dp"
                 android:background="@color/colorDivider" />
 
@@ -83,7 +80,8 @@
                     android:layout_gravity="center"
                     android:layout_marginBottom="28dp"
                     android:paddingTop="18dp"
-                    android:src="@drawable/right" />
+                    android:src="@drawable/right"
+                    android:contentDescription="Correct"/>
 
 
             </LinearLayout>

@@ -11,11 +11,6 @@
         <attr name="cardStyle" format="reference" />
     </declare-styleable>
 
-    <declare-styleable name="AutoFitTextView">
-        <attr name="minTextSize" format="dimension" />
-        <attr name="maxTextSize" format="dimension" />
-    </declare-styleable>
-
     <style name="Light" parent="Theme.AppCompat.NoActionBar">
         <item name="cardStyle">@style/CardView.Light</item>
     </style>

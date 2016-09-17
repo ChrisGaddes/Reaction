@@ -15,7 +15,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -35,21 +34,12 @@ public class SecondActivity extends AppCompatActivity {
     private static final String TAG = "SecondActivity";
     private DrawArrowsView mDrawArrowsView;
 
-    private AutoResizeTextView tv_problem_statement;
-
-    private int problem_number;
-    private String str_prob_file_name;
-    private String part_letter;
-
     private FloatingActionButton btn_start_part;
 
     private TinyDB tinydb;
 
-    private long pauseTime;
     private long resumeTime;
     private Handler mHandler = new Handler();
-
-    private TextView TV_time_display;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,18 +55,18 @@ public class SecondActivity extends AppCompatActivity {
         tinydb = new TinyDB(this);
 
         // Loads problem information
-        problem_number = tinydb.getInt("problem_number");
-        part_letter = tinydb.getString("part_letter");
+        int problem_number = tinydb.getInt("problem_number");
+        String part_letter = tinydb.getString("part_letter");
 
         // Generates strings from problem information
-        str_prob_file_name = "prob" + problem_number;
+        String str_prob_file_name = "prob" + problem_number;
         String str_toolbar_problem_title = "Problem #" + problem_number;
 
         // load problem statement and part statement TODO: Remove loading part statement from this activity
         String[] str_problem_statement = getResources().getStringArray(getResId("mainProblemStatement_" + "prob" + problem_number + "_part" + part_letter, R.array.class));
 
         // Sets text for problem statement
-        tv_problem_statement = (AutoResizeTextView) this.findViewById(R.id.tv_problem_statement2);
+        AutoResizeTextView tv_problem_statement = (AutoResizeTextView) this.findViewById(R.id.tv_problem_statement2);
         tv_problem_statement.setText(str_problem_statement[0]);
         // set max text size
         tv_problem_statement.setMaxTextSize(56);
@@ -102,7 +92,9 @@ public class SecondActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(str_toolbar_problem_title);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(str_toolbar_problem_title);
+        }
 
         // Sets listener on start button
         btn_start_part = (FloatingActionButton) findViewById(R.id.btn_start_part);
@@ -296,7 +288,7 @@ public class SecondActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        pauseTime = System.currentTimeMillis();
+        long pauseTime = System.currentTimeMillis();
         long totalForgroundTime = tinydb.getLong("TotalForegroundTime", 0) + (pauseTime - resumeTime);
         tinydb.putLong("TotalForegroundTime", totalForgroundTime);
     }

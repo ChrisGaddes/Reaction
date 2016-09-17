@@ -51,12 +51,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean stop_animations;
 
     private CardView card_load_prob1;
-    private CardView card_load_prob2;
-    private CardView card_load_prob3;
     private CardView card_survey;
     private CardView card_reset_everything;
-    private CardView card_reset_everything_always_shown;
-    private CardView card_choose_problem_below;
 
     private Button btn_prob1_start;
     private Button btn_prob2_start;
@@ -86,16 +82,13 @@ public class MainActivity extends AppCompatActivity {
         setupWindowAnimations();
         setContentView(R.layout.activity_main);
 
-
-        String str_tmp = tinydb.getString("part_letter");
-
 //        stop_animations = str_tmp == null || str_tmp.equals("");
 
         // enables overscroll animation like in IOS
         ScrollView scrollView = (ScrollView) findViewById(R.id.scrollview_main_activity);
         OverScrollDecoratorHelper.setUpOverScroll(scrollView);
 
-        card_choose_problem_below = (CardView) findViewById(R.id.card_choose_problem_below);
+        CardView card_choose_problem_below = (CardView) findViewById(R.id.card_choose_problem_below);
         card_choose_problem_below.setVisibility(View.VISIBLE);
         card_choose_problem_below.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        card_reset_everything_always_shown = (CardView) findViewById(R.id.card_reset_everything_always_shown);
+        CardView card_reset_everything_always_shown = (CardView) findViewById(R.id.card_reset_everything_always_shown);
 //        card_reset_everything_always_shown.setVisibility(View.GONE);
         card_reset_everything_always_shown.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -202,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
 
         image_prob2_lock = (ImageView) findViewById(R.id.image_prob2_lock);
         subtitle_prob2 = (TextView) findViewById(R.id.subtitle_prob2);
-        card_load_prob2 = (CardView) findViewById(R.id.card_load_prob2);
+        CardView card_load_prob2 = (CardView) findViewById(R.id.card_load_prob2);
         card_load_prob2.setVisibility(View.INVISIBLE);
         card_load_prob2.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -237,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
 
         image_prob3_lock = (ImageView) findViewById(R.id.image_prob3_lock);
         subtitle_prob3 = (TextView) findViewById(R.id.subtitle_prob3);
-        card_load_prob3 = (CardView) findViewById(R.id.card_load_prob3);
+        CardView card_load_prob3 = (CardView) findViewById(R.id.card_load_prob3);
         card_load_prob3.setVisibility(View.INVISIBLE);
         card_load_prob3.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -465,7 +458,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        if (tinydb.getBoolean("intro_finished")){
+        if (tinydb.getBoolean("intro_finished")) {
             if (!tinydb.getBoolean("survey_taken")) {
                 stop_animations = false;
                 doYoyo(Techniques.Tada, findViewById(R.id.image_survey_icon));
@@ -491,7 +484,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void doYoyo(final Techniques techniques, final View view) {
+    private void doYoyo(final Techniques techniques, final View view) {
         YoYo.with(techniques).duration(2000).interpolate(new LinearInterpolator()).withListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
@@ -668,27 +661,25 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupWindowAnimations() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-        Fade fade = new Fade();
-        fade.setDuration(250);
+            Fade fade = new Fade();
+            fade.setDuration(250);
 
-        Explode explode = null;
+            Explode explode = new Explode();
 
-            explode = new Explode();
+            explode.setDuration(250);
 
-        explode.setDuration(250);
+            ////exclude toolbar
+            //        explode.excludeTarget(R.id.toolbar, true);
+            //exclude status bar
+            explode.excludeTarget(android.R.id.statusBarBackground, true);
+            //exclude navigation bar
+            explode.excludeTarget(android.R.id.navigationBarBackground, true);
 
-        ////exclude toolbar
-        //        explode.excludeTarget(R.id.toolbar, true);
-        //exclude status bar
-        explode.excludeTarget(android.R.id.statusBarBackground, true);
-        //exclude navigation bar
-        explode.excludeTarget(android.R.id.navigationBarBackground, true);
-
-        getWindow();
-        getWindow().setEnterTransition(fade);
-        getWindow().setReturnTransition(explode);
-        getWindow().setAllowEnterTransitionOverlap(false);
-        getWindow().setAllowReturnTransitionOverlap(false);
+            getWindow();
+            getWindow().setEnterTransition(fade);
+            getWindow().setReturnTransition(explode);
+            getWindow().setAllowEnterTransitionOverlap(false);
+            getWindow().setAllowReturnTransitionOverlap(false);
         }
     }
 

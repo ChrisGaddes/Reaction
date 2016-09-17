@@ -70,7 +70,10 @@ public class ThirdActivity extends AppCompatActivity {
     private String strDialogNextButton;
     private String part_letter;
 
-    private AutoResizeTextView tv_statement;
+    private AutoResizeTextView tv_current_statement;
+    private AutoResizeTextView tv_prob_statement;
+    private AutoResizeTextView tv_parta_statement;
+    private AutoResizeTextView tv_partb_statement;
 
     private int problem_number;
     private int eventaction;
@@ -87,10 +90,6 @@ public class ThirdActivity extends AppCompatActivity {
     private TinyDB tinydb;
 
     private String previous_part_letter;
-    private String str_probCurrent_file_name;
-    private String str_partCurrent_file_name;
-    private String str_parta_file_name;
-    private String str_partb_file_name;
     private String str_parta_title;
     private String str_partb_title;
     private String str_toolbar_problem_title;
@@ -145,13 +144,6 @@ public class ThirdActivity extends AppCompatActivity {
 
         // Loads method to (re)startPart
         startPart();
-
-        mDrawArrowsView.setObserver(new TheObserver() {
-                                        public void callback() {
-                                            // Log.d("Clicked", "Woo Hoo!");
-                                        }
-                                    }
-        );
 
         fab_check_done.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -217,8 +209,6 @@ public class ThirdActivity extends AppCompatActivity {
                                                 }
                                             }
                                     ).show();
-
-
                         }
                     }).show();
                 }
@@ -239,7 +229,12 @@ public class ThirdActivity extends AppCompatActivity {
                         IV_peek_probMain_view.setAlpha((float) 1.0);
                         IV_problem_part.setAlpha((float) 0.0);
                         mDrawArrowsView.setAlpha((float) 0.0);
-                        tv_statement.setText(str_problem_statement[0]);
+//                        tv_current_statement.setText(str_problem_statement[0]);
+
+                        tv_current_statement.setAlpha((float) 0.0);
+                        tv_prob_statement.setAlpha((float) 1.0);
+                        tv_parta_statement.setAlpha((float) 0.0);
+                        tv_partb_statement.setAlpha((float) 0.0);
 
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                             btn_peek_probMain.setElevation(dpToPx(8));
@@ -266,7 +261,12 @@ public class ThirdActivity extends AppCompatActivity {
                         IV_problem_part.setAlpha((float) 1.0);
 
                         mDrawArrowsView.setAlpha((float) 1.0);
-                        tv_statement.setText(str_part_statement[0]);
+//                        tv_current_statement.setText(str_part_statement[0]);
+
+                        tv_current_statement.setAlpha((float) 1.0);
+                        tv_prob_statement.setAlpha((float) 0.0);
+                        tv_parta_statement.setAlpha((float) 0.0);
+                        tv_partb_statement.setAlpha((float) 0.0);
 
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                             btn_peek_probMain.setElevation(dpToPx(4));
@@ -280,6 +280,7 @@ public class ThirdActivity extends AppCompatActivity {
                             btn_peek_partb_arrows.startAnimation(scaleIn);
                         }
                         fab_check_done.show();
+
                         break;
                 }
                 return true;
@@ -297,11 +298,17 @@ public class ThirdActivity extends AppCompatActivity {
                             if (getSupportActionBar() != null) {
                                 getSupportActionBar().setTitle(str_parta_title);
                             }
+
                             IV_peek_parta.setAlpha((float) 1.0);
                             IV_peek_parta_arrows.setAlpha((float) 1.0);
                             IV_problem_part.setAlpha((float) 0.0);
                             mDrawArrowsView.setAlpha((float) 0.0);
-                            tv_statement.setText(str_parta_statement[0]);
+//                            tv_current_statement.setText(str_parta_statement[0]);
+
+                            tv_current_statement.setAlpha((float) 0.0);
+                            tv_prob_statement.setAlpha((float) 0.0);
+                            tv_parta_statement.setAlpha((float) 1.0);
+                            tv_partb_statement.setAlpha((float) 0.0);
 
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                                 btn_peek_parta.setElevation(dpToPx(8));
@@ -321,7 +328,12 @@ public class ThirdActivity extends AppCompatActivity {
                             IV_peek_parta_arrows.setAlpha((float) 0.0);
                             IV_problem_part.setAlpha((float) 1.0);
                             mDrawArrowsView.setAlpha((float) 1.0);
-                            tv_statement.setText(str_part_statement[0]);
+//                            tv_current_statement.setText(str_part_statement[0]);
+
+                            tv_current_statement.setAlpha((float) 1.0);
+                            tv_prob_statement.setAlpha((float) 0.0);
+                            tv_parta_statement.setAlpha((float) 0.0);
+                            tv_partb_statement.setAlpha((float) 0.0);
 
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                                 btn_peek_parta.setElevation(dpToPx(4));
@@ -334,6 +346,7 @@ public class ThirdActivity extends AppCompatActivity {
                                 btn_peek_partb_arrows.startAnimation(scaleIn);
                             }
                             fab_check_done.show();
+
                             break;
                     }
                 }
@@ -357,7 +370,12 @@ public class ThirdActivity extends AppCompatActivity {
                             IV_peek_partb_arrows.setAlpha((float) 1.0);
                             IV_problem_part.setAlpha((float) 0.0);
                             mDrawArrowsView.setAlpha((float) 0.0);
-                            tv_statement.setText(str_partb_statement[0]);
+//                            tv_current_statement.setText(str_partb_statement[0]);
+
+                            tv_current_statement.setAlpha((float) 0.0);
+                            tv_prob_statement.setAlpha((float) 0.0);
+                            tv_parta_statement.setAlpha((float) 0.0);
+                            tv_partb_statement.setAlpha((float) 1.0);
 
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                                 btn_peek_partb.setElevation(dpToPx(8));
@@ -377,7 +395,12 @@ public class ThirdActivity extends AppCompatActivity {
                             IV_peek_partb_arrows.setAlpha((float) 0.0);
                             IV_problem_part.setAlpha((float) 1.0);
                             mDrawArrowsView.setAlpha((float) 1.0);
-                            tv_statement.setText(str_part_statement[0]);
+//                            tv_current_statement.setText(str_part_statement[0]);
+
+                            tv_current_statement.setAlpha((float) 1.0);
+                            tv_prob_statement.setAlpha((float) 0.0);
+                            tv_parta_statement.setAlpha((float) 0.0);
+                            tv_partb_statement.setAlpha((float) 0.0);
 
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                                 btn_peek_partb.setElevation(dpToPx(4));
@@ -387,6 +410,7 @@ public class ThirdActivity extends AppCompatActivity {
                             btn_peek_parta.startAnimation(scaleIn);
                             btn_peek_parta_arrows.startAnimation(scaleIn);
                             fab_check_done.show();
+
                             break;
                     }
                 }
@@ -423,20 +447,46 @@ public class ThirdActivity extends AppCompatActivity {
 
         // Generates strings from problem information
         str_toolbar_partCurrent_title = "#" + problem_number + " - Part " + part_letter.toUpperCase();
-        str_partCurrent_file_name = "prob" + problem_number + "_part" + part_letter;
-        str_parta_file_name = "prob" + problem_number + "_part" + "a";
-        str_partb_file_name = "prob" + problem_number + "_part" + "b";
+        String str_partCurrent_file_name = "prob" + problem_number + "_part" + part_letter;
+        String str_parta_file_name = "prob" + problem_number + "_part" + "a";
+        String str_partb_file_name = "prob" + problem_number + "_part" + "b";
 
-        str_probCurrent_file_name = "prob" + problem_number;
+        String str_probCurrent_file_name = "prob" + problem_number;
         str_toolbar_problem_title = "Problem #" + problem_number;
         str_parta_title = "#" + problem_number + " - Part " + "A";
         str_partb_title = "#" + problem_number + " - Part " + "B";
 
         // Sets text for problem statement
-        tv_statement = (AutoResizeTextView) this.findViewById(R.id.tv_statement);
-        tv_statement.setText(str_part_statement[0]);
+        tv_current_statement = (AutoResizeTextView) this.findViewById(R.id.tv_current_statement);
+        tv_current_statement.setText(str_part_statement[0]);
         // set max text size
-        tv_statement.setMaxTextSize(56);
+        tv_current_statement.setMaxTextSize(56);
+        tv_current_statement.setText(str_part_statement[0]);
+
+        // Sets text for peek problem statement
+        tv_prob_statement = (AutoResizeTextView) this.findViewById(R.id.tv_prob_statement);
+        tv_prob_statement.setText(str_part_statement[0]);
+        // set max text size
+        tv_prob_statement.setMaxTextSize(56);
+        tv_prob_statement.setText(str_problem_statement[0]);
+        tv_prob_statement.setAlpha((float) 0.0);
+
+        // Sets text for parta statement
+        tv_parta_statement = (AutoResizeTextView) this.findViewById(R.id.tv_parta_statement);
+        tv_parta_statement.setText(str_part_statement[0]);
+        // set max text size
+        tv_parta_statement.setMaxTextSize(56);
+        tv_parta_statement.setText(str_parta_statement[0]);
+        tv_parta_statement.setAlpha((float) 0.0);
+
+        // Sets text for partb statement
+        tv_partb_statement = (AutoResizeTextView) this.findViewById(R.id.tv_partb_statement);
+        tv_partb_statement.setText(str_part_statement[0]);
+        // set max text size
+        tv_partb_statement.setMaxTextSize(56);
+        tv_partb_statement.setText(str_partb_statement[0]);
+        tv_partb_statement.setAlpha((float) 0.0);
+
 
         // Sets image for part
         IV_problem_part = (ImageView) findViewById(R.id.problem_part);
@@ -501,7 +551,7 @@ public class ThirdActivity extends AppCompatActivity {
 
         showPeekImages();
 
-        tv_statement.resetTextSize();
+        tv_current_statement.resetTextSize();
 
 //
     }
@@ -515,7 +565,7 @@ public class ThirdActivity extends AppCompatActivity {
                 .setDelayMillis(500)
                 .enableFadeAnimation(true)
                 .setInfoText("Read the problem statement for Part A carefully and tap in the circle to continue.\n\n COMMON MISTAKE: Just because the pins (the small black circles) are NOT included in the free-body diagram does NOT mean there are no forces applied at points A and B.")
-                .setTarget(findViewById(R.id.tv_statement))
+                .setTarget(findViewById(R.id.tv_current_statement))
                 .setUsageId("IntroThirdAct1_" + tinydb.getString("ID_IntroView"))
 //                .setConfiguration(matIntroConfig)
                 .setListener(new MaterialIntroListener() {

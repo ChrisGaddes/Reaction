@@ -8,10 +8,10 @@ import android.widget.TextView;
 
 public class ChronometerView extends TextView implements Runnable {
     private long startTime = 0L;
-    long beginTime = 0L;
-    long overallDuration = 0L;
-    long warningDuration = 0L;
-    boolean isRunning = false;
+    private long beginTime = 0L;
+    private long overallDuration = 0L;
+    private long warningDuration = 0L;
+    private boolean isRunning = false;
     private long elapsedSeconds;
 
     public ChronometerView(Context context) {
@@ -39,11 +39,11 @@ public class ChronometerView extends TextView implements Runnable {
 
             setText(String.format("%d:%02d", minutes, seconds));
 
-            if (elapsedSeconds >= overallDuration - warningDuration) {
-                setTextColor(0xFFFF6600); // orange
-            } else {
-                setTextColor(Color.WHITE);
-            }
+//            if (elapsedSeconds >= overallDuration - warningDuration) {
+//                setTextColor(0xFFFF6600); // orange
+//            } else {
+//                setTextColor(Color.WHITE);
+//            }
 
             postDelayed(this, 1000);
 //        } else {

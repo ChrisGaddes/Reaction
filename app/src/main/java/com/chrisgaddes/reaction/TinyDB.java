@@ -41,6 +41,7 @@ import java.util.Map;
 //import com.google.gson.Gson;
 
 
+@SuppressWarnings("ALL")
 public class TinyDB {
 
     private SharedPreferences preferences;
